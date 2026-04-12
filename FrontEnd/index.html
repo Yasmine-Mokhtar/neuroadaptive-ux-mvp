@@ -7,15 +7,21 @@
 
     <link rel="icon" href="data:," />
 
+    <!-- jsPsych core -->
     <script src="https://unpkg.com/jspsych@7.3.4"></script>
     <link href="https://unpkg.com/jspsych@7.3.4/css/jspsych.css" rel="stylesheet" />
 
+    <!-- jsPsych-supported WebGazer stack -->
+    <script src="https://cdn.jsdelivr.net/gh/jspsych/jspsych@jspsych@7.0.0/examples/js/webgazer/webgazer.js"></script>
+    <script src="https://unpkg.com/@jspsych/extension-webgazer@1.0.3"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-webgazer-init-camera@1.0.3"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-webgazer-calibrate@1.0.3"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-webgazer-validate@1.0.3"></script>
+
+    <!-- Other plugins -->
     <script src="https://unpkg.com/@jspsych/plugin-html-button-response@1.1.3"></script>
     <script src="https://unpkg.com/@jspsych/plugin-survey-html-form@1.0.3"></script>
     <script src="https://unpkg.com/@jspsych/plugin-survey-multi-choice@1.1.3"></script>
-
-    <!-- IMPORTANT: local WebGazer from WebGazer/www -->
-    <script src="./webgazer.js"></script>
 
     <style>
         :root {
@@ -28,9 +34,11 @@
           --border: #d7deea;
           --success-bg: #eef8f1;
           --success-text: #166534;
+          --warning-bg: #fff8eb;
           --warning-text: #b45309;
           --error-bg: #fff1f0;
           --error-text: #b42318;
+          --soft: #fbfcfe;
         }
 
         * { box-sizing: border-box; }
@@ -40,7 +48,6 @@
           background: var(--bg);
           color: var(--text);
           font-family: Arial, sans-serif;
-          transition: all 0.25s ease;
         }
 
         .jspsych-display-element {
@@ -69,7 +76,6 @@
           padding: 36px;
           box-shadow: 0 10px 28px rgba(0, 41, 87, 0.06);
           text-align: left;
-          transition: all 0.25s ease;
         }
 
         .card h1,
@@ -98,7 +104,7 @@
 
         .card h3,
         .form-card h3 {
-          font-size: 24px;
+          font-size: 22px;
           font-weight: 700;
         }
 
@@ -110,17 +116,12 @@
           text-align: left;
         }
 
-        .muted { color: var(--muted); }
+        .muted {
+          color: var(--muted);
+        }
 
         .small-note {
           margin-top: 14px;
-          font-size: 14px;
-          color: var(--muted);
-          line-height: 1.6;
-        }
-
-        .compact-note {
-          margin-top: 8px;
           font-size: 15px;
           color: var(--muted);
           line-height: 1.6;
@@ -144,16 +145,11 @@
           border-radius: 16px;
           background: #fbfcfe;
           line-height: 1.9;
-          transition: all 0.25s ease;
         }
 
         .field-group {
           margin-bottom: 22px;
           text-align: left;
-        }
-
-        .field-group:last-child {
-          margin-bottom: 0;
         }
 
         .form-label {
@@ -257,11 +253,6 @@
           line-height: 1.6;
         }
 
-        .jspsych-survey-multi-choice-text span.required {
-          color: var(--accent);
-          margin-left: 4px;
-        }
-
         .jspsych-survey-multi-choice-option {
           display: flex !important;
           align-items: center !important;
@@ -298,12 +289,6 @@
           cursor: pointer;
         }
 
-        #jspsych-survey-multi-choice-next {
-          display: inline-block;
-          margin: 24px 0 0;
-          min-width: 150px;
-        }
-
         .button-row {
           display: flex;
           gap: 12px;
@@ -322,7 +307,7 @@
           padding: 16px 18px;
           border: 1px solid var(--border);
           border-radius: 16px;
-          background: #fbfcfe;
+          background: var(--soft);
         }
 
         .summary-label {
@@ -348,6 +333,7 @@
           border-radius: 999px;
           font-size: 15px;
           font-weight: 700;
+          margin-bottom: 10px;
         }
 
         .status-correct {
@@ -360,12 +346,36 @@
           color: var(--error-text);
         }
 
-        .score-box {
+        .score-box,
+        .save-status-box,
+        .recommendation-panel,
+        .validation-box {
           margin-top: 18px;
           padding: 18px 20px;
           border-radius: 18px;
-          background: linear-gradient(135deg, rgba(0,41,87,0.06), rgba(241,86,63,0.08));
           border: 1px solid var(--border);
+          background: var(--soft);
+        }
+
+        .status-ok {
+          color: var(--success-text);
+          font-weight: 700;
+        }
+
+        .status-fallback {
+          color: var(--warning-text);
+          font-weight: 700;
+        }
+
+        .recommended-mode-badge {
+          display: inline-block;
+          padding: 6px 12px;
+          border-radius: 999px;
+          background: rgba(241, 86, 63, 0.12);
+          color: #F1563F;
+          font-weight: 800;
+          text-transform: uppercase;
+          letter-spacing: 0.03em;
         }
 
         .metric-list {
@@ -377,24 +387,6 @@
         .metric-line {
           font-size: 16px;
           line-height: 1.5;
-        }
-
-        .save-status-box {
-          margin-top: 18px;
-          padding: 18px 20px;
-          border-radius: 18px;
-          border: 1px solid var(--border);
-          background: #fbfcfe;
-        }
-
-        .status-ok {
-          color: var(--success-text);
-          font-weight: 700;
-        }
-
-        .status-fallback {
-          color: var(--warning-text);
-          font-weight: 700;
         }
 
         .lang-overlay {
@@ -454,101 +446,6 @@
           background: var(--accent);
         }
 
-        .calibration-area {
-          position: relative;
-          height: 420px;
-          margin-top: 18px;
-          border: 1px dashed var(--border);
-          border-radius: 18px;
-          background: #fff;
-        }
-
-        .calibration-dot {
-          position: absolute;
-          width: 24px;
-          height: 24px;
-          border: none;
-          border-radius: 999px;
-          background: var(--accent);
-          transform: translate(-50%, -50%);
-          cursor: pointer;
-          opacity: 0.45;
-          box-shadow: 0 0 0 8px rgba(241, 86, 63, 0.08);
-        }
-
-        .calibration-dot:hover {
-          opacity: 0.8;
-        }
-
-        .calibration-dot.calibration-done {
-          background: var(--primary);
-          opacity: 1;
-          box-shadow: 0 0 0 10px rgba(0, 41, 87, 0.10);
-        }
-
-        #webgazerVideoContainer {
-          position: fixed !important;
-          left: 16px !important;
-          top: 92px !important;
-          width: 260px !important;
-          height: 195px !important;
-          min-height: 195px !important;
-          z-index: 9999 !important;
-          border-radius: 16px !important;
-          overflow: hidden !important;
-          box-shadow: 0 10px 28px rgba(0, 41, 87, 0.12) !important;
-          border: 1px solid var(--border) !important;
-          background: #fff !important;
-        }
-
-        #webgazerVideoFeed,
-        #webgazerVideoCanvas,
-        #webgazerFaceOverlay {
-          width: 100% !important;
-          height: 100% !important;
-          display: block !important;
-        }
-
-        #webgazerVideoFeed {
-          object-fit: cover !important;
-          transform: scaleX(-1);
-        }
-
-        #webgazerFaceFeedbackBox {
-          z-index: 10000 !important;
-        }
-
-        #webgazerGazeDot {
-          z-index: 10001 !important;
-        }
-
-        .recommended-mode-badge {
-          display: inline-block;
-          padding: 6px 12px;
-          border-radius: 999px;
-          background: rgba(241, 86, 63, 0.12);
-          color: #F1563F;
-          font-weight: 800;
-          text-transform: uppercase;
-          letter-spacing: 0.03em;
-        }
-
-        .hidden-final-btn {
-          display: none !important;
-        }
-
-        .recommendation-panel {
-          margin-top: 16px;
-          padding: 18px 20px;
-          border: 1px solid var(--border);
-          border-radius: 18px;
-          background: #fbfcfe;
-        }
-
-        .recommendation-panel p {
-          margin: 0 0 10px 0;
-        }
-
         .ui-standard .card,
         .ui-standard .form-card {
           max-width: 760px;
@@ -592,13 +489,6 @@
           max-width: 860px;
         }
 
-        @media (max-width: 1100px) {
-          #webgazerVideoContainer {
-            width: 200px !important;
-            height: 150px !important;
-          }
-        }
-
         @media (max-width: 768px) {
           .jspsych-content {
             padding: 26px 16px 40px;
@@ -630,31 +520,13 @@
           .lang-text {
             font-size: 17px;
           }
-
-          .calibration-area {
-            height: 340px;
-          }
-
-          #webgazerVideoContainer {
-            width: 150px !important;
-            height: 112px !important;
-            left: 10px !important;
-            top: 90px !important;
-          }
         }
     </style>
 </head>
 <body class="ui-standard"></body>
 
 <script>
-    const LOCAL_API_BASE_URL = "http://127.0.0.1:8000";
-    const DEPLOYED_API_BASE_URL = "https://neuroadaptive-ux-mvp.onrender.com";
-
-    const API_BASE_URL =
-      window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
-        ? LOCAL_API_BASE_URL
-        : DEPLOYED_API_BASE_URL;
-
+    const API_BASE_URL = "https://neuroadaptive-ux-mvp.onrender.com";
     const RECOMMENDED_UI_URLS = {
       standard: "https://xn--standard-jyvskyl-6nbe.framer.ai/",
       guided: "https://xn--guided-jyvskyl-fibe.framer.ai/",
@@ -664,17 +536,10 @@
     const PARTICIPANT_ID = crypto.randomUUID();
     const SESSION_ID = crypto.randomUUID();
     const HESITATION_THRESHOLD_MS = 12000;
-    const GAZE_SAMPLE_MS = 50;
+    const GAZE_SAMPLE_MS = 34;
 
     let currentLang = "en";
     let jsPsych = null;
-    let webgazerReady = false;          // usable gaze predictions observed
-    let webgazerCameraReady = false;    // camera/preview/stream is live
-    let webgazerInitialized = false;
-    let webgazerPredictionCount = 0;
-    let webgazerStreamLive = false;
-    let currentGazePhase = null;
-    let currentGazeStartedAt = null;
 
     const STRINGS = {
       en: {
@@ -685,26 +550,25 @@
 
         welcome_title: "Welcome to the University of Jyväskylä",
         welcome_text_1: "Thank you for taking part in this short research demo.",
-        welcome_text_2: "This prototype demonstrates baseline profiling, WebGazer-based attention capture, behavioural logging, and adaptive interface recommendation.",
+        welcome_text_2: "This prototype demonstrates baseline profiling, browser-based eye tracking, behavioural logging, and adaptive interface recommendation.",
 
-        prototype_title: "Prototype Check",
-        prototype_text_1: "This MVP runs in the browser and connects to a backend for saving data and generating an adaptive recommendation.",
-        prototype_text_2: "The camera starts here. After that, a short calibration step is used before gaze-based reading analysis begins.",
-        initializing_camera: "Initializing camera...",
-        prototype_ready: "Camera preview is visible and WebGazer predictions are active.",
-        prototype_ready_note: "A short calibration step comes next. Gaze capture will be attempted during the reading tasks.",
-        prototype_fallback: "Camera check was inconclusive.",
-        prototype_fallback_note: "The demo will continue, and gaze capture will still be attempted during the reading tasks.",
-        prototype_camera_only: "Camera is live, but WebGazer is not returning usable predictions yet.",
-        prototype_camera_only_note: "Keep your face centered, improve lighting if needed, then continue to calibration.",
-
-        calibration_title: "WebGazer Calibration",
-        calibration_text: "Look directly at each dot and click it five times while keeping your gaze on it. This calibrates webcam-based gaze estimation so the system can generate clearer heatmaps and gaze statistics during the reading tasks.",
-        calibration_progress: "Calibration progress",
-        calibration_done: "Calibration complete. You can continue.",
+        camera_title: "Camera Setup",
+        camera_text_1: "This MVP runs in the browser and connects to a backend for saving data and generating an adaptive recommendation.",
+        camera_text_2: "Please allow camera access on the next screen, then center your face inside the camera box.",
+        camera_text_3: "Good lighting and keeping your head relatively still will improve gaze quality.",
 
         baseline_title: "Baseline Questions",
         baseline_text: "These questions capture stable preferences that help initialize the adaptive logic.",
+
+        calibration_title: "WebGazer Calibration",
+        calibration_text: "Look directly at each dot and click it. Repeat until calibration is complete.",
+        validation_title: "Validation",
+        validation_text: "Now look at the validation points. The system will estimate how stable the current calibration is.",
+        validation_summary_title: "Validation Check",
+        validation_avg_roi: "Average percent in ROI",
+        validation_samples_per_sec: "Average samples per second",
+        validation_quality_good: "Calibration quality looks acceptable for this run.",
+        validation_quality_warn: "Calibration quality is limited, but the demo will continue and still attempt gaze capture.",
 
         age_group: "Age group",
         age_placeholder: "Select age group",
@@ -753,10 +617,7 @@
         task2_a3: "Room C301",
         task2_a4: "Main Hall",
 
-        task_gaze_waiting: "Waiting for usable gaze predictions...",
-        task_gaze_active: "Gaze capture active. Read naturally, then continue.",
-        task_gaze_unavailable: "Camera is on, but usable gaze predictions are still unavailable in this run.",
-
+        reading_note: "Read naturally, then continue.",
         continue_btn: "Continue",
 
         end_title: "Experiment Completed",
@@ -777,19 +638,17 @@
         metric_hesitation: "Hesitation",
         metric_backtracking: "Backtracking",
         metric_question_time: "Question time",
-        metric_gaze_status: "WebGazer",
         metric_gaze_samples: "Gaze samples",
         metric_on_target_ratio: "On-target ratio",
         metric_first_fixation: "First fixation latency",
         metric_dwell_time: "Dwell time on target",
+        metric_validation_sps: "Validation samples/sec",
         metric_no_gaze_samples: "Gaze data were unavailable for this screen in this run.",
 
         yes: "Yes",
         no: "No",
         correct: "Correct",
         wrong: "Incorrect",
-        enabled: "Enabled",
-        fallback: "Fallback mode",
 
         save_no_recommendation: "Data saved successfully, but no recommendation was returned by the backend.",
         save_failed: "Save failed",
@@ -807,26 +666,25 @@
 
         welcome_title: "Tervetuloa Jyväskylän yliopistoon",
         welcome_text_1: "Kiitos, että osallistut tähän lyhyeen tutkimusdemoon.",
-        welcome_text_2: "Tämä prototyyppi esittelee lähtöprofiilin muodostusta, WebGazer-pohjaista tarkkaavuuden mittaamista, käyttäytymislokia ja adaptiivista käyttöliittymäsuositusta.",
+        welcome_text_2: "Tämä prototyyppi esittelee lähtöprofiilin muodostusta, selaimessa toimivaa katseenseurantaa, käyttäytymislokia ja adaptiivista käyttöliittymäsuositusta.",
 
-        prototype_title: "Prototyypin tarkistus",
-        prototype_text_1: "Tämä MVP toimii selaimessa ja yhdistyy taustapalveluun datan tallentamista ja adaptiivisen suosituksen muodostamista varten.",
-        prototype_text_2: "Kamera käynnistyy tässä. Sen jälkeen tehdään lyhyt kalibrointi ennen katseeseen perustuvaa lukuanalyysiä.",
-        initializing_camera: "Kameraa alustetaan...",
-        prototype_ready: "Kameran esikatselu näkyy ja WebGazerin ennusteet toimivat.",
-        prototype_ready_note: "Seuraavaksi tehdään lyhyt kalibrointi. Katseen tallennusta yritetään lukutehtävien aikana.",
-        prototype_fallback: "Kameratarkistus ei ollut yksiselitteinen.",
-        prototype_fallback_note: "Demo jatkuu, ja katseen tallennusta yritetään silti lukutehtävien aikana.",
-        prototype_camera_only: "Kamera toimii, mutta WebGazer ei vielä palauta käyttökelpoisia katse-ennusteita.",
-        prototype_camera_only_note: "Pidä kasvot keskellä kuvaa, paranna valaistusta tarvittaessa ja jatka kalibrointiin.",
-
-        calibration_title: "WebGazer-kalibrointi",
-        calibration_text: "Katso suoraan jokaista pistettä ja klikkaa sitä viisi kertaa pitäen katseen siinä. Tämä kalibroi webcam-pohjaisen katse-estimoinnin, jotta järjestelmä voi tuottaa selkeämpiä heatmappeja ja katsetilastoja lukutehtävissä.",
-        calibration_progress: "Kalibroinnin eteneminen",
-        calibration_done: "Kalibrointi valmis. Voit jatkaa.",
+        camera_title: "Kameran asetus",
+        camera_text_1: "Tämä MVP toimii selaimessa ja yhdistyy taustapalveluun datan tallentamista ja adaptiivisen suosituksen muodostamista varten.",
+        camera_text_2: "Salli kameran käyttö seuraavalla näytöllä ja pidä kasvot keskellä kamerakehystä.",
+        camera_text_3: "Hyvä valaistus ja mahdollisimman pieni pään liike parantavat katseen seurantaa.",
 
         baseline_title: "Lähtötason kysymykset",
         baseline_text: "Nämä kysymykset kartoittavat suhteellisen pysyviä mieltymyksiä, joita käytetään adaptiivisen logiikan alustamiseen.",
+
+        calibration_title: "WebGazer-kalibrointi",
+        calibration_text: "Katso jokaista pistettä suoraan ja klikkaa sitä. Toista, kunnes kalibrointi on valmis.",
+        validation_title: "Validointi",
+        validation_text: "Katso nyt validointipisteitä. Järjestelmä arvioi nykyisen kalibroinnin vakautta.",
+        validation_summary_title: "Validoinnin yhteenveto",
+        validation_avg_roi: "Keskiarvo: prosentti ROI-alueella",
+        validation_samples_per_sec: "Keskimääräiset näytteet sekunnissa",
+        validation_quality_good: "Kalibroinnin laatu näyttää riittävältä tässä ajossa.",
+        validation_quality_warn: "Kalibroinnin laatu on rajallinen, mutta demo jatkuu ja yrittää silti katseenseurantaa.",
 
         age_group: "Ikäryhmä",
         age_placeholder: "Valitse ikäryhmä",
@@ -875,10 +733,7 @@
         task2_a3: "Huone C301",
         task2_a4: "Pääsali",
 
-        task_gaze_waiting: "Odotetaan käyttökelpoisia katse-ennusteita...",
-        task_gaze_active: "Katseen tallennus on aktiivinen. Lue normaalisti ja jatka sitten.",
-        task_gaze_unavailable: "Kamera on päällä, mutta käyttökelpoisia katse-ennusteita ei ole vielä saatavilla tällä ajokerralla.",
-
+        reading_note: "Lue normaalisti ja jatka sen jälkeen.",
         continue_btn: "Jatka",
 
         end_title: "Koe valmis",
@@ -899,19 +754,17 @@
         metric_hesitation: "Epäröinti",
         metric_backtracking: "Paluut takaisin",
         metric_question_time: "Kysymykseen kulunut aika",
-        metric_gaze_status: "WebGazer",
         metric_gaze_samples: "Katseen näytteet",
         metric_on_target_ratio: "Kohdealueen osuus",
         metric_first_fixation: "Ensimmäisen fiksaation viive",
         metric_dwell_time: "Kohdealueella vietetty aika",
+        metric_validation_sps: "Validoinnin näytteet/s",
         metric_no_gaze_samples: "Katsetietoa ei ollut saatavilla tälle näytölle tällä ajokerralla.",
 
         yes: "Kyllä",
         no: "Ei",
         correct: "Oikein",
         wrong: "Väärin",
-        enabled: "Käytössä",
-        fallback: "Varatila",
 
         save_no_recommendation: "Data tallennettiin onnistuneesti, mutta taustapalvelu ei palauttanut suositusta.",
         save_failed: "Tallennus epäonnistui",
@@ -973,6 +826,11 @@
       }
     };
 
+    const metrics = {
+      task1: { startTime: null, questionStartTime: null, answerChanges: 0, backtracking: 0, firstSelectionMade: false },
+      task2: { startTime: null, questionStartTime: null, answerChanges: 0, backtracking: 0, firstSelectionMade: false }
+    };
+
     function s(key) {
       return STRINGS[currentLang][key] || key;
     }
@@ -982,26 +840,6 @@
         .map(value => `<option value="${value}">${OPTION_LABELS[field][value][currentLang]}</option>`)
         .join("");
     }
-
-    const metrics = {
-      task1: { startTime: null, questionStartTime: null, answerChanges: 0, backtracking: 0, firstSelectionMade: false },
-      task2: { startTime: null, questionStartTime: null, answerChanges: 0, backtracking: 0, firstSelectionMade: false }
-    };
-
-    const gazeStore = {
-      task1_reading: [],
-      task2_info: []
-    };
-
-    const gazeRegions = {
-      task1_reading: null,
-      task2_info: null
-    };
-
-    const gazeSummary = {
-      task1_reading: null,
-      task2_info: null
-    };
 
     function nowMs() {
       return performance.now();
@@ -1016,6 +854,10 @@
       return value ? s("yes") : s("no");
     }
 
+    function getStoredUIMode() {
+      return localStorage.getItem("recommended_ui") || "standard";
+    }
+
     function applyRecommendedUI(uiMode) {
       document.body.classList.remove("ui-standard", "ui-guided", "ui-reduced");
       if (uiMode === "guided") {
@@ -1027,295 +869,78 @@
       }
     }
 
-    function getStoredUIMode() {
-      return localStorage.getItem("recommended_ui") || "standard";
-    }
+    function summarizeTrialGaze(trial, selector, sampleMs = GAZE_SAMPLE_MS) {
+      const samples = Array.isArray(trial?.webgazer_data) ? trial.webgazer_data : [];
+      const targets = trial?.webgazer_targets || {};
+      const target = targets[selector];
 
-    function safeWebGazerCall(methodName, value) {
-      try {
-        if (window.webgazer && typeof window.webgazer[methodName] === "function") {
-          return window.webgazer[methodName](value);
-        }
-      } catch (error) {
-        console.warn(`WebGazer method failed: ${methodName}`, error);
-      }
-      return null;
-    }
-
-    function showCalibrationCameraUI() {
-      safeWebGazerCall("showVideo", true);
-      safeWebGazerCall("showFaceFeedbackBox", true);
-      safeWebGazerCall("showFaceOverlay", true);
-      safeWebGazerCall("showPredictionPoints", true);
-    }
-
-    // Debug-first: keep overlay and prediction points visible during task screens
-    function hideTaskCameraUI() {
-  safeWebGazerCall("showVideo", true);
-  safeWebGazerCall("showFaceFeedbackBox", true);
-  safeWebGazerCall("showFaceOverlay", true);
-  safeWebGazerCall("showPredictionPoints", true);
-}
-
-    function waitForUsablePredictions(timeoutMs = 10000) {
-  if (!window.webgazer) return Promise.resolve(false);
-
-  const startedAt = performance.now();
-
-  return new Promise((resolve) => {
-    const timer = setInterval(() => {
-      const elapsed = performance.now() - startedAt;
-
-      let prediction = null;
-      try {
-        if (typeof window.webgazer.getCurrentPrediction === "function") {
-          prediction = window.webgazer.getCurrentPrediction();
-        }
-      } catch (e) {
-        prediction = null;
+      if (!target) {
+        return {
+          total_samples: samples.length,
+          in_target_samples: 0,
+          on_target_ratio: null,
+          first_fixation_latency_ms: null,
+          dwell_time_ms: 0,
+          region_width: null,
+          region_height: null,
+          points: []
+        };
       }
 
-      const hasPrediction =
-        webgazerPredictionCount > 0 ||
-        (prediction &&
-          typeof prediction.x === "number" &&
-          typeof prediction.y === "number");
+      let inTarget = 0;
+      let firstFixation = null;
+      const points = [];
 
-      if (hasPrediction) {
-        webgazerReady = true;
-        clearInterval(timer);
-        resolve(true);
-        return;
-      }
+      for (const sample of samples) {
+        const inside =
+          sample.x >= target.left &&
+          sample.x <= target.right &&
+          sample.y >= target.top &&
+          sample.y <= target.bottom;
 
-      if (elapsed >= timeoutMs) {
-        clearInterval(timer);
-        resolve(false);
-      }
-    }, 250);
-  });
-}
+        if (inside) {
+          inTarget += 1;
 
-    async function initWebGazer() {
-      if (!window.webgazer) {
-        webgazerCameraReady = false;
-        webgazerReady = false;
-        return false;
-      }
-
-      if (webgazerInitialized) {
-        showCalibrationCameraUI();
-        return webgazerCameraReady;
-      }
-
-      try {
-        webgazerPredictionCount = 0;
-        webgazerReady = false;
-
-        if (typeof window.webgazer.setRegression === "function") {
-  window.webgazer.setRegression("ridge");
-}
-
-        safeWebGazerCall("saveDataAcrossSessions", false);
-        safeWebGazerCall("applyKalmanFilter", true);
-
-        window.webgazer.setGazeListener((data) => {
-          if (data) {
-            webgazerPredictionCount += 1;
-            webgazerReady = true;
+          if (firstFixation === null) {
+            firstFixation = sample.t ?? null;
           }
 
-          if (!data || !currentGazePhase) return;
-
-          const region = gazeRegions[currentGazePhase];
-          const width = region ? region.right - region.left : null;
-          const height = region ? region.bottom - region.top : null;
-
-          let relX = null;
-          let relY = null;
-          let inside = false;
-
-          if (region && width > 0 && height > 0) {
-            relX = (data.x - region.left) / width;
-            relY = (data.y - region.top) / height;
-            inside = relX >= 0 && relX <= 1 && relY >= 0 && relY <= 1;
-          }
-
-          gazeStore[currentGazePhase].push({
-            x: Number(data.x.toFixed(2)),
-            y: Number(data.y.toFixed(2)),
-            rel_x: relX !== null ? Number(relX.toFixed(4)) : null,
-            rel_y: relY !== null ? Number(relY.toFixed(4)) : null,
-            inside_target: inside,
-            offset_ms: currentGazeStartedAt !== null ? Math.round(nowMs() - currentGazeStartedAt) : null,
-            recorded_at: Date.now()
+          points.push({
+            rel_x: Number(((sample.x - target.left) / target.width).toFixed(4)),
+            rel_y: Number(((sample.y - target.top) / target.height).toFixed(4))
           });
-        });
-
-        if (typeof window.webgazer.clearData === "function") {
-  window.webgazer.clearData();
-}git add .
-
-        const beginResult = window.webgazer.begin();
-        if (beginResult && typeof beginResult.then === "function") {
-          await beginResult;
         }
-
-        await new Promise(resolve => setTimeout(resolve, 4500));
-
-        showCalibrationCameraUI();
-
-        const container = document.querySelector("#webgazerVideoContainer");
-        const video = document.querySelector("#webgazerVideoFeed") || document.querySelector("video");
-
-        const previewVisible =
-  !!container &&
-  container.offsetWidth > 0 &&
-  container.offsetHeight > 0;
-
-const stream = video?.srcObject;
-const hasStreamObject = !!stream;
-
-const hasLiveTrack =
-  !!stream &&
-  typeof stream.getTracks === "function" &&
-  stream.getTracks().some(track => track.readyState === "live");
-
-const hasAnyTrack =
-  !!stream &&
-  typeof stream.getTracks === "function" &&
-  stream.getTracks().length > 0;
-
-const hasVideoPixels =
-  !!video &&
-  video.videoWidth > 0 &&
-  video.videoHeight > 0;
-
-const videoReady =
-  !!video &&
-  typeof video.readyState === "number" &&
-  video.readyState >= 2;
-
-webgazerStreamLive = hasLiveTrack;
-webgazerCameraReady =
-  previewVisible ||
-  hasLiveTrack ||
-  hasAnyTrack ||
-  hasStreamObject ||
-  hasVideoPixels ||
-  videoReady;
-        webgazerInitialized = true;
-
-        return webgazerCameraReady;
-      } catch (error) {
-        console.warn("WebGazer init warning:", error);
-        webgazerCameraReady = false;
-        webgazerReady = false;
-        webgazerInitialized = false;
-        return false;
       }
-    }
-
-    function setGazeRegion(phase, selector) {
-      const el = document.querySelector(selector);
-      if (!el) {
-        gazeRegions[phase] = null;
-        return;
-      }
-
-      const rect = el.getBoundingClientRect();
-      gazeRegions[phase] = {
-        left: rect.left,
-        right: rect.right,
-        top: rect.top,
-        bottom: rect.bottom,
-        width: rect.width,
-        height: rect.height
-      };
-    }
-
-    function startGazeCapture(phase, selector) {
-      if (!window.webgazer) return;
-
-      gazeStore[phase] = [];
-      currentGazePhase = null;
-      currentGazeStartedAt = null;
-
-      requestAnimationFrame(() => {
-        setGazeRegion(phase, selector);
-
-        setTimeout(() => {
-          currentGazePhase = phase;
-          currentGazeStartedAt = nowMs();
-        }, 600);
-      });
-    }
-
-    function summarizeGazePhase(phase) {
-      const samples = gazeStore[phase] || [];
-      const region = gazeRegions[phase];
-
-      const insideSamples = samples.filter(sample => sample.inside_target);
-      const firstInside = insideSamples.length > 0 ? insideSamples[0] : null;
 
       return {
         total_samples: samples.length,
-        in_target_samples: insideSamples.length,
-        on_target_ratio: samples.length > 0 ? Number((insideSamples.length / samples.length).toFixed(2)) : null,
-        first_fixation_latency_ms: firstInside ? firstInside.offset_ms : null,
-        dwell_time_ms: insideSamples.length * GAZE_SAMPLE_MS,
-        region_width: region?.width || null,
-        region_height: region?.height || null,
-        points: insideSamples
-          .filter(sample => sample.rel_x !== null && sample.rel_y !== null)
-          .map(sample => ({
-            rel_x: sample.rel_x,
-            rel_y: sample.rel_y
-          }))
+        in_target_samples: inTarget,
+        on_target_ratio: samples.length ? Number((inTarget / samples.length).toFixed(2)) : null,
+        first_fixation_latency_ms: firstFixation,
+        dwell_time_ms: inTarget * sampleMs,
+        region_width: target.width ?? null,
+        region_height: target.height ?? null,
+        points
       };
     }
 
-    function stopGazeCapture(phase) {
-      if (currentGazePhase === phase) {
-        currentGazePhase = null;
-        currentGazeStartedAt = null;
-      }
-
-      gazeSummary[phase] = summarizeGazePhase(phase);
-
-      if ((gazeSummary[phase]?.total_samples || 0) > 0) {
-        webgazerReady = true;
-      }
-    }
-
-    function persistGazeDebugSnapshot() {
-      const snapshot = {
-        lang: currentLang,
-        webgazerReady,
-        camera_ready: webgazerCameraReady,
-        prediction_count: webgazerPredictionCount,
-        stream_live: webgazerStreamLive,
-        task1: {
-          title: s("summary_task1"),
-          heatmapTitle: currentLang === "fi" ? "Tehtävän 1 lukualue" : "Task 1 reading region",
-          summary: gazeSummary.task1_reading,
-          raw_samples: gazeStore.task1_reading
-        },
-        task2: {
-          title: s("summary_task2"),
-          heatmapTitle: currentLang === "fi" ? "Tehtävän 2 tietoalue" : "Task 2 information region",
-          summary: gazeSummary.task2_info,
-          raw_samples: gazeStore.task2_info
-        }
-      };
-
-      localStorage.setItem("latest_gaze_debug", JSON.stringify(snapshot));
+    function averageArray(arr) {
+      if (!Array.isArray(arr) || arr.length === 0) return null;
+      const valid = arr.filter(v => typeof v === "number" && !Number.isNaN(v));
+      if (valid.length === 0) return null;
+      return Number((valid.reduce((a, b) => a + b, 0) / valid.length).toFixed(2));
     }
 
     function buildPayload(allData) {
       const baselineTrial = allData.find(d => d.phase === "baseline");
-      const task1Trial = [...allData].reverse().find(d => d.phase === "task1_question" && !d.backtrack_only);
-      const task2Trial = [...allData].reverse().find(d => d.phase === "task2_question" && !d.backtrack_only);
+      const task1QuestionTrial = [...allData].reverse().find(d => d.phase === "task1_question" && !d.backtrack_only);
+      const task2QuestionTrial = [...allData].reverse().find(d => d.phase === "task2_question" && !d.backtrack_only);
+      const task1ReadingTrial = [...allData].reverse().find(d => d.phase === "task1_reading");
+      const task2InfoTrial = [...allData].reverse().find(d => d.phase === "task2_info");
+      const validationTrial = [...allData].reverse().find(d => d.phase === "validation");
+
+      const task1Gaze = summarizeTrialGaze(task1ReadingTrial, "#task1-text-region");
+      const task2Gaze = summarizeTrialGaze(task2InfoTrial, "#task2-info-region");
 
       return {
         participant_id: PARTICIPANT_ID,
@@ -1324,38 +949,40 @@ webgazerCameraReady =
         baseline: baselineTrial?.response || {},
         tasks: {
           task1: {
-            answer: task1Trial?.user_answer || null,
-            correct: task1Trial?.correct || 0,
-            time_on_task_ms: task1Trial?.time_on_task_ms || null,
-            question_time_ms: task1Trial?.question_time_ms || null,
-            answer_changes: task1Trial?.answer_changes || 0,
-            backtracking: task1Trial?.backtracking || 0,
-            hesitation: task1Trial?.hesitation || 0,
-            errors: task1Trial?.errors || 0
+            answer: task1QuestionTrial?.user_answer || null,
+            correct: task1QuestionTrial?.correct || 0,
+            time_on_task_ms: task1QuestionTrial?.time_on_task_ms || null,
+            question_time_ms: task1QuestionTrial?.question_time_ms || null,
+            answer_changes: task1QuestionTrial?.answer_changes || 0,
+            backtracking: task1QuestionTrial?.backtracking || 0,
+            hesitation: task1QuestionTrial?.hesitation || 0,
+            errors: task1QuestionTrial?.errors || 0
           },
           task2: {
-            answer: task2Trial?.user_answer || null,
-            correct: task2Trial?.correct || 0,
-            time_on_task_ms: task2Trial?.time_on_task_ms || null,
-            question_time_ms: task2Trial?.question_time_ms || null,
-            answer_changes: task2Trial?.answer_changes || 0,
-            backtracking: task2Trial?.backtracking || 0,
-            hesitation: task2Trial?.hesitation || 0,
-            errors: task2Trial?.errors || 0
+            answer: task2QuestionTrial?.user_answer || null,
+            correct: task2QuestionTrial?.correct || 0,
+            time_on_task_ms: task2QuestionTrial?.time_on_task_ms || null,
+            question_time_ms: task2QuestionTrial?.question_time_ms || null,
+            answer_changes: task2QuestionTrial?.answer_changes || 0,
+            backtracking: task2QuestionTrial?.backtracking || 0,
+            hesitation: task2QuestionTrial?.hesitation || 0,
+            errors: task2QuestionTrial?.errors || 0
           }
         },
         gaze: {
-          webgazer_ready: webgazerReady,
-          webgazer_camera_ready: webgazerCameraReady,
-          prediction_count: webgazerPredictionCount,
-          stream_live: webgazerStreamLive,
+          validation: validationTrial ? {
+            percent_in_roi: validationTrial.percent_in_roi || [],
+            average_offset: validationTrial.average_offset || [],
+            samples_per_sec: validationTrial.samples_per_sec || null,
+            raw_gaze: validationTrial.raw_gaze || []
+          } : null,
           task1_reading: {
-            metrics: gazeSummary.task1_reading,
-            raw_samples: gazeStore.task1_reading
+            metrics: task1Gaze,
+            raw_samples: task1ReadingTrial?.webgazer_data || []
           },
           task2_info: {
-            metrics: gazeSummary.task2_info,
-            raw_samples: gazeStore.task2_info
+            metrics: task2Gaze,
+            raw_samples: task2InfoTrial?.webgazer_data || []
           }
         },
         raw_trials: allData
@@ -1384,6 +1011,15 @@ webgazerCameraReady =
       }
     }
 
+    function safeHideGazeUI() {
+      try {
+        jsPsych.extensions.webgazer.hidePredictions();
+      } catch (_) {}
+      try {
+        jsPsych.extensions.webgazer.hideVideo();
+      } catch (_) {}
+    }
+
     function showLanguageSelector() {
       document.body.innerHTML = `
         <div class="lang-overlay">
@@ -1404,63 +1040,24 @@ webgazerCameraReady =
       document.getElementById("choose-en").onclick = () => startExperiment("en");
       document.getElementById("choose-fi").onclick = () => startExperiment("fi");
     }
-    async function setupTaskGazeCapture(phase, selector, noteId, buttonId) {
-  hideTaskCameraUI();
-
-  const btn = document.getElementById(buttonId);
-  const note = document.getElementById(noteId);
-
-  if (btn) {
-    btn.disabled = true;
-    btn.style.opacity = "0.6";
-    btn.style.cursor = "not-allowed";
-  }
-
-  startGazeCapture(phase, selector);
-
-  if (note) {
-    note.textContent = s("task_gaze_waiting");
-  }
-
-  const predictionOk = await waitForUsablePredictions(10000);
-
-  if (note) {
-    note.textContent = predictionOk ? s("task_gaze_active") : s("task_gaze_unavailable");
-  }
-
-
-  const latePredictionWatcher = setInterval(() => {
-    const stillOnPage = document.getElementById(noteId);
-    if (!stillOnPage) {
-      clearInterval(latePredictionWatcher);
-      return;
-    }
-
-    if (webgazerPredictionCount > 0) {
-      stillOnPage.textContent = s("task_gaze_active");
-      clearInterval(latePredictionWatcher);
-    }
-  }, 1000);
-
-  setTimeout(() => {
-    if (btn) {
-      btn.disabled = false;
-      btn.style.opacity = "1";
-      btn.style.cursor = "pointer";
-    }
-  }, 1500);
-}
 
     function startExperiment(lang) {
       currentLang = lang;
-      localStorage.removeItem("latest_gaze_debug");
       document.body.innerHTML = "";
-      document.body.className = "ui-standard";
       applyRecommendedUI(getStoredUIMode());
 
       jsPsych = initJsPsych({
         show_progress_bar: true,
-        message_progress_bar: "Completion Progress"
+        message_progress_bar: "Completion Progress",
+        extensions: [
+          {
+            type: jsPsychExtensionWebgazer,
+            params: {
+              round_predictions: true,
+              sampling_interval: GAZE_SAMPLE_MS
+            }
+          }
+        ]
       });
 
       const universityIntro = {
@@ -1468,7 +1065,7 @@ webgazerCameraReady =
         stimulus: `
           <div class="card">
             <div class="logo-wrap">
-              <img src="jyu-logo.svg" alt="University of Jyvaskyla logo" onerror="this.style.display='none'">
+              <img src="jyu-logo.svg" alt="University of Jyväskylä logo" onerror="this.style.display='none'">
             </div>
             <h1>${s("welcome_title")}</h1>
             <p>${s("welcome_text_1")}</p>
@@ -1479,46 +1076,31 @@ webgazerCameraReady =
         data: { phase: "university_intro" }
       };
 
-      const prototypeCheck = {
+      const cameraInstructions = {
         type: jsPsychHtmlButtonResponse,
         stimulus: `
           <div class="card">
-            <h2>${s("prototype_title")}</h2>
-            <p>${s("prototype_text_1")}</p>
-            <p class="muted">${s("prototype_text_2")}</p>
-            <p id="webgazer-status" class="small-note">${s("initializing_camera")}</p>
+            <h2>${s("camera_title")}</h2>
+            <p>${s("camera_text_1")}</p>
+            <p class="muted">${s("camera_text_2")}</p>
+            <p class="small-note">${s("camera_text_3")}</p>
           </div>
         `,
         choices: [s("continue_btn")],
-        data: { phase: "prototype_check" },
-        on_load: function() {
-          const continueButton = document.getElementById("jspsych-html-button-response-button-0");
-          const statusEl = document.getElementById("webgazer-status");
+        data: { phase: "camera_instructions" }
+      };
 
-          if (continueButton) {
-            continueButton.disabled = true;
-            continueButton.style.opacity = "0.6";
-            continueButton.style.cursor = "not-allowed";
-          }
-
-          (async () => {
-            const cameraOk = await initWebGazer();
-
-if (statusEl) {
-  if (cameraOk) {
-    statusEl.innerHTML = `<span class="status-ok">Camera preview is live.</span> Continue to calibration to train gaze prediction.`;
-  } else {
-    statusEl.innerHTML = `<span class="status-fallback">${s("prototype_fallback")}</span> ${s("prototype_fallback_note")}`;
-  }
-}
-
-            if (continueButton) {
-              continueButton.disabled = false;
-              continueButton.style.opacity = "1";
-              continueButton.style.cursor = "pointer";
-            }
-          })();
-        }
+      const initCameraTrial = {
+        type: jsPsychWebgazerInitCamera,
+        instructions: `
+          <div class="card">
+            <h2>${s("camera_title")}</h2>
+            <p>${s("camera_text_2")}</p>
+            <p class="small-note">${s("camera_text_3")}</p>
+          </div>
+        `,
+        button_text: s("continue_btn"),
+        data: { phase: "init_camera" }
       };
 
       const baseline = {
@@ -1589,91 +1171,86 @@ if (statusEl) {
         data: { phase: "baseline" }
       };
 
-      const calibration = {
+      const calibrationIntro = {
         type: jsPsychHtmlButtonResponse,
         stimulus: `
           <div class="card">
             <h2>${s("calibration_title")}</h2>
             <p>${s("calibration_text")}</p>
-
-            <div id="calibration-area" class="calibration-area">
-              <button type="button" class="calibration-dot" style="left: 10%; top: 12%;" aria-label="Calibration point 1"></button>
-              <button type="button" class="calibration-dot" style="left: 50%; top: 12%;" aria-label="Calibration point 2"></button>
-              <button type="button" class="calibration-dot" style="left: 90%; top: 12%;" aria-label="Calibration point 3"></button>
-
-              <button type="button" class="calibration-dot" style="left: 10%; top: 50%;" aria-label="Calibration point 4"></button>
-              <button type="button" class="calibration-dot" style="left: 50%; top: 50%;" aria-label="Calibration point 5"></button>
-              <button type="button" class="calibration-dot" style="left: 90%; top: 50%;" aria-label="Calibration point 6"></button>
-
-              <button type="button" class="calibration-dot" style="left: 10%; top: 88%;" aria-label="Calibration point 7"></button>
-              <button type="button" class="calibration-dot" style="left: 50%; top: 88%;" aria-label="Calibration point 8"></button>
-              <button type="button" class="calibration-dot" style="left: 90%; top: 88%;" aria-label="Calibration point 9"></button>
-            </div>
-
-            <p id="calibration-status" class="small-note">${s("calibration_progress")}: 0 / 9</p>
           </div>
         `,
         choices: [s("continue_btn")],
-        data: { phase: "calibration" },
-        on_load: function() {
-          showCalibrationCameraUI();
+        data: { phase: "calibration_intro" }
+      };
 
-          const continueButton = document.getElementById("jspsych-html-button-response-button-0");
-          const statusEl = document.getElementById("calibration-status");
+      const calibration = {
+        type: jsPsychWebgazerCalibrate,
+        calibration_points: [
+          [10, 12], [50, 12], [90, 12],
+          [10, 50], [50, 50], [90, 50],
+          [10, 88], [50, 88], [90, 88]
+        ],
+        calibration_mode: "click",
+        repetitions_per_point: 5,
+        point_size: 24,
+        randomize_calibration_order: false,
+        data: { phase: "calibration" }
+      };
 
-          if (continueButton) {
-            continueButton.disabled = true;
-            continueButton.style.opacity = "0.6";
-            continueButton.style.cursor = "not-allowed";
-          }
+      const validationIntro = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: `
+          <div class="card">
+            <h2>${s("validation_title")}</h2>
+            <p>${s("validation_text")}</p>
+          </div>
+        `,
+        choices: [s("continue_btn")],
+        data: { phase: "validation_intro" }
+      };
 
-          let finishedPoints = 0;
-          const requiredClicksPerPoint = 5;
-          const totalPoints = 9;
+      const validation = {
+        type: jsPsychWebgazerValidate,
+        validation_points: [
+          [10, 12], [50, 12], [90, 12],
+          [10, 50], [50, 50], [90, 50],
+          [10, 88], [50, 88], [90, 88]
+        ],
+        roi_radius: 150,
+        time_to_saccade: 1000,
+        validation_duration: 1500,
+        point_size: 24,
+        show_validation_data: false,
+        data: { phase: "validation" }
+      };
 
-          document.querySelectorAll(".calibration-dot").forEach((dot) => {
-            let clicks = 0;
+      const validationSummary = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: function() {
+          const validationTrial = jsPsych.data.get().filter({ phase: "validation" }).last(1).values()[0] || {};
+          const avgROI = averageArray(validationTrial.percent_in_roi);
+          const sps = validationTrial.samples_per_sec ?? null;
+          const qualityGood = avgROI !== null && avgROI >= 50;
 
-            dot.addEventListener("click", () => {
-              if (clicks >= requiredClicksPerPoint) return;
+          return `
+            <div class="card">
+              <h2>${s("validation_summary_title")}</h2>
 
-              clicks += 1;
-              dot.style.opacity = String(0.35 + clicks * 0.12);
+              <div class="validation-box">
+                <div class="metric-list">
+                  <div class="metric-line"><strong>${s("validation_avg_roi")}:</strong> ${avgROI !== null ? `${avgROI}%` : "-"}</div>
+                  <div class="metric-line"><strong>${s("validation_samples_per_sec")}:</strong> ${sps !== null ? sps : "-"}</div>
+                </div>
+              </div>
 
-              const rect = dot.getBoundingClientRect();
-              const x = rect.left + rect.width / 2;
-              const y = rect.top + rect.height / 2;
-
-              if (clicks === requiredClicksPerPoint) {
-                finishedPoints += 1;
-                dot.classList.add("calibration-done");
-                dot.disabled = true;
-
-                if (statusEl) {
-                  statusEl.textContent = `${s("calibration_progress")}: ${finishedPoints} / ${totalPoints}`;
-                }
-
-                if (finishedPoints === totalPoints && continueButton) {
-  if (statusEl) {
-    statusEl.textContent = "Calibration complete. Finalizing gaze training...";
-  }
-
-  setTimeout(async () => {
-    await waitForUsablePredictions(6000);
-
-    continueButton.disabled = false;
-    continueButton.style.opacity = "1";
-    continueButton.style.cursor = "pointer";
-
-    if (statusEl) {
-      statusEl.textContent = s("calibration_done");
-    }
-  }, 1500);
-}
-              }
-            });
-          });
-        }
+              <p class="small-note ${qualityGood ? "status-ok" : "status-fallback"}">
+                ${qualityGood ? s("validation_quality_good") : s("validation_quality_warn")}
+              </p>
+            </div>
+          `;
+        },
+        choices: [s("continue_btn")],
+        data: { phase: "validation_summary" }
       };
 
       const task1Intro = {
@@ -1696,28 +1273,28 @@ if (statusEl) {
       };
 
       const task1Reading = {
-  type: jsPsychHtmlButtonResponse,
-  stimulus: `
-    <div class="card">
-      <h2>${s("task1_para_title")}</h2>
-      <div id="task1-text-region" class="info-box">${s("task1_para")}</div>
-      <p id="task1-gaze-note" class="small-note">${s("task_gaze_waiting")}</p>
-    </div>
-  `,
-  choices: [s("task1_read_btn")],
-  data: { phase: "task1_reading" },
-  on_load: function() {
-    setupTaskGazeCapture(
-      "task1_reading",
-      "#task1-text-region",
-      "task1-gaze-note",
-      "jspsych-html-button-response-button-0"
-    );
-  },
-  on_finish: function() {
-    stopGazeCapture("task1_reading");
-  }
-};
+        type: jsPsychHtmlButtonResponse,
+        stimulus: `
+          <div class="card">
+            <h2>${s("task1_para_title")}</h2>
+            <div id="task1-text-region" class="info-box">${s("task1_para")}</div>
+            <p class="small-note">${s("reading_note")}</p>
+          </div>
+        `,
+        choices: [s("task1_read_btn")],
+        data: { phase: "task1_reading" },
+        extensions: [
+          {
+            type: jsPsychExtensionWebgazer,
+            params: {
+              targets: ["#task1-text-region"]
+            }
+          }
+        ],
+        on_load: function() {
+          safeHideGazeUI();
+        }
+      };
 
       const task1Question = {
         type: jsPsychSurveyMultiChoice,
@@ -1816,28 +1393,28 @@ if (statusEl) {
       };
 
       const task2Info = {
-  type: jsPsychHtmlButtonResponse,
-  stimulus: `
-    <div class="card">
-      <h2>${s("task2_info_title")}</h2>
-      <div id="task2-info-region" class="info-box">${s("task2_info")}</div>
-      <p id="task2-gaze-note" class="small-note">${s("task_gaze_waiting")}</p>
-    </div>
-  `,
-  choices: [s("task1_read_btn")],
-  data: { phase: "task2_info" },
-  on_load: function() {
-    setupTaskGazeCapture(
-      "task2_info",
-      "#task2-info-region",
-      "task2-gaze-note",
-      "jspsych-html-button-response-button-0"
-    );
-  },
-  on_finish: function() {
-    stopGazeCapture("task2_info");
-  }
-};
+        type: jsPsychHtmlButtonResponse,
+        stimulus: `
+          <div class="card">
+            <h2>${s("task2_info_title")}</h2>
+            <div id="task2-info-region" class="info-box">${s("task2_info")}</div>
+            <p class="small-note">${s("reading_note")}</p>
+          </div>
+        `,
+        choices: [s("task1_read_btn")],
+        data: { phase: "task2_info" },
+        extensions: [
+          {
+            type: jsPsychExtensionWebgazer,
+            params: {
+              targets: ["#task2-info-region"]
+            }
+          }
+        ],
+        on_load: function() {
+          safeHideGazeUI();
+        }
+      };
 
       const task2Question = {
         type: jsPsychSurveyMultiChoice,
@@ -1922,9 +1499,15 @@ if (statusEl) {
           const allData = jsPsych.data.get().values();
           const task1Trial = [...allData].reverse().find(d => d.phase === "task1_question" && !d.backtrack_only);
           const task2Trial = [...allData].reverse().find(d => d.phase === "task2_question" && !d.backtrack_only);
+          const task1ReadingTrial = [...allData].reverse().find(d => d.phase === "task1_reading");
+          const task2InfoTrial = [...allData].reverse().find(d => d.phase === "task2_info");
+          const validationTrial = [...allData].reverse().find(d => d.phase === "validation");
 
           const score = (task1Trial?.correct || 0) + (task2Trial?.correct || 0);
           const totalErrors = (task1Trial?.errors || 0) + (task2Trial?.errors || 0);
+          const gazeTask1 = summarizeTrialGaze(task1ReadingTrial, "#task1-text-region");
+          const gazeTask2 = summarizeTrialGaze(task2InfoTrial, "#task2-info-region");
+          const avgSps = validationTrial?.samples_per_sec ?? null;
 
           const task1StatusClass = task1Trial?.correct === 1 ? "status-correct" : "status-wrong";
           const task1StatusText = task1Trial?.correct === 1 ? s("correct") : s("wrong");
@@ -1932,8 +1515,6 @@ if (statusEl) {
           const task2StatusClass = task2Trial?.correct === 1 ? "status-correct" : "status-wrong";
           const task2StatusText = task2Trial?.correct === 1 ? s("correct") : s("wrong");
 
-          const gazeTask1 = gazeSummary.task1_reading || {};
-          const gazeTask2 = gazeSummary.task2_info || {};
           const task1HasGaze = (gazeTask1.total_samples || 0) > 0;
           const task2HasGaze = (gazeTask2.total_samples || 0) > 0;
 
@@ -1964,9 +1545,7 @@ if (statusEl) {
                             <div class="metric-line"><strong>${s("metric_first_fixation")}:</strong> ${msToSec(gazeTask1.first_fixation_latency_ms)}</div>
                             <div class="metric-line"><strong>${s("metric_dwell_time")}:</strong> ${msToSec(gazeTask1.dwell_time_ms)}</div>
                           `
-                          : `
-                            <div class="metric-line compact-note">${s("metric_no_gaze_samples")}</div>
-                          `
+                          : `<div class="metric-line">${s("metric_no_gaze_samples")}</div>`
                       }
                     </div>
                   </div>
@@ -1993,9 +1572,7 @@ if (statusEl) {
                             <div class="metric-line"><strong>${s("metric_first_fixation")}:</strong> ${msToSec(gazeTask2.first_fixation_latency_ms)}</div>
                             <div class="metric-line"><strong>${s("metric_dwell_time")}:</strong> ${msToSec(gazeTask2.dwell_time_ms)}</div>
                           `
-                          : `
-                            <div class="metric-line compact-note">${s("metric_no_gaze_samples")}</div>
-                          `
+                          : `<div class="metric-line">${s("metric_no_gaze_samples")}</div>`
                       }
                     </div>
                   </div>
@@ -2005,19 +1582,13 @@ if (statusEl) {
               <div class="score-box">
                 <div><strong>${s("summary_score")}: ${score} / 2</strong></div>
                 <div style="margin-top:8px;"><strong>${s("metric_errors")}:</strong> ${totalErrors}</div>
-                <div style="margin-top:8px;"><strong>${s("metric_gaze_status")}:</strong> ${webgazerReady ? s("enabled") : s("fallback")}</div>
+                <div style="margin-top:8px;"><strong>${s("metric_validation_sps")}:</strong> ${avgSps !== null ? avgSps : "-"}</div>
               </div>
             </div>
           `;
         },
         choices: [s("continue_btn")],
-        data: { phase: "end_screen" },
-        on_load: function() {
-          persistGazeDebugSnapshot();
-        },
-        on_finish: function() {
-          window.open("gaze_debug.html", "_blank", "noopener");
-        }
+        data: { phase: "end_screen" }
       };
 
       const saveAndRecommendScreen = {
@@ -2037,7 +1608,7 @@ if (statusEl) {
           const hiddenButton = document.getElementById("jspsych-html-button-response-button-0");
 
           if (hiddenButton) {
-            hiddenButton.classList.add("hidden-final-btn");
+            hiddenButton.style.display = "none";
             hiddenButton.disabled = true;
           }
 
@@ -2098,9 +1669,14 @@ if (statusEl) {
 
       const timeline = [
         universityIntro,
-        prototypeCheck,
+        cameraInstructions,
+        initCameraTrial,
         baseline,
+        calibrationIntro,
         calibration,
+        validationIntro,
+        validation,
+        validationSummary,
         task1Intro,
         task1Loop,
         task2Intro,
