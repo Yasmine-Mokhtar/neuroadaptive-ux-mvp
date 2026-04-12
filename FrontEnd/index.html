@@ -42,8 +42,22 @@
         }
         /* --- Persistent side camera --- */
 body.has-side-camera .jspsych-content {
-  max-width: 1180px;
-  padding-left: 300px;
+  max-width: none;
+  width: calc(100vw - 300px);
+  margin-left: 300px;
+  min-height: calc(100vh - 70px);
+  padding: 40px 24px 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+body.has-side-camera .card,
+body.has-side-camera .form-card,
+body.has-side-camera .jspsych-survey-html-form,
+body.has-side-camera .jspsych-survey-multi-choice-question {
+  width: min(760px, 100%);
+  margin: 0;
 }
 
 #webgazerVideoContainer {
@@ -126,8 +140,13 @@ body.validation-phase .jspsych-content {
 
 @media (max-width: 900px) {
   body.has-side-camera .jspsych-content {
+    width: 100%;
+    margin-left: 0;
+    min-height: auto;
     padding-left: 24px;
+    padding-right: 24px;
     padding-top: 210px;
+    display: block;
   }
 
   #webgazerVideoContainer {
@@ -139,7 +158,10 @@ body.validation-phase .jspsych-content {
 
   body.calibration-phase .jspsych-content,
   body.validation-phase .jspsych-content {
+    width: 100%;
+    margin-left: 0;
     padding-left: 24px;
+    padding-right: 24px;
     padding-top: 210px;
   }
 
@@ -147,6 +169,7 @@ body.validation-phase .jspsych-content {
     height: 340px;
   }
 }
+
 
         * { box-sizing: border-box; }
 
@@ -1073,62 +1096,56 @@ function averageArray(arr) {
     }
 
     function buildPayload(allData) {
-      const baselineTrial = allData.find(d => d.phase === "baseline");
-      const task1QuestionTrial = [...allData].reverse().find(d => d.phase === "task1_question" && !d.backtrack_only);
-      const task2QuestionTrial = [...allData].reverse().find(d => d.phase === "task2_question" && !d.backtrack_only);
-      const task1ReadingTrial = [...allData].reverse().find(d => d.phase === "task1_reading");
-      const task2InfoTrial = [...allData].reverse().find(d => d.phase === "task2_info");
-      const validationTrial = [...allData].reverse().find(d => d.phase === "validation");
+  const baselineTrial = allData.find(d => d.phase === "baseline");
+  const task1QuestionTrial = [...allData].reverse().find(d => d.phase === "task1_question" && !d.backtrack_only);
+  const task2QuestionTrial = [...allData].reverse().find(d => d.phase === "task2_question" && !d.backtrack_only);
+  const task1ReadingTrial = [...allData].reverse().find(d => d.phase === "task1_reading");
+  const task2InfoTrial = [...allData].reverse().find(d => d.phase === "task2_info");
 
-      const task1Gaze = summarizeTrialGaze(task1ReadingTrial, "#task1-text-region");
-      const task2Gaze = summarizeTrialGaze(task2InfoTrial, "#task2-info-region");
+  const task1Gaze = summarizeTrialGaze(task1ReadingTrial, "#task1-text-region");
+  const task2Gaze = summarizeTrialGaze(task2InfoTrial, "#task2-info-region");
 
-      return {
-        participant_id: PARTICIPANT_ID,
-        session_id: SESSION_ID,
-        created_at: new Date().toISOString(),
-        baseline: baselineTrial?.response || {},
-        tasks: {
-          task1: {
-            answer: task1QuestionTrial?.user_answer || null,
-            correct: task1QuestionTrial?.correct || 0,
-            time_on_task_ms: task1QuestionTrial?.time_on_task_ms || null,
-            question_time_ms: task1QuestionTrial?.question_time_ms || null,
-            answer_changes: task1QuestionTrial?.answer_changes || 0,
-            backtracking: task1QuestionTrial?.backtracking || 0,
-            hesitation: task1QuestionTrial?.hesitation || 0,
-            errors: task1QuestionTrial?.errors || 0
-          },
-          task2: {
-            answer: task2QuestionTrial?.user_answer || null,
-            correct: task2QuestionTrial?.correct || 0,
-            time_on_task_ms: task2QuestionTrial?.time_on_task_ms || null,
-            question_time_ms: task2QuestionTrial?.question_time_ms || null,
-            answer_changes: task2QuestionTrial?.answer_changes || 0,
-            backtracking: task2QuestionTrial?.backtracking || 0,
-            hesitation: task2QuestionTrial?.hesitation || 0,
-            errors: task2QuestionTrial?.errors || 0
-          }
-        },
-        gaze: {
-          validation: validationTrial ? {
-            percent_in_roi: validationTrial.percent_in_roi || [],
-            average_offset: validationTrial.average_offset || [],
-            samples_per_sec: validationTrial.samples_per_sec || null,
-            raw_gaze: validationTrial.raw_gaze || []
-          } : null,
-          task1_reading: {
-            metrics: task1Gaze,
-            raw_samples: task1ReadingTrial?.webgazer_data || []
-          },
-          task2_info: {
-            metrics: task2Gaze,
-            raw_samples: task2InfoTrial?.webgazer_data || []
-          }
-        },
-        raw_trials: allData
-      };
-    }
+  return {
+    participant_id: PARTICIPANT_ID,
+    session_id: SESSION_ID,
+    created_at: new Date().toISOString(),
+    baseline: baselineTrial?.response || {},
+    tasks: {
+      task1: {
+        answer: task1QuestionTrial?.user_answer || null,
+        correct: task1QuestionTrial?.correct || 0,
+        time_on_task_ms: task1QuestionTrial?.time_on_task_ms || null,
+        question_time_ms: task1QuestionTrial?.question_time_ms || null,
+        answer_changes: task1QuestionTrial?.answer_changes || 0,
+        backtracking: task1QuestionTrial?.backtracking || 0,
+        hesitation: task1QuestionTrial?.hesitation || 0,
+        errors: task1QuestionTrial?.errors || 0
+      },
+      task2: {
+        answer: task2QuestionTrial?.user_answer || null,
+        correct: task2QuestionTrial?.correct || 0,
+        time_on_task_ms: task2QuestionTrial?.time_on_task_ms || null,
+        question_time_ms: task2QuestionTrial?.question_time_ms || null,
+        answer_changes: task2QuestionTrial?.answer_changes || 0,
+        backtracking: task2QuestionTrial?.backtracking || 0,
+        hesitation: task2QuestionTrial?.hesitation || 0,
+        errors: task2QuestionTrial?.errors || 0
+      }
+    },
+    gaze: {
+      validation: null,
+      task1_reading: {
+        metrics: task1Gaze,
+        raw_samples: task1ReadingTrial?.webgazer_data || []
+      },
+      task2_info: {
+        metrics: task2Gaze,
+        raw_samples: task2InfoTrial?.webgazer_data || []
+      }
+    },
+    raw_trials: allData
+  };
+}
 
     async function saveExperimentData(payload) {
       const response = await fetch(`${API_BASE_URL}/api/experiment`, {
@@ -1248,21 +1265,21 @@ function averageArray(arr) {
       };
 
       const initCameraTrial = {
-        type: jsPsychWebgazerInitCamera,
-        instructions: `
-          <div class="card">
-            <h2>${s("camera_title")}</h2>
-            <p>${s("camera_text_2")}</p>
-            <p class="small-note">${s("camera_text_3")}</p>
-          </div>
-        `,
-        button_text: s("continue_btn"),
-        data: { phase: "init_camera" },
+  type: jsPsychWebgazerInitCamera,
+  instructions: `
+    <div class="card">
+      <h2>${s("camera_title")}</h2>
+      <p>${s("camera_text_2")}</p>
+      <p class="small-note">${s("camera_text_3")}</p>
+    </div>
+  `,
+  button_text: s("continue_btn"),
+  data: { phase: "init_camera" },
   on_finish: function() {
     showSideCamera(false);
     setPhaseBodyClass("");
   }
-      };
+};
 
       const baseline = {
         type: jsPsychSurveyHtmlForm,
@@ -1432,19 +1449,22 @@ function averageArray(arr) {
   }
 };
 
-      const validationIntro = {
-        type: jsPsychHtmlButtonResponse,
-        stimulus: `
-          <div class="card">
-            <h2>${s("validation_title")}</h2>
-            <p>${s("validation_text")}</p>
-          </div>
-        `,
-        choices: [s("continue_btn")],
-        data: { phase: "validation_intro" }
-      };
+      /*
+const validationIntro = {
+  type: jsPsychHtmlButtonResponse,
+  stimulus: `
+    <div class="card">
+      <h2>${s("validation_title")}</h2>
+      <p>${s("validation_text")}</p>
+    </div>
+  `,
+  choices: [s("continue_btn")],
+  data: { phase: "validation_intro" }
+};
+*/
 
-      const validation = {
+      /*
+const validation = {
   type: jsPsychWebgazerValidate,
   validation_points: [
     [10, 12], [50, 12], [90, 12],
@@ -1466,35 +1486,38 @@ function averageArray(arr) {
     showSideCamera(false);
   }
 };
+*/
 
-      const validationSummary = {
-        type: jsPsychHtmlButtonResponse,
-        stimulus: function() {
-          const validationTrial = jsPsych.data.get().filter({ phase: "validation" }).last(1).values()[0] || {};
-          const avgROI = averageArray(validationTrial.percent_in_roi);
-          const sps = validationTrial.samples_per_sec ?? null;
-          const qualityGood = avgROI !== null && avgROI >= 50;
+      /*
+const validationSummary = {
+  type: jsPsychHtmlButtonResponse,
+  stimulus: function() {
+    const validationTrial = jsPsych.data.get().filter({ phase: "validation" }).last(1).values()[0] || {};
+    const avgROI = averageArray(validationTrial.percent_in_roi);
+    const sps = validationTrial.samples_per_sec ?? null;
+    const qualityGood = avgROI !== null && avgROI >= 50;
 
-          return `
-            <div class="card">
-              <h2>${s("validation_summary_title")}</h2>
+    return `
+      <div class="card">
+        <h2>${s("validation_summary_title")}</h2>
 
-              <div class="validation-box">
-                <div class="metric-list">
-                  <div class="metric-line"><strong>${s("validation_avg_roi")}:</strong> ${avgROI !== null ? `${avgROI}%` : "-"}</div>
-                  <div class="metric-line"><strong>${s("validation_samples_per_sec")}:</strong> ${sps !== null ? sps : "-"}</div>
-                </div>
-              </div>
+        <div class="validation-box">
+          <div class="metric-list">
+            <div class="metric-line"><strong>${s("validation_avg_roi")}:</strong> ${avgROI !== null ? `${avgROI}%` : "-"}</div>
+            <div class="metric-line"><strong>${s("validation_samples_per_sec")}:</strong> ${sps !== null ? sps : "-"}</div>
+          </div>
+        </div>
 
-              <p class="small-note ${qualityGood ? "status-ok" : "status-fallback"}">
-                ${qualityGood ? s("validation_quality_good") : s("validation_quality_warn")}
-              </p>
-            </div>
-          `;
-        },
-        choices: [s("continue_btn")],
-        data: { phase: "validation_summary" }
-      };
+        <p class="small-note ${qualityGood ? "status-ok" : "status-fallback"}">
+          ${qualityGood ? s("validation_quality_good") : s("validation_quality_warn")}
+        </p>
+      </div>
+    `;
+  },
+  choices: [s("continue_btn")],
+  data: { phase: "validation_summary" }
+};
+*/
 
       const task1Intro = {
         type: jsPsychHtmlButtonResponse,
@@ -1740,17 +1763,16 @@ function averageArray(arr) {
         type: jsPsychHtmlButtonResponse,
         stimulus: function() {
           const allData = jsPsych.data.get().values();
-          const task1Trial = [...allData].reverse().find(d => d.phase === "task1_question" && !d.backtrack_only);
-          const task2Trial = [...allData].reverse().find(d => d.phase === "task2_question" && !d.backtrack_only);
-          const task1ReadingTrial = [...allData].reverse().find(d => d.phase === "task1_reading");
-          const task2InfoTrial = [...allData].reverse().find(d => d.phase === "task2_info");
-          const validationTrial = [...allData].reverse().find(d => d.phase === "validation");
+const task1Trial = [...allData].reverse().find(d => d.phase === "task1_question" && !d.backtrack_only);
+const task2Trial = [...allData].reverse().find(d => d.phase === "task2_question" && !d.backtrack_only);
+const task1ReadingTrial = [...allData].reverse().find(d => d.phase === "task1_reading");
+const task2InfoTrial = [...allData].reverse().find(d => d.phase === "task2_info");
 
-          const score = (task1Trial?.correct || 0) + (task2Trial?.correct || 0);
-          const totalErrors = (task1Trial?.errors || 0) + (task2Trial?.errors || 0);
-          const gazeTask1 = summarizeTrialGaze(task1ReadingTrial, "#task1-text-region");
-          const gazeTask2 = summarizeTrialGaze(task2InfoTrial, "#task2-info-region");
-          const avgSps = validationTrial?.samples_per_sec ?? null;
+const score = (task1Trial?.correct || 0) + (task2Trial?.correct || 0);
+const totalErrors = (task1Trial?.errors || 0) + (task2Trial?.errors || 0);
+const gazeTask1 = summarizeTrialGaze(task1ReadingTrial, "#task1-text-region");
+const gazeTask2 = summarizeTrialGaze(task2InfoTrial, "#task2-info-region");
+const avgSps = null;
 
           const task1StatusClass = task1Trial?.correct === 1 ? "status-correct" : "status-wrong";
           const task1StatusText = task1Trial?.correct === 1 ? s("correct") : s("wrong");
@@ -1911,22 +1933,19 @@ function averageArray(arr) {
       };
 
       const timeline = [
-        universityIntro,
-        cameraInstructions,
-        initCameraTrial,
-        baseline,
-        calibrationIntro,
-        calibration,
-        validationIntro,
-        validation,
-        validationSummary,
-        task1Intro,
-        task1Loop,
-        task2Intro,
-        task2Loop,
-        endScreen,
-        saveAndRecommendScreen
-      ];
+  universityIntro,
+  cameraInstructions,
+  initCameraTrial,
+  baseline,
+  calibrationIntro,
+  calibration,
+  task1Intro,
+  task1Loop,
+  task2Intro,
+  task2Loop,
+  endScreen,
+  saveAndRecommendScreen
+];
 
       jsPsych.run(timeline);
     }
