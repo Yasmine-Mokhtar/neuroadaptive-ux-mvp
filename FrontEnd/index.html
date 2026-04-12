@@ -1051,41 +1051,48 @@
 
     // Debug-first: keep overlay and prediction points visible during task screens
     function hideTaskCameraUI() {
-      safeWebGazerCall("showVideo", true);
-      safeWebGazerCall("showFaceFeedbackBox", true);
-      safeWebGazerCall("showFaceOverlay", true);
-      safeWebGazerCall("showPredictionPoints", true);
-    }
+  safeWebGazerCall("showVideo", true);
+  safeWebGazerCall("showFaceFeedbackBox", true);
+  safeWebGazerCall("showFaceOverlay", true);
+  safeWebGazerCall("showPredictionPoints", true);
+}
 
-    async function waitForUsablePredictions(timeoutMs = 8000) {
-      if (!window.webgazer) return false;
+    async function waitForUsablePredictions(timeoutMs = 10000) {
+  if (!window.webgazer) return false;
 
-      if (webgazerPredictionCount > 0) {
-        webgazerReady = true;
-        return true;
+  const startedAt = performance.now();
+
+  return new Promise((resolve) => {
+    const timer = setInterval(() => {
+      const elapsed = performance.now() - startedAt;
+
+      let prediction = null;
+      try {
+        if (typeof window.webgazer.getCurrentPrediction === "function") {
+          prediction = window.webgazer.getCurrentPrediction();
+        }
+      } catch (e) {
+        prediction = null;
       }
 
-      const startedAt = performance.now();
+      const hasPrediction =
+        webgazerPredictionCount > 0 ||
+        (prediction && typeof prediction.x === "number" && typeof prediction.y === "number");
 
-      return new Promise((resolve) => {
-        const timer = setInterval(() => {
-          const elapsed = performance.now() - startedAt;
-          const hasPredictions = webgazerPredictionCount > 0;
+      if (hasPrediction) {
+        webgazerReady = true;
+        clearInterval(timer);
+        resolve(true);
+        return;
+      }
 
-          if (hasPredictions) {
-            clearInterval(timer);
-            webgazerReady = true;
-            resolve(true);
-            return;
-          }
-
-          if (elapsed >= timeoutMs) {
-            clearInterval(timer);
-            resolve(false);
-          }
-        }, 150);
-      });
-    }
+      if (elapsed >= timeoutMs) {
+        clearInterval(timer);
+        resolve(false);
+      }
+    }, 250);
+  });
+}
 
     async function initWebGazer() {
       if (!window.webgazer) {
@@ -1103,11 +1110,15 @@
         webgazerPredictionCount = 0;
         webgazerReady = false;
 
-        if (typeof window.webgazer.setRegression === "function") {
-          window.webgazer.setRegression("ridge");
-        }
+        if (typeof window.webgazer.setTracker === "function") {
+  window.webgazer.setTracker("TFFacemesh");
+}
 
-        safeWebGazerCall("saveDataAcrossSessions", false);
+if (typeof window.webgazer.setRegression === "function") {
+  window.webgazer.setRegression("threadedRidge");
+}
+
+        safeWebGazerCall("saveDataAcrossSessions", true);
         safeWebGazerCall("applyKalmanFilter", true);
 
         window.webgazer.setGazeListener((data) => {
