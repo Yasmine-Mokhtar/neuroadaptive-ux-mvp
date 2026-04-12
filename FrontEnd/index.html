@@ -12,7 +12,7 @@
     <link href="https://unpkg.com/jspsych@7.3.4/css/jspsych.css" rel="stylesheet" />
 
     <!-- jsPsych-supported WebGazer stack -->
-    <script src="https://cdn.jsdelivr.net/gh/jspsych/jspsych@jspsych@7.0.0/examples/js/webgazer/webgazer.js"></script>
+    <script src="js/webgazer/webgazer.js"></script>
     <script src="https://unpkg.com/@jspsych/extension-webgazer@1.0.3"></script>
     <script src="https://unpkg.com/@jspsych/plugin-webgazer-init-camera@1.0.3"></script>
 
@@ -1507,8 +1507,11 @@ function persistGazeDebugSnapshot() {
     });
   },
   on_finish: function() {
-    setPhaseBodyClass("");
-  }
+  setPhaseBodyClass("");
+  try {
+    jsPsych.extensions.webgazer.startMouseCalibration();
+  } catch (e) {}
+}
 };
 
       /*
