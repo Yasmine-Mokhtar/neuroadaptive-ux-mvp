@@ -1148,7 +1148,7 @@
           await beginResult;
         }
 
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        await new Promise(resolve => setTimeout(resolve, 4500));
 
         showCalibrationCameraUI();
 
@@ -1156,23 +1156,41 @@
         const video = document.querySelector("#webgazerVideoFeed") || document.querySelector("video");
 
         const previewVisible =
-          !!container &&
-          container.offsetWidth > 0 &&
-          container.offsetHeight > 0;
+  !!container &&
+  container.offsetWidth > 0 &&
+  container.offsetHeight > 0;
 
-        const stream = video?.srcObject;
-        const hasLiveTrack =
-          !!stream &&
-          typeof stream.getTracks === "function" &&
-          stream.getTracks().some(track => track.readyState === "live");
+const stream = video?.srcObject;
+const hasStreamObject = !!stream;
 
-        const hasVideoPixels =
-          !!video &&
-          video.videoWidth > 0 &&
-          video.videoHeight > 0;
+const hasLiveTrack =
+  !!stream &&
+  typeof stream.getTracks === "function" &&
+  stream.getTracks().some(track => track.readyState === "live");
 
-        webgazerStreamLive = hasLiveTrack;
-        webgazerCameraReady = previewVisible || hasLiveTrack || hasVideoPixels;
+const hasAnyTrack =
+  !!stream &&
+  typeof stream.getTracks === "function" &&
+  stream.getTracks().length > 0;
+
+const hasVideoPixels =
+  !!video &&
+  video.videoWidth > 0 &&
+  video.videoHeight > 0;
+
+const videoReady =
+  !!video &&
+  typeof video.readyState === "number" &&
+  video.readyState >= 2;
+
+webgazerStreamLive = hasLiveTrack;
+webgazerCameraReady =
+  previewVisible ||
+  hasLiveTrack ||
+  hasAnyTrack ||
+  hasStreamObject ||
+  hasVideoPixels ||
+  videoReady;
         webgazerInitialized = true;
 
         return webgazerCameraReady;
@@ -1373,6 +1391,52 @@
       document.getElementById("choose-en").onclick = () => startExperiment("en");
       document.getElementById("choose-fi").onclick = () => startExperiment("fi");
     }
+    async function setupTaskGazeCapture(phase, selector, noteId, buttonId) {
+  hideTaskCameraUI();
+
+  const btn = document.getElementById(buttonId);
+  const note = document.getElementById(noteId);
+
+  if (btn) {
+    btn.disabled = true;
+    btn.style.opacity = "0.6";
+    btn.style.cursor = "not-allowed";
+  }
+
+  startGazeCapture(phase, selector);
+
+  if (note) {
+    note.textContent = s("task_gaze_waiting");
+  }
+
+  const predictionOk = await waitForUsablePredictions(10000);
+
+  if (note) {
+    note.textContent = predictionOk ? s("task_gaze_active") : s("task_gaze_unavailable");
+  }
+
+
+  const latePredictionWatcher = setInterval(() => {
+    const stillOnPage = document.getElementById(noteId);
+    if (!stillOnPage) {
+      clearInterval(latePredictionWatcher);
+      return;
+    }
+
+    if (webgazerPredictionCount > 0) {
+      stillOnPage.textContent = s("task_gaze_active");
+      clearInterval(latePredictionWatcher);
+    }
+  }, 1000);
+
+  setTimeout(() => {
+    if (btn) {
+      btn.disabled = false;
+      btn.style.opacity = "1";
+      btn.style.cursor = "pointer";
+    }
+  }, 1500);
+}
 
     function startExperiment(lang) {
       currentLang = lang;
@@ -1622,51 +1686,28 @@
       };
 
       const task1Reading = {
-        type: jsPsychHtmlButtonResponse,
-        stimulus: `
-          <div class="card">
-            <h2>${s("task1_para_title")}</h2>
-            <div id="task1-text-region" class="info-box">${s("task1_para")}</div>
-            <p id="task1-gaze-note" class="small-note">${s("task_gaze_waiting")}</p>
-          </div>
-        `,
-        choices: [s("task1_read_btn")],
-        data: { phase: "task1_reading" },
-        on_load: function() {
-          hideTaskCameraUI();
-
-          const btn = document.getElementById("jspsych-html-button-response-button-0");
-          const note = document.getElementById("task1-gaze-note");
-
-          if (btn) {
-            btn.disabled = true;
-            btn.style.opacity = "0.6";
-            btn.style.cursor = "not-allowed";
-          }
-
-          (async () => {
-            const predictionOk = await waitForUsablePredictions(5000);
-
-            if (predictionOk) {
-              startGazeCapture("task1_reading", "#task1-text-region");
-              if (note) note.textContent = s("task_gaze_active");
-            } else {
-              if (note) note.textContent = s("task_gaze_unavailable");
-            }
-
-            setTimeout(() => {
-              if (btn) {
-                btn.disabled = false;
-                btn.style.opacity = "1";
-                btn.style.cursor = "pointer";
-              }
-            }, 1500);
-          })();
-        },
-        on_finish: function() {
-          stopGazeCapture("task1_reading");
-        }
-      };
+  type: jsPsychHtmlButtonResponse,
+  stimulus: `
+    <div class="card">
+      <h2>${s("task1_para_title")}</h2>
+      <div id="task1-text-region" class="info-box">${s("task1_para")}</div>
+      <p id="task1-gaze-note" class="small-note">${s("task_gaze_waiting")}</p>
+    </div>
+  `,
+  choices: [s("task1_read_btn")],
+  data: { phase: "task1_reading" },
+  on_load: function() {
+    setupTaskGazeCapture(
+      "task1_reading",
+      "#task1-text-region",
+      "task1-gaze-note",
+      "jspsych-html-button-response-button-0"
+    );
+  },
+  on_finish: function() {
+    stopGazeCapture("task1_reading");
+  }
+};
 
       const task1Question = {
         type: jsPsychSurveyMultiChoice,
@@ -1765,51 +1806,28 @@
       };
 
       const task2Info = {
-        type: jsPsychHtmlButtonResponse,
-        stimulus: `
-          <div class="card">
-            <h2>${s("task2_info_title")}</h2>
-            <div id="task2-info-region" class="info-box">${s("task2_info")}</div>
-            <p id="task2-gaze-note" class="small-note">${s("task_gaze_waiting")}</p>
-          </div>
-        `,
-        choices: [s("task1_read_btn")],
-        data: { phase: "task2_info" },
-        on_load: function() {
-          hideTaskCameraUI();
-
-          const btn = document.getElementById("jspsych-html-button-response-button-0");
-          const note = document.getElementById("task2-gaze-note");
-
-          if (btn) {
-            btn.disabled = true;
-            btn.style.opacity = "0.6";
-            btn.style.cursor = "not-allowed";
-          }
-
-          (async () => {
-            const predictionOk = await waitForUsablePredictions(5000);
-
-            if (predictionOk) {
-              startGazeCapture("task2_info", "#task2-info-region");
-              if (note) note.textContent = s("task_gaze_active");
-            } else {
-              if (note) note.textContent = s("task_gaze_unavailable");
-            }
-
-            setTimeout(() => {
-              if (btn) {
-                btn.disabled = false;
-                btn.style.opacity = "1";
-                btn.style.cursor = "pointer";
-              }
-            }, 1500);
-          })();
-        },
-        on_finish: function() {
-          stopGazeCapture("task2_info");
-        }
-      };
+  type: jsPsychHtmlButtonResponse,
+  stimulus: `
+    <div class="card">
+      <h2>${s("task2_info_title")}</h2>
+      <div id="task2-info-region" class="info-box">${s("task2_info")}</div>
+      <p id="task2-gaze-note" class="small-note">${s("task_gaze_waiting")}</p>
+    </div>
+  `,
+  choices: [s("task1_read_btn")],
+  data: { phase: "task2_info" },
+  on_load: function() {
+    setupTaskGazeCapture(
+      "task2_info",
+      "#task2-info-region",
+      "task2-gaze-note",
+      "jspsych-html-button-response-button-0"
+    );
+  },
+  on_finish: function() {
+    stopGazeCapture("task2_info");
+  }
+};
 
       const task2Question = {
         type: jsPsychSurveyMultiChoice,
