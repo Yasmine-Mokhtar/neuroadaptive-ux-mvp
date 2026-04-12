@@ -1113,15 +1113,11 @@
         webgazerPredictionCount = 0;
         webgazerReady = false;
 
-        if (typeof window.webgazer.setTracker === "function") {
-  window.webgazer.setTracker("TFFacemesh");
+        if (typeof window.webgazer.setRegression === "function") {
+  window.webgazer.setRegression("ridge");
 }
 
-if (typeof window.webgazer.setRegression === "function") {
-  window.webgazer.setRegression("threadedRidge");
-}
-
-        safeWebGazerCall("saveDataAcrossSessions", true);
+        safeWebGazerCall("saveDataAcrossSessions", false);
         safeWebGazerCall("applyKalmanFilter", true);
 
         window.webgazer.setGazeListener((data) => {
@@ -1504,9 +1500,8 @@ webgazerCameraReady =
 
           (async () => {
             const cameraOk = await initWebGazer();
-            const predictionOk = cameraOk ? await waitForUsablePredictions(6000) : false;
 
-            if (statusEl) {
+if (statusEl) {
   if (cameraOk) {
     statusEl.innerHTML = `<span class="status-ok">Camera preview is live.</span> Continue to calibration to train gaze prediction.`;
   } else {
