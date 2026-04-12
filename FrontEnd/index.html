@@ -14,7 +14,8 @@
     <script src="https://unpkg.com/@jspsych/plugin-survey-html-form@1.0.3"></script>
     <script src="https://unpkg.com/@jspsych/plugin-survey-multi-choice@1.1.3"></script>
 
-    <script src="webgazer.js"></script>
+    <!-- IMPORTANT: local WebGazer from WebGazer/www -->
+    <script src="./webgazer.js"></script>
 
     <style>
         :root {
@@ -27,11 +28,9 @@
           --border: #d7deea;
           --success-bg: #eef8f1;
           --success-text: #166534;
-          --warning-bg: #fff8eb;
           --warning-text: #b45309;
           --error-bg: #fff1f0;
           --error-text: #b42318;
-          --soft: #fbfcfe;
         }
 
         * { box-sizing: border-box; }
@@ -148,44 +147,13 @@
           transition: all 0.25s ease;
         }
 
-        .adapted-info-box {
-          margin-top: 16px;
-          padding: 18px 20px;
-          border: 1px solid var(--border);
-          border-radius: 16px;
-          background: var(--soft);
-        }
-
-        .adapted-info-box strong {
-          color: var(--primary);
-        }
-
-        .key-points {
-          margin: 14px 0 0 0;
-          padding-left: 20px;
-          line-height: 1.85;
-        }
-
-        .mini-grid {
-          margin-top: 16px;
-          display: grid;
-          gap: 10px;
-        }
-
-        .mini-grid .mini-item {
-          padding: 14px 16px;
-          border: 1px solid var(--border);
-          border-radius: 14px;
-          background: #fff;
-        }
-
         .field-group {
           margin-bottom: 22px;
           text-align: left;
         }
 
         .field-group:last-child {
-          margin-bottom: 28px;
+          margin-bottom: 0;
         }
 
         .form-label {
@@ -241,7 +209,7 @@
         }
 
         .secondary-btn {
-          background: #fff !important;
+          background: transparent !important;
           color: var(--primary) !important;
           border: 1px solid var(--border) !important;
         }
@@ -258,12 +226,12 @@
 
         .jspsych-survey-html-form .jspsych-btn {
           display: block;
-          margin: 88px auto 0 !important;
-          min-width: 190px;
+          margin: 64px auto 0 !important;
+          min-width: 170px;
         }
 
         .form-card {
-          padding-bottom: 100px !important;
+          padding-bottom: 72px !important;
         }
 
         .jspsych-survey-multi-choice-question {
@@ -332,7 +300,7 @@
 
         #jspsych-survey-multi-choice-next {
           display: inline-block;
-          margin: 32px 0 0;
+          margin: 24px 0 0;
           min-width: 150px;
         }
 
@@ -341,7 +309,7 @@
           gap: 12px;
           justify-content: center;
           flex-wrap: wrap;
-          margin-top: 32px;
+          margin-top: 22px;
         }
 
         .summary-grid {
@@ -392,19 +360,12 @@
           color: var(--error-text);
         }
 
-        .score-box,
-        .comparison-box,
-        .recommendation-panel,
-        .save-status-box {
+        .score-box {
           margin-top: 18px;
           padding: 18px 20px;
           border-radius: 18px;
-          border: 1px solid var(--border);
-          background: #fbfcfe;
-        }
-
-        .score-box {
           background: linear-gradient(135deg, rgba(0,41,87,0.06), rgba(241,86,63,0.08));
+          border: 1px solid var(--border);
         }
 
         .metric-list {
@@ -416,6 +377,14 @@
         .metric-line {
           font-size: 16px;
           line-height: 1.5;
+        }
+
+        .save-status-box {
+          margin-top: 18px;
+          padding: 18px 20px;
+          border-radius: 18px;
+          border: 1px solid var(--border);
+          background: #fbfcfe;
         }
 
         .status-ok {
@@ -568,6 +537,18 @@
           display: none !important;
         }
 
+        .recommendation-panel {
+          margin-top: 16px;
+          padding: 18px 20px;
+          border: 1px solid var(--border);
+          border-radius: 18px;
+          background: #fbfcfe;
+        }
+
+        .recommendation-panel p {
+          margin: 0 0 10px 0;
+        }
+
         .ui-standard .card,
         .ui-standard .form-card {
           max-width: 760px;
@@ -582,11 +563,6 @@
         .ui-guided .info-box {
           font-size: 20px;
           line-height: 2;
-        }
-
-        .ui-guided .adapted-info-box {
-          background: #fff8f6;
-          border-left: 6px solid var(--accent);
         }
 
         .ui-guided .jspsych-btn {
@@ -612,19 +588,8 @@
           border-left-width: 8px;
         }
 
-        .ui-reduced .adapted-info-box {
-          background: #fff;
-          box-shadow: none;
-        }
-
         .ui-reduced .jspsych-content {
           max-width: 860px;
-        }
-
-        .soft-divider {
-          height: 1px;
-          background: var(--border);
-          margin: 18px 0;
         }
 
         @media (max-width: 1100px) {
@@ -682,7 +647,13 @@
 <body class="ui-standard"></body>
 
 <script>
-    const API_BASE_URL = "https://neuroadaptive-ux-mvp.onrender.com";
+    const LOCAL_API_BASE_URL = "http://127.0.0.1:8000";
+    const DEPLOYED_API_BASE_URL = "https://neuroadaptive-ux-mvp.onrender.com";
+
+    const API_BASE_URL =
+      window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1"
+        ? LOCAL_API_BASE_URL
+        : DEPLOYED_API_BASE_URL;
 
     const RECOMMENDED_UI_URLS = {
       standard: "https://xn--standard-jyvskyl-6nbe.framer.ai/",
@@ -690,24 +661,10 @@
       "reduced-distraction": "https://xn--reduced-distraction-jyvskyl-xkce.framer.ai/"
     };
 
+    const PARTICIPANT_ID = crypto.randomUUID();
+    const SESSION_ID = crypto.randomUUID();
     const HESITATION_THRESHOLD_MS = 12000;
     const GAZE_SAMPLE_MS = 50;
-
-    const SHOW_FACE_BOX_IN_TASKS = true;
-    const SHOW_FACE_MESH_IN_TASKS = false;
-    const SHOW_GAZE_DOT_IN_TASKS = false;
-
-    function getOrCreatePersistentId(key) {
-      let value = localStorage.getItem(key);
-      if (!value) {
-        value = crypto.randomUUID();
-        localStorage.setItem(key, value);
-      }
-      return value;
-    }
-
-    const PARTICIPANT_ID = getOrCreatePersistentId("participant_id");
-    const SESSION_ID = crypto.randomUUID();
 
     let currentLang = "en";
     let jsPsych = null;
@@ -717,9 +674,6 @@
     let webgazerStreamLive = false;
     let currentGazePhase = null;
     let currentGazeStartedAt = null;
-    let latestRecommendation = "standard";
-    let latestRecommendationMeta = null;
-    let latestProfileSummary = null;
 
     const STRINGS = {
       en: {
@@ -730,22 +684,18 @@
 
         welcome_title: "Welcome to the University of Jyväskylä",
         welcome_text_1: "Thank you for taking part in this short research demo.",
-        welcome_text_2: "This prototype demonstrates baseline profiling, browser-based gaze capture, adaptive recommendation, and an immediate validation task under the recommended interface.",
-        welcome_profile: "Participant profile",
-        welcome_profile_id: "Participant ID",
-        welcome_profile_sessions: "Previous completed sessions",
-        welcome_profile_baseline: "Baseline ready",
+        welcome_text_2: "This prototype demonstrates baseline profiling, WebGazer-based attention capture, behavioural logging, and adaptive interface recommendation.",
 
         prototype_title: "Prototype Check",
-        prototype_text_1: "This MVP runs in the browser and connects to a backend for saving data, building a participant profile, and generating an adaptive recommendation.",
-        prototype_text_2: "The camera starts here. A short calibration step comes next before gaze-based reading analysis begins.",
+        prototype_text_1: "This MVP runs in the browser and connects to a backend for saving data and generating an adaptive recommendation.",
+        prototype_text_2: "The camera starts here. After that, a short calibration step is used before gaze-based reading analysis begins.",
         prototype_ready: "Camera preview is visible.",
         prototype_ready_note: "A short calibration step comes next. Gaze capture will be attempted during the reading tasks.",
         prototype_fallback: "Camera check was inconclusive.",
         prototype_fallback_note: "The demo will continue, and gaze capture will still be attempted during the reading tasks.",
 
         calibration_title: "WebGazer Calibration",
-        calibration_text: "Look directly at each dot and click it twice while keeping your gaze on it. The face box and facial overlay remain visible here to support calibration quality.",
+        calibration_text: "Look directly at each dot and click it twice while keeping your gaze on it. This calibrates webcam-based gaze estimation so the system can generate clearer heatmaps and gaze statistics during the reading tasks.",
         calibration_progress: "Calibration progress",
         calibration_done: "Calibration complete. You can continue.",
 
@@ -771,8 +721,10 @@
         task1_intro_text: "Read the paragraph carefully, then answer one question.",
         task1_read_btn: "Go to Question",
         task1_back_btn: "Back to text",
+
         task1_para_title: "Reading Task",
         task1_para: "Lina is a university student who usually studies in the library after her classes. On Monday, she arrived at the library at 3:00 PM, spent one hour reading a research article, then worked on an assignment for two more hours. Before leaving, she borrowed a book about user experience design.",
+
         task1_q: "What book did Lina borrow before leaving?",
         task1_a1: "A book about psychology",
         task1_a2: "A book about user experience design",
@@ -782,6 +734,7 @@
         task2_intro_title: "Task 2",
         task2_intro_text: "Read the information card and answer one question based on it.",
         task2_back_btn: "Back to info",
+
         task2_info_title: "Workshop Information",
         task2_info: `
           <strong>Title:</strong> Introduction to Human-Computer Interaction<br>
@@ -796,51 +749,19 @@
         task2_a3: "Room C301",
         task2_a4: "Main Hall",
 
-        task3_intro_title: "Task 3 — Adapted Validation",
-        task3_intro_text: "The interface will now switch to the recommended mode for one short validation task. This lets the system compare performance before and after adaptation.",
-        task3_info_title: "Validation Task",
-        task3_read_btn: "Go to Question",
-        task3_back_btn: "Back to content",
-        task3_q: "Where will the study skills clinic take place?",
-        task3_a1: "Room A210",
-        task3_a2: "Room C115",
-        task3_a3: "Room D402",
-        task3_a4: "Main Auditorium",
+        continue_btn: "Continue",
 
-        recommendation_title: "Adaptive Recommendation",
-        recommendation_loading: "Analyzing Tasks 1–2 and requesting a recommendation...",
-        recommendation_label: "Recommended UI mode",
-        recommendation_source: "Recommendation source",
-        recommendation_rule: "Rule-based initialization",
-        recommendation_baseline: "Baseline-sensitive adjustment",
-        recommendation_sessions: "Previous completed sessions",
-        recommendation_baseline_ready: "Baseline ready",
-        recommendation_next: "The next task will run locally under this recommended interface so the experiment can compare performance before and after adaptation.",
-
-        end_title: "Experiment Summary",
-        end_text: "This screen summarizes behavioural performance, gaze-derived indicators, and the validation result after local adaptation.",
-        end_backend_title: "Save Results",
-        end_backend_loading: "Saving full experiment data and updating the participant profile...",
-        end_backend_saved: "Experiment saved successfully.",
+        end_title: "Experiment Completed",
+        end_text: "This screen summarizes behavioural performance and gaze-derived indicators collected during the experiment.",
+        end_backend_title: "Adaptive Recommendation",
+        end_backend_loading: "Saving data and requesting adaptive recommendation...",
         end_backend_label: "Recommended UI mode",
 
         summary_task1: "Task 1 result",
         summary_task2: "Task 2 result",
-        summary_task3: "Task 3 result",
         summary_answer: "Your answer",
         summary_correct_answer: "Correct answer",
         summary_score: "Overall score",
-
-        validation_title: "Pre/Post Adaptation Comparison",
-        validation_pre: "Pre-adaptation average question time",
-        validation_post: "Task 3 question time",
-        validation_pre_error: "Pre-adaptation total errors",
-        validation_post_error: "Task 3 errors",
-        validation_pre_focus: "Pre-adaptation average gaze ratio",
-        validation_post_focus: "Task 3 gaze ratio",
-        validation_speed_improved: "Faster than pre-adaptation average",
-        validation_accuracy_improved: "Accuracy better than pre-adaptation average",
-        validation_focus_improved: "Focus better than pre-adaptation average",
 
         metric_time_on_task: "Time on task",
         metric_errors: "Errors",
@@ -867,10 +788,7 @@
         save_backend_hint: "Check that the backend server is still running and that API_BASE_URL is correct.",
 
         redirect_note: "Your recommended interface has been identified.",
-        redirect_btn: "Open recommended interface",
-        open_debug_btn: "Open Gaze Debug View",
-        finish_btn: "Finish",
-        continue_btn: "Continue"
+        redirect_btn: "Open recommended interface"
       },
 
       fi: {
@@ -881,14 +799,10 @@
 
         welcome_title: "Tervetuloa Jyväskylän yliopistoon",
         welcome_text_1: "Kiitos, että osallistut tähän lyhyeen tutkimusdemoon.",
-        welcome_text_2: "Tämä prototyyppi esittelee lähtöprofiilin muodostusta, selainpohjaista katseenseurantaa, adaptiivista suositusta ja välitöntä validointitehtävää suositellulla käyttöliittymällä.",
-        welcome_profile: "Osallistujaprofiili",
-        welcome_profile_id: "Osallistujatunnus",
-        welcome_profile_sessions: "Aiemmin suoritetut sessiot",
-        welcome_profile_baseline: "Baseline valmis",
+        welcome_text_2: "Tämä prototyyppi esittelee lähtöprofiilin muodostusta, WebGazer-pohjaista tarkkaavuuden mittaamista, käyttäytymislokia ja adaptiivista käyttöliittymäsuositusta.",
 
         prototype_title: "Prototyypin tarkistus",
-        prototype_text_1: "Tämä MVP toimii selaimessa ja yhdistyy taustapalveluun datan tallentamista, osallistujaprofiilin rakentamista ja adaptiivisen suosituksen muodostamista varten.",
+        prototype_text_1: "Tämä MVP toimii selaimessa ja yhdistyy taustapalveluun datan tallentamista ja adaptiivisen suosituksen muodostamista varten.",
         prototype_text_2: "Kamera käynnistyy tässä. Sen jälkeen tehdään lyhyt kalibrointi ennen katseeseen perustuvaa lukuanalyysiä.",
         prototype_ready: "Kameran esikatselu näkyy.",
         prototype_ready_note: "Seuraavaksi tehdään lyhyt kalibrointi. Katseen tallennusta yritetään lukutehtävien aikana.",
@@ -896,7 +810,7 @@
         prototype_fallback_note: "Demo jatkuu, ja katseen tallennusta yritetään silti lukutehtävien aikana.",
 
         calibration_title: "WebGazer-kalibrointi",
-        calibration_text: "Katso suoraan jokaista pistettä ja klikkaa sitä kaksi kertaa pitäen katseen siinä. Kasvoboksi ja kasvojen overlay pysyvät näkyvissä kalibroinnin tueksi.",
+        calibration_text: "Katso suoraan jokaista pistettä ja klikkaa sitä kaksi kertaa pitäen katseen siinä. Tämä kalibroi webcam-pohjaisen katse-estimoinnin, jotta järjestelmä voi tuottaa selkeämpiä heatmappeja ja katsetilastoja lukutehtävissä.",
         calibration_progress: "Kalibroinnin eteneminen",
         calibration_done: "Kalibrointi valmis. Voit jatkaa.",
 
@@ -922,8 +836,10 @@
         task1_intro_text: "Lue kappale huolellisesti ja vastaa sitten yhteen kysymykseen.",
         task1_read_btn: "Siirry kysymykseen",
         task1_back_btn: "Takaisin tekstiin",
+
         task1_para_title: "Lukutehtävä",
         task1_para: "Lina on yliopisto-opiskelija, joka opiskelee yleensä kirjastossa luentojen jälkeen. Maanantaina hän saapui kirjastoon klo 15.00, käytti yhden tunnin tutkimusartikkelin lukemiseen ja työskenteli sen jälkeen kaksi tuntia tehtävän parissa. Ennen lähtöään hän lainasi kirjan käyttökokemuksen suunnittelusta.",
+
         task1_q: "Minkä kirjan Lina lainasi ennen lähtöään?",
         task1_a1: "Kirjan psykologiasta",
         task1_a2: "Kirjan käyttökokemuksen suunnittelusta",
@@ -933,6 +849,7 @@
         task2_intro_title: "Tehtävä 2",
         task2_intro_text: "Lue tietokortti ja vastaa siihen perustuvaan kysymykseen.",
         task2_back_btn: "Takaisin tietoihin",
+
         task2_info_title: "Työpajan tiedot",
         task2_info: `
           <strong>Otsikko:</strong> Johdatus ihmisen ja tietokoneen vuorovaikutukseen<br>
@@ -947,51 +864,19 @@
         task2_a3: "Huone C301",
         task2_a4: "Pääsali",
 
-        task3_intro_title: "Tehtävä 3 — Adaptoitu validointi",
-        task3_intro_text: "Käyttöliittymä vaihtuu nyt suositeltuun tilaan yhtä lyhyttä validointitehtävää varten. Tämän avulla järjestelmä voi verrata suoriutumista ennen ja jälkeen adaptaation.",
-        task3_info_title: "Validointitehtävä",
-        task3_read_btn: "Siirry kysymykseen",
-        task3_back_btn: "Takaisin sisältöön",
-        task3_q: "Missä opiskelutaitoklinikka järjestetään?",
-        task3_a1: "Huone A210",
-        task3_a2: "Huone C115",
-        task3_a3: "Huone D402",
-        task3_a4: "Pääauditorio",
+        continue_btn: "Jatka",
 
-        recommendation_title: "Adaptiivinen suositus",
-        recommendation_loading: "Analysoidaan tehtäviä 1–2 ja pyydetään suositusta...",
-        recommendation_label: "Suositeltu käyttöliittymätila",
-        recommendation_source: "Suosituksen lähde",
-        recommendation_rule: "Sääntöpohjainen alustus",
-        recommendation_baseline: "Baseline-herkkä säätö",
-        recommendation_sessions: "Aiemmin suoritetut sessiot",
-        recommendation_baseline_ready: "Baseline valmis",
-        recommendation_next: "Seuraava tehtävä suoritetaan paikallisesti tällä suositellulla käyttöliittymällä, jotta koe voi verrata suoriutumista ennen ja jälkeen adaptaation.",
-
-        end_title: "Kokeen yhteenveto",
-        end_text: "Tämä näkymä näyttää käyttäytymisdatan, katseesta johdetut indikaattorit ja paikallisen adaptaation jälkeisen validointituloksen.",
-        end_backend_title: "Tallenna tulokset",
-        end_backend_loading: "Tallennetaan koko kokeen data ja päivitetään osallistujaprofiilia...",
-        end_backend_saved: "Koe tallennettu onnistuneesti.",
+        end_title: "Koe valmis",
+        end_text: "Tämä näkymä näyttää kokeen aikana kerätyn käyttäytymissuoriutumisen ja katseesta johdetut indikaattorit.",
+        end_backend_title: "Adaptiivinen suositus",
+        end_backend_loading: "Tallennetaan dataa ja pyydetään adaptiivista suositusta...",
         end_backend_label: "Suositeltu käyttöliittymätila",
 
         summary_task1: "Tehtävän 1 tulos",
         summary_task2: "Tehtävän 2 tulos",
-        summary_task3: "Tehtävän 3 tulos",
         summary_answer: "Vastauksesi",
         summary_correct_answer: "Oikea vastaus",
         summary_score: "Kokonaispisteet",
-
-        validation_title: "Vertailu ennen/jälkeen adaptaation",
-        validation_pre: "Kysymysajan keskiarvo ennen adaptaatiota",
-        validation_post: "Tehtävän 3 kysymysaika",
-        validation_pre_error: "Virheet ennen adaptaatiota yhteensä",
-        validation_post_error: "Tehtävän 3 virheet",
-        validation_pre_focus: "Katseration keskiarvo ennen adaptaatiota",
-        validation_post_focus: "Tehtävän 3 katseratio",
-        validation_speed_improved: "Nopeampi kuin aiempi keskiarvo",
-        validation_accuracy_improved: "Tarkkuus parempi kuin aiempi keskiarvo",
-        validation_focus_improved: "Fokus parempi kuin aiempi keskiarvo",
 
         metric_time_on_task: "Tehtävään kulunut aika",
         metric_errors: "Virheet",
@@ -1018,10 +903,7 @@
         save_backend_hint: "Tarkista, että palvelin on käynnissä ja että API_BASE_URL on oikein.",
 
         redirect_note: "Suositeltu käyttöliittymä on tunnistettu.",
-        redirect_btn: "Avaa suositeltu käyttöliittymä",
-        open_debug_btn: "Avaa Gaze Debug View",
-        finish_btn: "Lopeta",
-        continue_btn: "Jatka"
+        redirect_btn: "Avaa suositeltu käyttöliittymä"
       }
     };
 
@@ -1086,79 +968,29 @@
         .join("");
     }
 
-    function average(values) {
-      const valid = values
-        .map(v => Number(v))
-        .filter(v => Number.isFinite(v));
-      if (!valid.length) return null;
-      return Number((valid.reduce((a, b) => a + b, 0) / valid.length).toFixed(2));
-    }
-
-    function getLastFinalTrial(allData, phase) {
-      return [...allData].reverse().find(d => d.phase === phase && !d.backtrack_only);
-    }
-
-    function serializeTaskResult(trial) {
-      if (!trial) return null;
-      return {
-        answer: trial.user_answer || null,
-        correct_answer: trial.correct_answer || null,
-        correct: trial.correct || 0,
-        time_on_task_ms: trial.time_on_task_ms || null,
-        question_time_ms: trial.question_time_ms || null,
-        answer_changes: trial.answer_changes || 0,
-        backtracking: trial.backtracking || 0,
-        hesitation: trial.hesitation || 0,
-        errors: trial.errors || 0
-      };
-    }
-
     const metrics = {
       task1: { startTime: null, questionStartTime: null, answerChanges: 0, backtracking: 0, firstSelectionMade: false },
-      task2: { startTime: null, questionStartTime: null, answerChanges: 0, backtracking: 0, firstSelectionMade: false },
-      task3: { startTime: null, questionStartTime: null, answerChanges: 0, backtracking: 0, firstSelectionMade: false }
+      task2: { startTime: null, questionStartTime: null, answerChanges: 0, backtracking: 0, firstSelectionMade: false }
     };
 
     const gazeStore = {
       task1_reading: [],
-      task2_info: [],
-      task3_validation: []
+      task2_info: []
     };
 
     const gazeRegions = {
       task1_reading: null,
-      task2_info: null,
-      task3_validation: null
+      task2_info: null
     };
 
     const gazeSummary = {
       task1_reading: null,
-      task2_info: null,
-      task3_validation: null
+      task2_info: null
     };
 
     function nowMs() {
-  return performance.now();
-}
-
-function msToSec(ms) {
-  if (ms === null || ms === undefined) return "-";
-  return `${(ms / 1000).toFixed(2)} s`;
-}
-
-async function waitForGazeReady(timeout = 8000) {
-  const start = performance.now();
-  const initialCount = webgazerPredictionCount;
-
-  while (performance.now() - start < timeout) {
-    await new Promise(resolve => setTimeout(resolve, 200));
-    if (webgazerPredictionCount > initialCount + 10) {
-      return true;
+      return performance.now();
     }
-  }
-
-  return false;
-}
 
     function msToSec(ms) {
       if (ms === null || ms === undefined) return "-";
@@ -1199,15 +1031,15 @@ async function waitForGazeReady(timeout = 8000) {
       safeWebGazerCall("showVideo", true);
       safeWebGazerCall("showFaceFeedbackBox", true);
       safeWebGazerCall("showFaceOverlay", true);
-      safeWebGazerCall("showPredictionPoints", false);
+      safeWebGazerCall("showPredictionPoints", true);
     }
 
-    function showTaskCameraUI() {
-      safeWebGazerCall("showVideo", true);
-      safeWebGazerCall("showFaceFeedbackBox", SHOW_FACE_BOX_IN_TASKS);
-      safeWebGazerCall("showFaceOverlay", SHOW_FACE_MESH_IN_TASKS);
-      safeWebGazerCall("showPredictionPoints", SHOW_GAZE_DOT_IN_TASKS);
-    }
+    function hideTaskCameraUI() {
+  safeWebGazerCall("showVideo", true);
+  safeWebGazerCall("showFaceFeedbackBox", true);
+  safeWebGazerCall("showFaceOverlay", false);
+  safeWebGazerCall("showPredictionPoints", false);
+}
 
     async function initWebGazer() {
       if (!window.webgazer) {
@@ -1379,41 +1211,27 @@ async function waitForGazeReady(timeout = 8000) {
       const snapshot = {
         lang: currentLang,
         webgazerReady,
-        participant_id: PARTICIPANT_ID,
-        session_id: SESSION_ID,
-        recommendation: latestRecommendationMeta,
-        tasks: [
-          {
-            key: "task1",
-            title: s("summary_task1"),
-            heatmapTitle: currentLang === "fi" ? "Tehtävän 1 lukualue" : "Task 1 reading region",
-            summary: gazeSummary.task1_reading,
-            raw_samples: gazeStore.task1_reading
-          },
-          {
-            key: "task2",
-            title: s("summary_task2"),
-            heatmapTitle: currentLang === "fi" ? "Tehtävän 2 tietoalue" : "Task 2 information region",
-            summary: gazeSummary.task2_info,
-            raw_samples: gazeStore.task2_info
-          },
-          {
-            key: "task3",
-            title: s("summary_task3"),
-            heatmapTitle: currentLang === "fi" ? "Tehtävän 3 adaptoitu alue" : "Task 3 adapted region",
-            summary: gazeSummary.task3_validation,
-            raw_samples: gazeStore.task3_validation
-          }
-        ]
+        task1: {
+          title: s("summary_task1"),
+          heatmapTitle: currentLang === "fi" ? "Tehtävän 1 lukualue" : "Task 1 reading region",
+          summary: gazeSummary.task1_reading,
+          raw_samples: gazeStore.task1_reading
+        },
+        task2: {
+          title: s("summary_task2"),
+          heatmapTitle: currentLang === "fi" ? "Tehtävän 2 tietoalue" : "Task 2 information region",
+          summary: gazeSummary.task2_info,
+          raw_samples: gazeStore.task2_info
+        }
       };
 
       localStorage.setItem("latest_gaze_debug", JSON.stringify(snapshot));
     }
 
-    function buildRecommendationPayload(allData) {
+    function buildPayload(allData) {
       const baselineTrial = allData.find(d => d.phase === "baseline");
-      const task1Trial = getLastFinalTrial(allData, "task1_question");
-      const task2Trial = getLastFinalTrial(allData, "task2_question");
+      const task1Trial = [...allData].reverse().find(d => d.phase === "task1_question" && !d.backtrack_only);
+      const task2Trial = [...allData].reverse().find(d => d.phase === "task2_question" && !d.backtrack_only);
 
       return {
         participant_id: PARTICIPANT_ID,
@@ -1421,8 +1239,26 @@ async function waitForGazeReady(timeout = 8000) {
         created_at: new Date().toISOString(),
         baseline: baselineTrial?.response || {},
         tasks: {
-          task1: serializeTaskResult(task1Trial),
-          task2: serializeTaskResult(task2Trial)
+          task1: {
+            answer: task1Trial?.user_answer || null,
+            correct: task1Trial?.correct || 0,
+            time_on_task_ms: task1Trial?.time_on_task_ms || null,
+            question_time_ms: task1Trial?.question_time_ms || null,
+            answer_changes: task1Trial?.answer_changes || 0,
+            backtracking: task1Trial?.backtracking || 0,
+            hesitation: task1Trial?.hesitation || 0,
+            errors: task1Trial?.errors || 0
+          },
+          task2: {
+            answer: task2Trial?.user_answer || null,
+            correct: task2Trial?.correct || 0,
+            time_on_task_ms: task2Trial?.time_on_task_ms || null,
+            question_time_ms: task2Trial?.question_time_ms || null,
+            answer_changes: task2Trial?.answer_changes || 0,
+            backtracking: task2Trial?.backtracking || 0,
+            hesitation: task2Trial?.hesitation || 0,
+            errors: task2Trial?.errors || 0
+          }
         },
         gaze: {
           webgazer_ready: webgazerReady,
@@ -1437,117 +1273,6 @@ async function waitForGazeReady(timeout = 8000) {
         },
         raw_trials: allData
       };
-    }
-
-    function computeValidationSummary(allData) {
-      const task1Trial = getLastFinalTrial(allData, "task1_question");
-      const task2Trial = getLastFinalTrial(allData, "task2_question");
-      const task3Trial = getLastFinalTrial(allData, "task3_question");
-
-      const preAvgQuestionTime = average([
-        task1Trial?.question_time_ms,
-        task2Trial?.question_time_ms
-      ]);
-
-      const preAvgAccuracy = average([
-        task1Trial?.correct,
-        task2Trial?.correct
-      ]);
-
-      const preTotalErrors = (task1Trial?.errors || 0) + (task2Trial?.errors || 0);
-
-      const preAvgGaze = average([
-        gazeSummary.task1_reading?.on_target_ratio,
-        gazeSummary.task2_info?.on_target_ratio
-      ]);
-
-      const postQuestionTime = task3Trial?.question_time_ms || null;
-      const postErrors = task3Trial?.errors || 0;
-      const postAccuracy = task3Trial?.correct || 0;
-      const postGaze = gazeSummary.task3_validation?.on_target_ratio ?? null;
-
-      return {
-        recommended_ui: latestRecommendation,
-        pre_adaptation_avg_question_time_ms: preAvgQuestionTime,
-        post_adaptation_question_time_ms: postQuestionTime,
-        pre_adaptation_avg_accuracy: preAvgAccuracy,
-        post_adaptation_accuracy: postAccuracy,
-        pre_adaptation_total_errors: preTotalErrors,
-        post_adaptation_errors: postErrors,
-        pre_adaptation_avg_gaze_ratio: preAvgGaze,
-        post_adaptation_gaze_ratio: postGaze,
-        improved_speed: preAvgQuestionTime !== null && postQuestionTime !== null ? postQuestionTime < preAvgQuestionTime : null,
-        improved_accuracy: preAvgAccuracy !== null ? postAccuracy > preAvgAccuracy : null,
-        improved_focus: preAvgGaze !== null && postGaze !== null ? postGaze > preAvgGaze : null
-      };
-    }
-
-    function buildFinalPayload(allData) {
-      const baselineTrial = allData.find(d => d.phase === "baseline");
-      const task1Trial = getLastFinalTrial(allData, "task1_question");
-      const task2Trial = getLastFinalTrial(allData, "task2_question");
-      const task3Trial = getLastFinalTrial(allData, "task3_question");
-
-      return {
-        participant_id: PARTICIPANT_ID,
-        session_id: SESSION_ID,
-        created_at: new Date().toISOString(),
-        baseline: baselineTrial?.response || {},
-        tasks: {
-          task1: serializeTaskResult(task1Trial),
-          task2: serializeTaskResult(task2Trial),
-          task3: serializeTaskResult(task3Trial)
-        },
-        gaze: {
-          webgazer_ready: webgazerReady,
-          task1_reading: {
-            metrics: gazeSummary.task1_reading,
-            raw_samples: gazeStore.task1_reading
-          },
-          task2_info: {
-            metrics: gazeSummary.task2_info,
-            raw_samples: gazeStore.task2_info
-          },
-          task3_validation: {
-            metrics: gazeSummary.task3_validation,
-            raw_samples: gazeStore.task3_validation
-          }
-        },
-        recommendation: latestRecommendationMeta,
-        validation: computeValidationSummary(allData),
-        raw_trials: allData
-      };
-    }
-
-    async function fetchProfileSummary() {
-      try {
-        const response = await fetch(`${API_BASE_URL}/api/profile/${PARTICIPANT_ID}`);
-        if (!response.ok) return null;
-        return await response.json();
-      } catch {
-        return null;
-      }
-    }
-
-    async function fetchRecommendation(payload) {
-      const response = await fetch(`${API_BASE_URL}/api/recommend`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(payload)
-      });
-
-      const text = await response.text();
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${text}`);
-      }
-
-      try {
-        return JSON.parse(text);
-      } catch {
-        return { raw: text };
-      }
     }
 
     async function saveExperimentData(payload) {
@@ -1572,134 +1297,6 @@ async function waitForGazeReady(timeout = 8000) {
       }
     }
 
-    function getTask3Content(mode) {
-      if (mode === "guided") {
-        return `
-          <div id="task3-text-region" class="adapted-info-box">
-            <strong>Study Skills Clinic</strong>
-            <div class="small-note" style="margin-top:8px;">Focus on the key details below before you continue to the question.</div>
-            <ul class="key-points">
-              <li><strong>Date:</strong> Tuesday, May 20</li>
-              <li><strong>Time:</strong> 2:00 PM – 3:30 PM</li>
-              <li><strong>Location:</strong> Room C115</li>
-              <li><strong>Facilitator:</strong> Leena Korhonen</li>
-            </ul>
-          </div>
-        `;
-      }
-
-      if (mode === "reduced-distraction") {
-        return `
-          <div id="task3-text-region" class="adapted-info-box">
-            <div class="mini-grid">
-              <div class="mini-item"><strong>Event:</strong> Study Skills Clinic</div>
-              <div class="mini-item"><strong>Time:</strong> 2:00 PM – 3:30 PM</div>
-              <div class="mini-item"><strong>Location:</strong> Room C115</div>
-            </div>
-          </div>
-        `;
-      }
-
-      return `
-        <div id="task3-text-region" class="info-box">
-          The university is organizing a Study Skills Clinic on Tuesday, May 20. The session will run from 2:00 PM to 3:30 PM and will take place in Room C115. The clinic will be facilitated by Leena Korhonen and is intended for students who want practical support with note-taking, planning, and study routines.
-        </div>
-      `;
-    }
-
-    function setupQuestionInteractions(taskKey, backLabel) {
-      metrics[taskKey].questionStartTime = nowMs();
-
-      const radios = document.querySelectorAll('input[type="radio"][name="jspsych-survey-multi-choice-response-0"]');
-      radios.forEach((radio) => {
-        radio.addEventListener("change", function() {
-          if (!metrics[taskKey].firstSelectionMade) {
-            metrics[taskKey].firstSelectionMade = true;
-          } else {
-            metrics[taskKey].answerChanges += 1;
-          }
-        });
-      });
-
-      const nextButton = document.querySelector("#jspsych-survey-multi-choice-next");
-      if (nextButton && !document.querySelector(".button-row")) {
-        const wrapper = document.createElement("div");
-        wrapper.className = "button-row";
-
-        const backButton = document.createElement("button");
-        backButton.type = "button";
-        backButton.className = "jspsych-btn secondary-btn";
-        backButton.textContent = backLabel;
-        backButton.onclick = function() {
-          metrics[taskKey].backtracking += 1;
-          jsPsych.finishTrial({
-            phase: `${taskKey}_question`,
-            backtrack_only: true
-          });
-        };
-
-        nextButton.parentNode.insertBefore(wrapper, nextButton);
-        wrapper.appendChild(backButton);
-        wrapper.appendChild(nextButton);
-      }
-    }
-
-    function finalizeQuestionData(taskKey, data, correctAnswer) {
-      if (data.backtrack_only) return;
-
-      const response = data.response?.[`${taskKey}_answer`];
-      const totalTime = Math.round(nowMs() - metrics[taskKey].startTime);
-      const questionTime = Math.round(nowMs() - metrics[taskKey].questionStartTime);
-
-      data.user_answer = response;
-      data.correct_answer = correctAnswer;
-      data.correct = response === correctAnswer ? 1 : 0;
-      data.time_on_task_ms = totalTime;
-      data.question_time_ms = questionTime;
-      data.answer_changes = metrics[taskKey].answerChanges;
-      data.backtracking = metrics[taskKey].backtracking;
-      data.hesitation = questionTime > HESITATION_THRESHOLD_MS ? 1 : 0;
-      data.errors = data.correct === 1 ? 0 : 1;
-    }
-
-    function getTaskSummaryHTML(titleKey, trial, gaze) {
-      const isCorrect = trial?.correct === 1;
-      const statusClass = isCorrect ? "status-correct" : "status-wrong";
-      const statusText = isCorrect ? s("correct") : s("wrong");
-      const hasGaze = (gaze?.total_samples || 0) > 0;
-
-      return `
-        <div class="summary-item">
-          <span class="summary-label">${s(titleKey)}</span>
-          <div class="summary-value">
-            <span class="status-pill ${statusClass}">${statusText}</span>
-            <div class="metric-list">
-              <div class="metric-line"><strong>${s("summary_answer")}:</strong> ${trial?.user_answer || "-"}</div>
-              <div class="metric-line"><strong>${s("summary_correct_answer")}:</strong> ${trial?.correct_answer || "-"}</div>
-              <div class="metric-line"><strong>${s("metric_time_on_task")}:</strong> ${msToSec(trial?.time_on_task_ms || null)}</div>
-              <div class="metric-line"><strong>${s("metric_question_time")}:</strong> ${msToSec(trial?.question_time_ms || null)}</div>
-              <div class="metric-line"><strong>${s("metric_errors")}:</strong> ${trial?.errors || 0}</div>
-              <div class="metric-line"><strong>${s("metric_changes")}:</strong> ${trial?.answer_changes || 0}</div>
-              <div class="metric-line"><strong>${s("metric_hesitation")}:</strong> ${yesNo(trial?.hesitation)}</div>
-              <div class="metric-line"><strong>${s("metric_backtracking")}:</strong> ${yesNo((trial?.backtracking || 0) > 0)}</div>
-              ${
-                hasGaze
-                  ? `
-                    <div class="metric-line"><strong>${s("metric_gaze_samples")}:</strong> ${gaze.total_samples || 0}</div>
-                    <div class="metric-line"><strong>${s("metric_on_target_ratio")}:</strong> ${gaze.on_target_ratio ?? "-"}</div>
-                    <div class="metric-line"><strong>${s("metric_first_fixation")}:</strong> ${msToSec(gaze.first_fixation_latency_ms)}</div>
-                    <div class="metric-line"><strong>${s("metric_dwell_time")}:</strong> ${msToSec(gaze.dwell_time_ms)}</div>
-                  `
-                  : `
-                    <div class="metric-line compact-note">${s("metric_no_gaze_samples")}</div>
-                  `
-              }
-            </div>
-          </div>
-        </div>
-      `;
-    }
-
     function showLanguageSelector() {
       document.body.innerHTML = `
         <div class="lang-overlay">
@@ -1721,11 +1318,9 @@ async function waitForGazeReady(timeout = 8000) {
       document.getElementById("choose-fi").onclick = () => startExperiment("fi");
     }
 
-    async function startExperiment(lang) {
+    function startExperiment(lang) {
       currentLang = lang;
       localStorage.removeItem("latest_gaze_debug");
-      latestProfileSummary = await fetchProfileSummary();
-
       document.body.innerHTML = "";
       document.body.className = "ui-standard";
       applyRecommendedUI(getStoredUIMode());
@@ -1745,15 +1340,6 @@ async function waitForGazeReady(timeout = 8000) {
             <h1>${s("welcome_title")}</h1>
             <p>${s("welcome_text_1")}</p>
             <p class="muted">${s("welcome_text_2")}</p>
-
-            <div class="recommendation-panel">
-              <p><strong>${s("welcome_profile")}:</strong></p>
-              <div class="metric-list">
-                <div class="metric-line"><strong>${s("welcome_profile_id")}:</strong> ${PARTICIPANT_ID}</div>
-                <div class="metric-line"><strong>${s("welcome_profile_sessions")}:</strong> ${latestProfileSummary?.sessions_completed ?? 0}</div>
-                <div class="metric-line"><strong>${s("welcome_profile_baseline")}:</strong> ${yesNo(latestProfileSummary?.baseline_ready)}</div>
-              </div>
-            </div>
           </div>
         `,
         choices: [s("continue_btn")],
@@ -1783,23 +1369,22 @@ async function waitForGazeReady(timeout = 8000) {
           }
 
           (async () => {
-  await initWebGazer();
-  const gazeReady = await waitForGazeReady();
+            const ok = await initWebGazer();
 
-  if (statusEl) {
-    if (gazeReady) {
-      statusEl.innerHTML = `<span class="status-ok">${s("prototype_ready")}</span> ${s("prototype_ready_note")}`;
-    } else {
-      statusEl.innerHTML = `<span class="status-fallback">${s("prototype_fallback")}</span> ${s("prototype_fallback_note")}`;
-    }
-  }
+            if (statusEl) {
+              if (ok) {
+                statusEl.innerHTML = `<span class="status-ok">${s("prototype_ready")}</span> ${s("prototype_ready_note")}`;
+              } else {
+                statusEl.innerHTML = `<span class="status-fallback">${s("prototype_fallback")}</span> ${s("prototype_fallback_note")}`;
+              }
+            }
 
-  if (continueButton) {
-    continueButton.disabled = false;
-    continueButton.style.opacity = "1";
-    continueButton.style.cursor = "pointer";
-  }
-})();
+            if (continueButton) {
+              continueButton.disabled = false;
+              continueButton.style.opacity = "1";
+              continueButton.style.cursor = "pointer";
+            }
+          })();
         }
       };
 
@@ -1910,7 +1495,7 @@ async function waitForGazeReady(timeout = 8000) {
           }
 
           let finishedPoints = 0;
-          const requiredClicksPerPoint = 5;
+          const requiredClicksPerPoint = 2;
           const totalPoints = 9;
 
           document.querySelectorAll(".calibration-dot").forEach((dot) => {
@@ -1969,7 +1554,6 @@ async function waitForGazeReady(timeout = 8000) {
         choices: [s("continue_btn")],
         data: { phase: "task1_intro" },
         on_start: function() {
-          applyRecommendedUI("standard");
           metrics.task1.startTime = nowMs();
           metrics.task1.questionStartTime = null;
           metrics.task1.answerChanges = 0;
@@ -1990,7 +1574,7 @@ async function waitForGazeReady(timeout = 8000) {
         choices: [s("task1_read_btn")],
         data: { phase: "task1_reading" },
         on_load: function() {
-          showTaskCameraUI();
+          hideTaskCameraUI();
           startGazeCapture("task1_reading", "#task1-text-region");
 
           const btn = document.getElementById("jspsych-html-button-response-button-0");
@@ -2031,10 +1615,58 @@ async function waitForGazeReady(timeout = 8000) {
         button_label: s("continue_btn"),
         data: { phase: "task1_question" },
         on_load: function() {
-          setupQuestionInteractions("task1", s("task1_back_btn"));
+          metrics.task1.questionStartTime = nowMs();
+
+          const radios = document.querySelectorAll('input[type="radio"][name="jspsych-survey-multi-choice-response-0"]');
+          radios.forEach((radio) => {
+            radio.addEventListener("change", function() {
+              if (!metrics.task1.firstSelectionMade) {
+                metrics.task1.firstSelectionMade = true;
+              } else {
+                metrics.task1.answerChanges += 1;
+              }
+            });
+          });
+
+          const nextButton = document.querySelector("#jspsych-survey-multi-choice-next");
+          if (nextButton) {
+            const wrapper = document.createElement("div");
+            wrapper.className = "button-row";
+
+            const backButton = document.createElement("button");
+            backButton.type = "button";
+            backButton.className = "jspsych-btn secondary-btn";
+            backButton.textContent = s("task1_back_btn");
+            backButton.onclick = function() {
+              metrics.task1.backtracking += 1;
+              jsPsych.finishTrial({
+                phase: "task1_question",
+                backtrack_only: true
+              });
+            };
+
+            nextButton.parentNode.insertBefore(wrapper, nextButton);
+            wrapper.appendChild(backButton);
+            wrapper.appendChild(nextButton);
+          }
         },
         on_finish: function(data) {
-          finalizeQuestionData("task1", data, s("task1_a2"));
+          if (data.backtrack_only) return;
+
+          const response = data.response.task1_answer;
+          const correctAnswer = s("task1_a2");
+          const totalTime = Math.round(nowMs() - metrics.task1.startTime);
+          const questionTime = Math.round(nowMs() - metrics.task1.questionStartTime);
+
+          data.user_answer = response;
+          data.correct_answer = correctAnswer;
+          data.correct = response === correctAnswer ? 1 : 0;
+          data.time_on_task_ms = totalTime;
+          data.question_time_ms = questionTime;
+          data.answer_changes = metrics.task1.answerChanges;
+          data.backtracking = metrics.task1.backtracking;
+          data.hesitation = questionTime > HESITATION_THRESHOLD_MS ? 1 : 0;
+          data.errors = data.correct === 1 ? 0 : 1;
         }
       };
 
@@ -2058,7 +1690,6 @@ async function waitForGazeReady(timeout = 8000) {
         choices: [s("continue_btn")],
         data: { phase: "task2_intro" },
         on_start: function() {
-          applyRecommendedUI("standard");
           metrics.task2.startTime = nowMs();
           metrics.task2.questionStartTime = null;
           metrics.task2.answerChanges = 0;
@@ -2079,7 +1710,7 @@ async function waitForGazeReady(timeout = 8000) {
         choices: [s("task1_read_btn")],
         data: { phase: "task2_info" },
         on_load: function() {
-          showTaskCameraUI();
+          hideTaskCameraUI();
           startGazeCapture("task2_info", "#task2-info-region");
 
           const btn = document.getElementById("jspsych-html-button-response-button-0");
@@ -2120,10 +1751,58 @@ async function waitForGazeReady(timeout = 8000) {
         button_label: s("continue_btn"),
         data: { phase: "task2_question" },
         on_load: function() {
-          setupQuestionInteractions("task2", s("task2_back_btn"));
+          metrics.task2.questionStartTime = nowMs();
+
+          const radios = document.querySelectorAll('input[type="radio"][name="jspsych-survey-multi-choice-response-0"]');
+          radios.forEach((radio) => {
+            radio.addEventListener("change", function() {
+              if (!metrics.task2.firstSelectionMade) {
+                metrics.task2.firstSelectionMade = true;
+              } else {
+                metrics.task2.answerChanges += 1;
+              }
+            });
+          });
+
+          const nextButton = document.querySelector("#jspsych-survey-multi-choice-next");
+          if (nextButton) {
+            const wrapper = document.createElement("div");
+            wrapper.className = "button-row";
+
+            const backButton = document.createElement("button");
+            backButton.type = "button";
+            backButton.className = "jspsych-btn secondary-btn";
+            backButton.textContent = s("task2_back_btn");
+            backButton.onclick = function() {
+              metrics.task2.backtracking += 1;
+              jsPsych.finishTrial({
+                phase: "task2_question",
+                backtrack_only: true
+              });
+            };
+
+            nextButton.parentNode.insertBefore(wrapper, nextButton);
+            wrapper.appendChild(backButton);
+            wrapper.appendChild(nextButton);
+          }
         },
         on_finish: function(data) {
-          finalizeQuestionData("task2", data, s("task2_a2"));
+          if (data.backtrack_only) return;
+
+          const response = data.response.task2_answer;
+          const correctAnswer = s("task2_a2");
+          const totalTime = Math.round(nowMs() - metrics.task2.startTime);
+          const questionTime = Math.round(nowMs() - metrics.task2.questionStartTime);
+
+          data.user_answer = response;
+          data.correct_answer = correctAnswer;
+          data.correct = response === correctAnswer ? 1 : 0;
+          data.time_on_task_ms = totalTime;
+          data.question_time_ms = questionTime;
+          data.answer_changes = metrics.task2.answerChanges;
+          data.backtracking = metrics.task2.backtracking;
+          data.hesitation = questionTime > HESITATION_THRESHOLD_MS ? 1 : 0;
+          data.errors = data.correct === 1 ? 0 : 1;
         }
       };
 
@@ -2136,224 +1815,94 @@ async function waitForGazeReady(timeout = 8000) {
         }
       };
 
-      const recommendAndAdaptScreen = {
-        type: jsPsychHtmlButtonResponse,
-        stimulus: `
-          <div class="card">
-            <h2>${s("recommendation_title")}</h2>
-            <div class="save-status-box">
-              <p id="recommend-status">${s("recommendation_loading")}</p>
-            </div>
-          </div>
-        `,
-        choices: [s("continue_btn")],
-        data: { phase: "recommend_and_adapt" },
-        on_load: function() {
-          const continueButton = document.getElementById("jspsych-html-button-response-button-0");
-          const statusEl = document.getElementById("recommend-status");
-
-          if (continueButton) {
-            continueButton.disabled = true;
-            continueButton.style.opacity = "0.6";
-            continueButton.style.cursor = "not-allowed";
-          }
-
-          (async () => {
-            try {
-              const payload = buildRecommendationPayload(jsPsych.data.get().values());
-              const result = await fetchRecommendation(payload);
-
-              latestRecommendation = result.recommended_ui || "standard";
-              latestRecommendationMeta = result;
-
-              localStorage.setItem("recommended_ui", latestRecommendation);
-
-              const sourceLabel = result.source === "baseline_sensitive"
-                ? s("recommendation_baseline")
-                : s("recommendation_rule");
-
-              statusEl.innerHTML = `
-                <div class="recommendation-panel">
-                  <p>
-                    <strong>${s("recommendation_label")}:</strong>
-                    <span class="recommended-mode-badge">${latestRecommendation}</span>
-                  </p>
-                  <p><strong>${s("recommendation_source")}:</strong> ${sourceLabel}</p>
-                  <p><strong>${s("recommendation_sessions")}:</strong> ${result.sessions_completed_before ?? 0}</p>
-                  <p><strong>${s("recommendation_baseline_ready")}:</strong> ${yesNo(result.baseline_ready)}</p>
-                  <p class="small-note">${s("recommendation_next")}</p>
-                </div>
-              `;
-            } catch (error) {
-              console.error(error);
-              latestRecommendation = "standard";
-              latestRecommendationMeta = {
-                recommended_ui: "standard",
-                source: "rule_based",
-                baseline_ready: false,
-                sessions_completed_before: latestProfileSummary?.sessions_completed ?? 0,
-                error: error.message
-              };
-
-              statusEl.innerHTML = `
-                <strong>${s("save_failed")}:</strong> ${error.message}<br>
-                <span class="small-note">${s("save_backend_hint")}</span>
-              `;
-            } finally {
-              if (continueButton) {
-                continueButton.disabled = false;
-                continueButton.style.opacity = "1";
-                continueButton.style.cursor = "pointer";
-              }
-            }
-          })();
-        }
-      };
-
-      const task3Intro = {
-        type: jsPsychHtmlButtonResponse,
-        stimulus: `
-          <div class="card">
-            <h2>${s("task3_intro_title")}</h2>
-            <p>${s("task3_intro_text")}</p>
-            <div class="recommendation-panel">
-              <p>
-                <strong>${s("recommendation_label")}:</strong>
-                <span class="recommended-mode-badge">${latestRecommendation}</span>
-              </p>
-            </div>
-          </div>
-        `,
-        choices: [s("continue_btn")],
-        data: { phase: "task3_intro" },
-        on_start: function() {
-          applyRecommendedUI(latestRecommendation);
-          metrics.task3.startTime = nowMs();
-          metrics.task3.questionStartTime = null;
-          metrics.task3.answerChanges = 0;
-          metrics.task3.backtracking = 0;
-          metrics.task3.firstSelectionMade = false;
-        }
-      };
-
-      const task3Reading = {
-        type: jsPsychHtmlButtonResponse,
-        stimulus: function() {
-          return `
-            <div class="card">
-              <h2>${s("task3_info_title")}</h2>
-              ${getTask3Content(latestRecommendation)}
-              <p id="task3-gaze-note" class="small-note">Stabilizing gaze capture...</p>
-            </div>
-          `;
-        },
-        choices: [s("task3_read_btn")],
-        data: { phase: "task3_reading" },
-        on_load: function() {
-          showTaskCameraUI();
-          startGazeCapture("task3_validation", "#task3-text-region");
-
-          const btn = document.getElementById("jspsych-html-button-response-button-0");
-          const note = document.getElementById("task3-gaze-note");
-
-          if (btn) {
-            btn.disabled = true;
-            btn.style.opacity = "0.6";
-            btn.style.cursor = "not-allowed";
-          }
-
-          setTimeout(() => {
-            if (btn) {
-              btn.disabled = false;
-              btn.style.opacity = "1";
-              btn.style.cursor = "pointer";
-            }
-            if (note) {
-              note.textContent = "Gaze capture active. Read naturally, then continue.";
-            }
-          }, 3500);
-        },
-        on_finish: function() {
-          stopGazeCapture("task3_validation");
-        }
-      };
-
-      const task3Question = {
-        type: jsPsychSurveyMultiChoice,
-        questions: [
-          {
-            prompt: s("task3_q"),
-            options: [s("task3_a1"), s("task3_a2"), s("task3_a3"), s("task3_a4")],
-            required: true,
-            name: "task3_answer"
-          }
-        ],
-        button_label: s("continue_btn"),
-        data: { phase: "task3_question" },
-        on_load: function() {
-          setupQuestionInteractions("task3", s("task3_back_btn"));
-        },
-        on_finish: function(data) {
-          finalizeQuestionData("task3", data, s("task3_a2"));
-        }
-      };
-
-      const task3Loop = {
-        timeline: [task3Reading, task3Question],
-        loop_function: function(data) {
-          const values = data.values();
-          const last = values[values.length - 1];
-          return !!last.backtrack_only;
-        }
-      };
-
-      const finalSummary = {
+      const endScreen = {
         type: jsPsychHtmlButtonResponse,
         stimulus: function() {
           const allData = jsPsych.data.get().values();
-          const task1Trial = getLastFinalTrial(allData, "task1_question");
-          const task2Trial = getLastFinalTrial(allData, "task2_question");
-          const task3Trial = getLastFinalTrial(allData, "task3_question");
-          const validation = computeValidationSummary(allData);
+          const task1Trial = [...allData].reverse().find(d => d.phase === "task1_question" && !d.backtrack_only);
+          const task2Trial = [...allData].reverse().find(d => d.phase === "task2_question" && !d.backtrack_only);
 
-          const score = (task1Trial?.correct || 0) + (task2Trial?.correct || 0) + (task3Trial?.correct || 0);
-          const totalErrors = (task1Trial?.errors || 0) + (task2Trial?.errors || 0) + (task3Trial?.errors || 0);
+          const score = (task1Trial?.correct || 0) + (task2Trial?.correct || 0);
+          const totalErrors = (task1Trial?.errors || 0) + (task2Trial?.errors || 0);
+
+          const task1StatusClass = task1Trial?.correct === 1 ? "status-correct" : "status-wrong";
+          const task1StatusText = task1Trial?.correct === 1 ? s("correct") : s("wrong");
+
+          const task2StatusClass = task2Trial?.correct === 1 ? "status-correct" : "status-wrong";
+          const task2StatusText = task2Trial?.correct === 1 ? s("correct") : s("wrong");
+
+          const gazeTask1 = gazeSummary.task1_reading || {};
+          const gazeTask2 = gazeSummary.task2_info || {};
+          const task1HasGaze = (gazeTask1.total_samples || 0) > 0;
+          const task2HasGaze = (gazeTask2.total_samples || 0) > 0;
 
           return `
             <div class="card">
               <h2>${s("end_title")}</h2>
               <p>${s("end_text")}</p>
 
-              <div class="recommendation-panel">
-                <p>
-                  <strong>${s("end_backend_label")}:</strong>
-                  <span class="recommended-mode-badge">${latestRecommendation}</span>
-                </p>
-              </div>
-
               <div class="summary-grid">
-                ${getTaskSummaryHTML("summary_task1", task1Trial, gazeSummary.task1_reading || {})}
-                ${getTaskSummaryHTML("summary_task2", task2Trial, gazeSummary.task2_info || {})}
-                ${getTaskSummaryHTML("summary_task3", task3Trial, gazeSummary.task3_validation || {})}
-              </div>
+                <div class="summary-item">
+                  <span class="summary-label">${s("summary_task1")}</span>
+                  <div class="summary-value">
+                    <span class="status-pill ${task1StatusClass}">${task1StatusText}</span>
+                    <div class="metric-list">
+                      <div class="metric-line"><strong>${s("summary_answer")}:</strong> ${task1Trial?.user_answer || "-"}</div>
+                      <div class="metric-line"><strong>${s("summary_correct_answer")}:</strong> ${task1Trial?.correct_answer || "-"}</div>
+                      <div class="metric-line"><strong>${s("metric_time_on_task")}:</strong> ${msToSec(task1Trial?.time_on_task_ms || 0)}</div>
+                      <div class="metric-line"><strong>${s("metric_question_time")}:</strong> ${msToSec(task1Trial?.question_time_ms || 0)}</div>
+                      <div class="metric-line"><strong>${s("metric_errors")}:</strong> ${task1Trial?.errors || 0}</div>
+                      <div class="metric-line"><strong>${s("metric_changes")}:</strong> ${task1Trial?.answer_changes || 0}</div>
+                      <div class="metric-line"><strong>${s("metric_hesitation")}:</strong> ${yesNo(task1Trial?.hesitation)}</div>
+                      <div class="metric-line"><strong>${s("metric_backtracking")}:</strong> ${yesNo((task1Trial?.backtracking || 0) > 0)}</div>
+                      ${
+                        task1HasGaze
+                          ? `
+                            <div class="metric-line"><strong>${s("metric_gaze_samples")}:</strong> ${gazeTask1.total_samples || 0}</div>
+                            <div class="metric-line"><strong>${s("metric_on_target_ratio")}:</strong> ${gazeTask1.on_target_ratio !== null ? gazeTask1.on_target_ratio : "-"}</div>
+                            <div class="metric-line"><strong>${s("metric_first_fixation")}:</strong> ${msToSec(gazeTask1.first_fixation_latency_ms)}</div>
+                            <div class="metric-line"><strong>${s("metric_dwell_time")}:</strong> ${msToSec(gazeTask1.dwell_time_ms)}</div>
+                          `
+                          : `
+                            <div class="metric-line compact-note">${s("metric_no_gaze_samples")}</div>
+                          `
+                      }
+                    </div>
+                  </div>
+                </div>
 
-              <div class="comparison-box">
-                <div><strong>${s("validation_title")}</strong></div>
-                <div class="metric-list">
-                  <div class="metric-line"><strong>${s("validation_pre")}:</strong> ${msToSec(validation.pre_adaptation_avg_question_time_ms)}</div>
-                  <div class="metric-line"><strong>${s("validation_post")}:</strong> ${msToSec(validation.post_adaptation_question_time_ms)}</div>
-                  <div class="metric-line"><strong>${s("validation_pre_error")}:</strong> ${validation.pre_adaptation_total_errors ?? "-"}</div>
-                  <div class="metric-line"><strong>${s("validation_post_error")}:</strong> ${validation.post_adaptation_errors ?? "-"}</div>
-                  <div class="metric-line"><strong>${s("validation_pre_focus")}:</strong> ${validation.pre_adaptation_avg_gaze_ratio ?? "-"}</div>
-                  <div class="metric-line"><strong>${s("validation_post_focus")}:</strong> ${validation.post_adaptation_gaze_ratio ?? "-"}</div>
-                  <div class="metric-line"><strong>${s("validation_speed_improved")}:</strong> ${yesNo(validation.improved_speed)}</div>
-                  <div class="metric-line"><strong>${s("validation_accuracy_improved")}:</strong> ${yesNo(validation.improved_accuracy)}</div>
-                  <div class="metric-line"><strong>${s("validation_focus_improved")}:</strong> ${yesNo(validation.improved_focus)}</div>
+                <div class="summary-item">
+                  <span class="summary-label">${s("summary_task2")}</span>
+                  <div class="summary-value">
+                    <span class="status-pill ${task2StatusClass}">${task2StatusText}</span>
+                    <div class="metric-list">
+                      <div class="metric-line"><strong>${s("summary_answer")}:</strong> ${task2Trial?.user_answer || "-"}</div>
+                      <div class="metric-line"><strong>${s("summary_correct_answer")}:</strong> ${task2Trial?.correct_answer || "-"}</div>
+                      <div class="metric-line"><strong>${s("metric_time_on_task")}:</strong> ${msToSec(task2Trial?.time_on_task_ms || 0)}</div>
+                      <div class="metric-line"><strong>${s("metric_question_time")}:</strong> ${msToSec(task2Trial?.question_time_ms || 0)}</div>
+                      <div class="metric-line"><strong>${s("metric_errors")}:</strong> ${task2Trial?.errors || 0}</div>
+                      <div class="metric-line"><strong>${s("metric_changes")}:</strong> ${task2Trial?.answer_changes || 0}</div>
+                      <div class="metric-line"><strong>${s("metric_hesitation")}:</strong> ${yesNo(task2Trial?.hesitation)}</div>
+                      <div class="metric-line"><strong>${s("metric_backtracking")}:</strong> ${yesNo((task2Trial?.backtracking || 0) > 0)}</div>
+                      ${
+                        task2HasGaze
+                          ? `
+                            <div class="metric-line"><strong>${s("metric_gaze_samples")}:</strong> ${gazeTask2.total_samples || 0}</div>
+                            <div class="metric-line"><strong>${s("metric_on_target_ratio")}:</strong> ${gazeTask2.on_target_ratio !== null ? gazeTask2.on_target_ratio : "-"}</div>
+                            <div class="metric-line"><strong>${s("metric_first_fixation")}:</strong> ${msToSec(gazeTask2.first_fixation_latency_ms)}</div>
+                            <div class="metric-line"><strong>${s("metric_dwell_time")}:</strong> ${msToSec(gazeTask2.dwell_time_ms)}</div>
+                          `
+                          : `
+                            <div class="metric-line compact-note">${s("metric_no_gaze_samples")}</div>
+                          `
+                      }
+                    </div>
+                  </div>
                 </div>
               </div>
 
               <div class="score-box">
-                <div><strong>${s("summary_score")}: ${score} / 3</strong></div>
+                <div><strong>${s("summary_score")}: ${score} / 2</strong></div>
                 <div style="margin-top:8px;"><strong>${s("metric_errors")}:</strong> ${totalErrors}</div>
                 <div style="margin-top:8px;"><strong>${s("metric_gaze_status")}:</strong> ${webgazerReady ? s("enabled") : s("fallback")}</div>
               </div>
@@ -2361,25 +1910,29 @@ async function waitForGazeReady(timeout = 8000) {
           `;
         },
         choices: [s("continue_btn")],
-        data: { phase: "final_summary" }
+        data: { phase: "end_screen" },
+        on_load: function() {
+          persistGazeDebugSnapshot();
+        },
+        on_finish: function() {
+          window.open("gaze_debug.html", "_blank", "noopener");
+        }
       };
 
-      const saveFinalScreen = {
+      const saveAndRecommendScreen = {
         type: jsPsychHtmlButtonResponse,
         stimulus: `
           <div class="card">
             <h2>${s("end_backend_title")}</h2>
             <div class="save-status-box">
               <p id="save-status">${s("end_backend_loading")}</p>
-              <div id="save-actions" class="button-row"></div>
             </div>
           </div>
         `,
         choices: ["hidden"],
-        data: { phase: "save_final" },
+        data: { phase: "save_and_recommend" },
         on_load: function() {
           const statusEl = document.getElementById("save-status");
-          const actionsEl = document.getElementById("save-actions");
           const hiddenButton = document.getElementById("jspsych-html-button-response-button-0");
 
           if (hiddenButton) {
@@ -2387,80 +1940,56 @@ async function waitForGazeReady(timeout = 8000) {
             hiddenButton.disabled = true;
           }
 
-          persistGazeDebugSnapshot();
-
           (async () => {
             try {
-              const payload = buildFinalPayload(jsPsych.data.get().values());
+              const allData = jsPsych.data.get().values();
+              const payload = buildPayload(allData);
               const result = await saveExperimentData(payload);
-              latestProfileSummary = {
-                sessions_completed: result.sessions_completed,
-                baseline_ready: result.baseline_ready
-              };
 
-              statusEl.innerHTML = `
-                <span class="status-ok">${s("end_backend_saved")}</span><br>
-                <span class="small-note">
-                  ${s("recommendation_sessions")}: ${result.sessions_completed ?? "-"} |
-                  ${s("recommendation_baseline_ready")}: ${yesNo(result.baseline_ready)}
-                </span>
-              `;
+              if (result && result.recommended_ui) {
+                localStorage.setItem("recommended_ui", result.recommended_ui);
+                applyRecommendedUI(result.recommended_ui);
 
-              const finishBtn = document.createElement("button");
-              finishBtn.type = "button";
-              finishBtn.className = "jspsych-btn";
-              finishBtn.textContent = s("finish_btn");
-              finishBtn.onclick = function() {
-                if (hiddenButton) hiddenButton.click();
-              };
+                const targetUrl = RECOMMENDED_UI_URLS[result.recommended_ui];
 
-              const debugBtn = document.createElement("button");
-              debugBtn.type = "button";
-              debugBtn.className = "jspsych-btn secondary-btn";
-              debugBtn.textContent = s("open_debug_btn");
-              debugBtn.onclick = function() {
-                window.open("gaze_debug.html", "_blank", "noopener");
-              };
+                statusEl.innerHTML = `
+                  <div class="recommendation-panel">
+                    <p>
+                      <strong>${s("end_backend_label")}:</strong>
+                      <span class="recommended-mode-badge">${result.recommended_ui}</span>
+                    </p>
+                    <p class="small-note">${s("redirect_note")}</p>
+                    ${
+                      result.gaze_samples
+                        ? `<p class="small-note">Task 1 gaze samples: ${result.gaze_samples.task1} | Task 2 gaze samples: ${result.gaze_samples.task2}</p>`
+                        : ""
+                    }
+                    <div class="button-row">
+                      <button type="button" class="jspsych-btn" id="open-recommended-ui">
+                        ${s("redirect_btn")}
+                      </button>
+                    </div>
+                  </div>
+                `;
 
-              const openUiBtn = document.createElement("button");
-              openUiBtn.type = "button";
-              openUiBtn.className = "jspsych-btn secondary-btn";
-              openUiBtn.textContent = s("redirect_btn");
-              openUiBtn.onclick = function() {
-                const targetUrl = RECOMMENDED_UI_URLS[latestRecommendation];
-                if (targetUrl) window.open(targetUrl, "_blank", "noopener");
-              };
-
-              actionsEl.innerHTML = "";
-              actionsEl.appendChild(finishBtn);
-              actionsEl.appendChild(debugBtn);
-              actionsEl.appendChild(openUiBtn);
+                const openBtn = document.getElementById("open-recommended-ui");
+                if (openBtn) {
+                  openBtn.onclick = function() {
+                    window.open(targetUrl, "_blank", "noopener");
+                  };
+                }
+              } else {
+                statusEl.innerHTML = `
+                  <strong>${s("end_backend_title")}:</strong><br>
+                  <span class="small-note">${s("save_no_recommendation")}</span>
+                `;
+              }
             } catch (error) {
               console.error(error);
               statusEl.innerHTML = `
                 <strong>${s("save_failed")}:</strong> ${error.message}<br>
                 <span class="small-note">${s("save_backend_hint")}</span>
               `;
-
-              const finishBtn = document.createElement("button");
-              finishBtn.type = "button";
-              finishBtn.className = "jspsych-btn";
-              finishBtn.textContent = s("finish_btn");
-              finishBtn.onclick = function() {
-                if (hiddenButton) hiddenButton.click();
-              };
-
-              const debugBtn = document.createElement("button");
-              debugBtn.type = "button";
-              debugBtn.className = "jspsych-btn secondary-btn";
-              debugBtn.textContent = s("open_debug_btn");
-              debugBtn.onclick = function() {
-                window.open("gaze_debug.html", "_blank", "noopener");
-              };
-
-              actionsEl.innerHTML = "";
-              actionsEl.appendChild(finishBtn);
-              actionsEl.appendChild(debugBtn);
             }
           })();
         }
@@ -2475,11 +2004,8 @@ async function waitForGazeReady(timeout = 8000) {
         task1Loop,
         task2Intro,
         task2Loop,
-        recommendAndAdaptScreen,
-        task3Intro,
-        task3Loop,
-        finalSummary,
-        saveFinalScreen
+        endScreen,
+        saveAndRecommendScreen
       ];
 
       jsPsych.run(timeline);

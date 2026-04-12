@@ -227,7 +227,7 @@
         }
 
         .btn.secondary {
-          background: #fff;
+          background: transparent;
           color: var(--primary);
           border: 1px solid var(--border);
         }
@@ -267,10 +267,10 @@
 <div class="wrap">
     <div class="header">
         <h1>Gaze Debug View</h1>
-        <p>This page shows stored heatmaps and gaze-derived summaries for the reading screens.</p>
+        <p>This page shows the stored heatmaps and gaze-derived statistics captured during the reading screens.</p>
         <div id="status-line" class="status-line"></div>
         <div class="toolbar">
-            <button class="btn" onclick="if (window.opener) { window.close(); } else { history.back(); }">Continue</button>
+            <button class="btn" onclick="window.close()">Continue</button>
             <button class="btn secondary" id="download-json">Download debug JSON</button>
         </div>
     </div>
@@ -279,8 +279,7 @@
 </div>
 
 <script>
-    const DEBUG_MODE = new URLSearchParams(location.search).get("dev") === "1";
-    const SHOW_RAW_SAMPLES = DEBUG_MODE;
+    const SHOW_RAW_SAMPLES = false;
 
     function msToSec(ms) {
       if (ms === null || ms === undefined) return "-";
@@ -378,9 +377,9 @@
       });
     }
 
-    function buildTaskCard(task) {
-      const summary = task?.summary || {};
-      const rawSamples = task?.raw_samples || [];
+    function buildTaskCard(taskKey, taskData) {
+      const summary = taskData?.summary || {};
+      const rawSamples = taskData?.raw_samples || [];
       const hasHeatmapData = Array.isArray(summary.points) && summary.points.length > 0;
       const hasAnySamples = (summary.total_samples ?? 0) > 0;
       const ratioPercent = summary.on_target_ratio != null
@@ -389,7 +388,7 @@
 
       return `
         <div class="card">
-          <h2>${task?.title || task?.key || "Task"}</h2>
+          <h2>${taskData?.title || taskKey}</h2>
 
           <div class="stats-grid">
             <div class="stat-box">
@@ -430,33 +429,47 @@
             </div>
           </div>
 
-          <div class="section-title">${task?.heatmapTitle || "Heatmap"}</div>
           ${
             hasHeatmapData
-              ? `<div id="${task.key}-heatmap" class="heatmap-box"></div>`
+              ? `
+                <div class="section-title">${taskData?.heatmapTitle || "Heatmap"}</div>
+                <div id="${taskKey}-heatmap" class="heatmap-box"></div>
+
+                <div class="chart-grid">
+                  <div class="chart-card">
+                    <div class="section-title" style="margin-top:0;">Sample distribution</div>
+                    <canvas id="${taskKey}-samples-chart"></canvas>
+                  </div>
+
+                  <div class="chart-card">
+                    <div class="section-title" style="margin-top:0;">Timing metrics</div>
+                    <canvas id="${taskKey}-timing-chart"></canvas>
+                  </div>
+                </div>
+              `
               : `
+                <div class="chart-grid">
+                  <div class="chart-card">
+                    <div class="section-title" style="margin-top:0;">Sample distribution</div>
+                    <canvas id="${taskKey}-samples-chart"></canvas>
+                  </div>
+
+                  <div class="chart-card">
+                    <div class="section-title" style="margin-top:0;">Timing metrics</div>
+                    <canvas id="${taskKey}-timing-chart"></canvas>
+                  </div>
+                </div>
+
                 <div class="raw-box">
                   <h3>Gaze data unavailable in this run</h3>
                   <pre>${
                     hasAnySamples
-                      ? "Samples were recorded, but none were usable for heatmap rendering inside the target region."
+                      ? "Samples were recorded, but none were usable for heatmap rendering in the target reading region."
                       : "No usable gaze data were captured for this screen in this run."
                   }</pre>
                 </div>
               `
           }
-
-          <div class="chart-grid">
-            <div class="chart-card">
-              <div class="section-title" style="margin-top:0;">Sample distribution</div>
-              <canvas id="${task.key}-samples-chart"></canvas>
-            </div>
-
-            <div class="chart-card">
-              <div class="section-title" style="margin-top:0;">Timing metrics</div>
-              <canvas id="${task.key}-timing-chart"></canvas>
-            </div>
-          </div>
 
           ${
             SHOW_RAW_SAMPLES && rawSamples.length > 0
@@ -482,19 +495,15 @@
       content.innerHTML = `
         <div class="card">
           <h2>No data available</h2>
-          <p>Run the experiment first, then open this page from the saved results screen.</p>
+          <p>Run the experiment first, then open this page from the summary screen.</p>
         </div>
       `;
     } else {
       const snapshot = JSON.parse(snapshotRaw);
-      const tasks = Array.isArray(snapshot.tasks)
-        ? snapshot.tasks
-        : [
-            snapshot.task1 ? { key: "task1", ...snapshot.task1 } : null,
-            snapshot.task2 ? { key: "task2", ...snapshot.task2 } : null
-          ].filter(Boolean);
 
-      const totalSamples = tasks.reduce((sum, task) => sum + (task?.summary?.total_samples || 0), 0);
+      const task1Samples = snapshot.task1?.summary?.total_samples || 0;
+      const task2Samples = snapshot.task2?.summary?.total_samples || 0;
+      const totalSamples = task1Samples + task2Samples;
 
       if (totalSamples > 0) {
         statusLine.className = "status-line ok";
@@ -504,24 +513,31 @@
         statusLine.textContent = "WebGazer status: Gaze data unavailable in this run";
       }
 
-      content.innerHTML = tasks.map(buildTaskCard).join("");
+      content.innerHTML = `
+        ${buildTaskCard("task1", snapshot.task1)}
+        ${buildTaskCard("task2", snapshot.task2)}
+      `;
 
       requestAnimationFrame(() => {
-        tasks.forEach(task => {
-          const summary = task.summary || {};
+        if (document.getElementById("task1-samples-chart")) {
+          renderSamplesChart("task1-samples-chart", snapshot.task1.summary || {});
+        }
+        if (document.getElementById("task1-timing-chart")) {
+          renderTimingChart("task1-timing-chart", snapshot.task1.summary || {});
+        }
+        if (snapshot.task1?.summary?.points?.length) {
+          renderHeatmap("task1-heatmap", snapshot.task1.summary);
+        }
 
-          if (document.getElementById(`${task.key}-samples-chart`)) {
-            renderSamplesChart(`${task.key}-samples-chart`, summary);
-          }
-
-          if (document.getElementById(`${task.key}-timing-chart`)) {
-            renderTimingChart(`${task.key}-timing-chart`, summary);
-          }
-
-          if (summary?.points?.length && document.getElementById(`${task.key}-heatmap`)) {
-            renderHeatmap(`${task.key}-heatmap`, summary);
-          }
-        });
+        if (document.getElementById("task2-samples-chart")) {
+          renderSamplesChart("task2-samples-chart", snapshot.task2.summary || {});
+        }
+        if (document.getElementById("task2-timing-chart")) {
+          renderTimingChart("task2-timing-chart", snapshot.task2.summary || {});
+        }
+        if (snapshot.task2?.summary?.points?.length) {
+          renderHeatmap("task2-heatmap", snapshot.task2.summary);
+        }
       });
 
       document.getElementById("download-json").onclick = function () {
