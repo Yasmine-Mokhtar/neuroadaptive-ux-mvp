@@ -1138,8 +1138,27 @@
     };
 
     function nowMs() {
-      return performance.now();
+  return performance.now();
+}
+
+function msToSec(ms) {
+  if (ms === null || ms === undefined) return "-";
+  return `${(ms / 1000).toFixed(2)} s`;
+}
+
+async function waitForGazeReady(timeout = 8000) {
+  const start = performance.now();
+  const initialCount = webgazerPredictionCount;
+
+  while (performance.now() - start < timeout) {
+    await new Promise(resolve => setTimeout(resolve, 200));
+    if (webgazerPredictionCount > initialCount + 10) {
+      return true;
     }
+  }
+
+  return false;
+}
 
     function msToSec(ms) {
       if (ms === null || ms === undefined) return "-";
@@ -1764,22 +1783,23 @@
           }
 
           (async () => {
-            const ok = await initWebGazer();
+  await initWebGazer();
+  const gazeReady = await waitForGazeReady();
 
-            if (statusEl) {
-              if (ok) {
-                statusEl.innerHTML = `<span class="status-ok">${s("prototype_ready")}</span> ${s("prototype_ready_note")}`;
-              } else {
-                statusEl.innerHTML = `<span class="status-fallback">${s("prototype_fallback")}</span> ${s("prototype_fallback_note")}`;
-              }
-            }
+  if (statusEl) {
+    if (gazeReady) {
+      statusEl.innerHTML = `<span class="status-ok">${s("prototype_ready")}</span> ${s("prototype_ready_note")}`;
+    } else {
+      statusEl.innerHTML = `<span class="status-fallback">${s("prototype_fallback")}</span> ${s("prototype_fallback_note")}`;
+    }
+  }
 
-            if (continueButton) {
-              continueButton.disabled = false;
-              continueButton.style.opacity = "1";
-              continueButton.style.cursor = "pointer";
-            }
-          })();
+  if (continueButton) {
+    continueButton.disabled = false;
+    continueButton.style.opacity = "1";
+    continueButton.style.cursor = "pointer";
+  }
+})();
         }
       };
 
@@ -1890,7 +1910,7 @@
           }
 
           let finishedPoints = 0;
-          const requiredClicksPerPoint = 2;
+          const requiredClicksPerPoint = 5;
           const totalPoints = 9;
 
           document.querySelectorAll(".calibration-dot").forEach((dot) => {
