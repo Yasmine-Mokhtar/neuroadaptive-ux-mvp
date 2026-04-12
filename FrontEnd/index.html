@@ -1063,13 +1063,14 @@
   const startedAt = performance.now();
 
   return new Promise((resolve) => {
-    const timer = setInterval(() => {
+    const timer = setInterval(async () => {
       const elapsed = performance.now() - startedAt;
 
       let prediction = null;
+
       try {
         if (typeof window.webgazer.getCurrentPrediction === "function") {
-          prediction = window.webgazer.getCurrentPrediction();
+          prediction = await window.webgazer.getCurrentPrediction();
         }
       } catch (e) {
         prediction = null;
@@ -1077,7 +1078,9 @@
 
       const hasPrediction =
         webgazerPredictionCount > 0 ||
-        (prediction && typeof prediction.x === "number" && typeof prediction.y === "number");
+        (prediction &&
+          typeof prediction.x === "number" &&
+          typeof prediction.y === "number");
 
       if (hasPrediction) {
         webgazerReady = true;
@@ -1504,14 +1507,12 @@ webgazerCameraReady =
             const predictionOk = cameraOk ? await waitForUsablePredictions(6000) : false;
 
             if (statusEl) {
-              if (predictionOk) {
-                statusEl.innerHTML = `<span class="status-ok">${s("prototype_ready")}</span> ${s("prototype_ready_note")}`;
-              } else if (cameraOk) {
-                statusEl.innerHTML = `<span class="status-fallback">${s("prototype_camera_only")}</span> ${s("prototype_camera_only_note")}`;
-              } else {
-                statusEl.innerHTML = `<span class="status-fallback">${s("prototype_fallback")}</span> ${s("prototype_fallback_note")}`;
-              }
-            }
+  if (cameraOk) {
+    statusEl.innerHTML = `<span class="status-ok">Camera preview is live.</span> Continue to calibration to train gaze prediction.`;
+  } else {
+    statusEl.innerHTML = `<span class="status-fallback">${s("prototype_fallback")}</span> ${s("prototype_fallback_note")}`;
+  }
+}
 
             if (continueButton) {
               continueButton.disabled = false;
@@ -1663,14 +1664,22 @@ webgazerCameraReady =
                 }
 
                 if (finishedPoints === totalPoints && continueButton) {
-                  continueButton.disabled = false;
-                  continueButton.style.opacity = "1";
-                  continueButton.style.cursor = "pointer";
+  if (statusEl) {
+    statusEl.textContent = "Calibration complete. Finalizing gaze training...";
+  }
 
-                  if (statusEl) {
-                    statusEl.textContent = s("calibration_done");
-                  }
-                }
+  setTimeout(async () => {
+    await waitForUsablePredictions(6000);
+
+    continueButton.disabled = false;
+    continueButton.style.opacity = "1";
+    continueButton.style.cursor = "pointer";
+
+    if (statusEl) {
+      statusEl.textContent = s("calibration_done");
+    }
+  }, 1500);
+}
               }
             });
           });
