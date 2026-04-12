@@ -1057,20 +1057,19 @@
   safeWebGazerCall("showPredictionPoints", true);
 }
 
-    async function waitForUsablePredictions(timeoutMs = 10000) {
-  if (!window.webgazer) return false;
+    function waitForUsablePredictions(timeoutMs = 10000) {
+  if (!window.webgazer) return Promise.resolve(false);
 
   const startedAt = performance.now();
 
   return new Promise((resolve) => {
-    const timer = setInterval(async () => {
+    const timer = setInterval(() => {
       const elapsed = performance.now() - startedAt;
 
       let prediction = null;
-
       try {
         if (typeof window.webgazer.getCurrentPrediction === "function") {
-          prediction = await window.webgazer.getCurrentPrediction();
+          prediction = window.webgazer.getCurrentPrediction();
         }
       } catch (e) {
         prediction = null;
@@ -1152,6 +1151,10 @@
             recorded_at: Date.now()
           });
         });
+
+        if (typeof window.webgazer.clearData === "function") {
+  window.webgazer.clearData();
+}git add .
 
         const beginResult = window.webgazer.begin();
         if (beginResult && typeof beginResult.then === "function") {
@@ -1640,14 +1643,6 @@ if (statusEl) {
               const rect = dot.getBoundingClientRect();
               const x = rect.left + rect.width / 2;
               const y = rect.top + rect.height / 2;
-
-              try {
-                if (window.webgazer && typeof window.webgazer.recordScreenPosition === "function") {
-                  window.webgazer.recordScreenPosition(x, y, "click");
-                }
-              } catch (e) {
-                console.warn("Calibration recordScreenPosition warning:", e);
-              }
 
               if (clicks === requiredClicksPerPoint) {
                 finishedPoints += 1;
