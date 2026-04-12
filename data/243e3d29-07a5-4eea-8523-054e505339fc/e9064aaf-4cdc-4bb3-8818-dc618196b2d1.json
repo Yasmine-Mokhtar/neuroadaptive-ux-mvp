@@ -1,0 +1,208 @@
+{
+  "participant_id": "243e3d29-07a5-4eea-8523-054e505339fc",
+  "session_id": "e9064aaf-4cdc-4bb3-8818-dc618196b2d1",
+  "created_at": "2026-04-11T05:55:16.776Z",
+  "baseline": {
+    "age_group": "25-34",
+    "digital_confidence": "Moderate",
+    "page_style": "Simple page with fewer distractions",
+    "guidance_need": "Rarely",
+    "screen_distraction": "Moderately",
+    "dense_content_tolerance": "Neutral",
+    "content_format": "Written text"
+  },
+  "tasks": {
+    "task1": {
+      "answer": "A book about user experience design",
+      "correct": 1,
+      "time_on_task_ms": 19315,
+      "question_time_ms": 3100,
+      "answer_changes": 0,
+      "backtracking": 1,
+      "hesitation": 0,
+      "errors": 0
+    },
+    "task2": {
+      "answer": "Room C301",
+      "correct": 0,
+      "time_on_task_ms": 7183,
+      "question_time_ms": 3816,
+      "answer_changes": 0,
+      "backtracking": 0,
+      "hesitation": 0,
+      "errors": 1
+    }
+  },
+  "raw_trials": [
+    {
+      "rt": 1451,
+      "stimulus": "\n        <div class=\"card\">\n          <div class=\"logo-wrap\">\n            <img src=\"jyu-logo.svg\" alt=\"University of Jyvaskyla logo\" onerror=\"this.style.display='none'\">\n          </div>\n          <h1>Welcome to the University of Jyvaskyla</h1>\n          <p>Thank you for taking part in this short research demo.</p>\n          <p class=\"muted\">\n            This prototype demonstrates baseline profiling, task-based behavioural logging, WebGazer-based attention capture, and adaptive interface recommendation.\n          </p>\n        </div>\n      ",
+      "response": 0,
+      "phase": "university_intro",
+      "trial_type": "html-button-response",
+      "trial_index": 0,
+      "time_elapsed": 1462,
+      "internal_node_id": "0.0-0.0"
+    },
+    {
+      "rt": 33263,
+      "stimulus": "\n        <div class=\"card\">\n          <h2>Prototype Check</h2>\n          <p>This MVP runs in the browser and connects to a local backend for saving data and generating an adaptive recommendation.</p>\n          <p class=\"muted\">WebGazer will start here. If camera access is granted, lightweight gaze data will be collected during the reading screens.</p>\n          <p id=\"webgazer-status\" class=\"small-note\">Initializing WebGazer...</p>\n        </div>\n      ",
+      "response": 0,
+      "phase": "prototype_check",
+      "trial_type": "html-button-response",
+      "trial_index": 1,
+      "time_elapsed": 34727,
+      "internal_node_id": "0.0-1.0"
+    },
+    {
+      "rt": 15599,
+      "response": {
+        "age_group": "25-34",
+        "digital_confidence": "Moderate",
+        "page_style": "Simple page with fewer distractions",
+        "guidance_need": "Rarely",
+        "screen_distraction": "Moderately",
+        "dense_content_tolerance": "Neutral",
+        "content_format": "Written text"
+      },
+      "phase": "baseline",
+      "trial_type": "survey-html-form",
+      "trial_index": 2,
+      "time_elapsed": 50329,
+      "internal_node_id": "0.0-2.0"
+    },
+    {
+      "rt": 1347,
+      "stimulus": "\n        <div class=\"card\">\n          <h2>Task 1</h2>\n          <p>Read the paragraph carefully, then answer one question.</p>\n        </div>\n      ",
+      "response": 0,
+      "phase": "task1_intro",
+      "trial_type": "html-button-response",
+      "trial_index": 3,
+      "time_elapsed": 51677,
+      "internal_node_id": "0.0-3.0"
+    },
+    {
+      "rt": 4234,
+      "stimulus": "\n        <div class=\"card\">\n          <h2>Reading Task</h2>\n          <div id=\"task1-text-region\" class=\"info-box\">Lina is a university student who usually studies in the library after her classes. On Monday, she arrived at the library at 3:00 PM, spent one hour reading a research article, then worked on an assignment for two more hours. Before leaving, she borrowed a book about user experience design.</div>\n        </div>\n      ",
+      "response": 0,
+      "phase": "task1_reading",
+      "trial_type": "html-button-response",
+      "trial_index": 4,
+      "time_elapsed": 55911,
+      "internal_node_id": "0.0-4.0-0.0"
+    },
+    {
+      "phase": "task1_question",
+      "backtrack_only": true,
+      "trial_type": "survey-multi-choice",
+      "trial_index": 5,
+      "time_elapsed": 58677,
+      "internal_node_id": "0.0-4.0-1.0"
+    },
+    {
+      "rt": 7866,
+      "stimulus": "\n        <div class=\"card\">\n          <h2>Reading Task</h2>\n          <div id=\"task1-text-region\" class=\"info-box\">Lina is a university student who usually studies in the library after her classes. On Monday, she arrived at the library at 3:00 PM, spent one hour reading a research article, then worked on an assignment for two more hours. Before leaving, she borrowed a book about user experience design.</div>\n        </div>\n      ",
+      "response": 0,
+      "phase": "task1_reading",
+      "trial_type": "html-button-response",
+      "trial_index": 6,
+      "time_elapsed": 66544,
+      "internal_node_id": "0.0-4.1-0.1"
+    },
+    {
+      "rt": 3099,
+      "response": {
+        "task1_answer": "A book about user experience design"
+      },
+      "question_order": [
+        0
+      ],
+      "phase": "task1_question",
+      "trial_type": "survey-multi-choice",
+      "trial_index": 7,
+      "time_elapsed": 69644,
+      "internal_node_id": "0.0-4.1-1.1",
+      "user_answer": "A book about user experience design",
+      "correct_answer": "A book about user experience design",
+      "correct": 1,
+      "time_on_task_ms": 19315,
+      "question_time_ms": 3100,
+      "answer_changes": 0,
+      "backtracking": 1,
+      "hesitation": 0,
+      "errors": 0
+    },
+    {
+      "rt": 1098,
+      "stimulus": "\n        <div class=\"card\">\n          <h2>Task 2</h2>\n          <p>Read the information card and answer one question based on it.</p>\n        </div>\n      ",
+      "response": 0,
+      "phase": "task2_intro",
+      "trial_type": "html-button-response",
+      "trial_index": 8,
+      "time_elapsed": 70744,
+      "internal_node_id": "0.0-5.0"
+    },
+    {
+      "rt": 2266,
+      "stimulus": "\n        <div class=\"card\">\n          <h2>Workshop Information</h2>\n          <div id=\"task2-info-region\" class=\"info-box\">\n        <strong>Title:</strong> Introduction to Human-Computer Interaction<br>\n        <strong>Date:</strong> Thursday, May 15<br>\n        <strong>Time:</strong> 10:00 AM - 12:00 PM<br>\n        <strong>Location:</strong> Room B204<br>\n        <strong>Instructor:</strong> Dr. Sami\n      </div>\n        </div>\n      ",
+      "response": 0,
+      "phase": "task2_info",
+      "trial_type": "html-button-response",
+      "trial_index": 9,
+      "time_elapsed": 73010,
+      "internal_node_id": "0.0-6.0-0.0"
+    },
+    {
+      "rt": 3816,
+      "response": {
+        "task2_answer": "Room C301"
+      },
+      "question_order": [
+        0
+      ],
+      "phase": "task2_question",
+      "trial_type": "survey-multi-choice",
+      "trial_index": 10,
+      "time_elapsed": 76828,
+      "internal_node_id": "0.0-6.0-1.0",
+      "user_answer": "Room C301",
+      "correct_answer": "Room B204",
+      "correct": 0,
+      "time_on_task_ms": 7183,
+      "question_time_ms": 3816,
+      "answer_changes": 0,
+      "backtracking": 0,
+      "hesitation": 0,
+      "errors": 1
+    },
+    {
+      "rt": 3016,
+      "stimulus": "\n          <div class=\"card\">\n            <h2>Experiment Completed</h2>\n            <p>Here is a clear summary of your responses, behavioral metrics, and lightweight gaze indicators.</p>\n\n            <div class=\"summary-grid\">\n              <div class=\"summary-item\">\n                <span class=\"summary-label\">Age group</span>\n                <div class=\"summary-value\">25-34</div>\n              </div>\n\n              <div class=\"summary-item\">\n                <span class=\"summary-label\">Digital confidence</span>\n                <div class=\"summary-value\">Moderate</div>\n              </div>\n\n              <div class=\"summary-item\">\n                <span class=\"summary-label\">Preferred page style</span>\n                <div class=\"summary-value\">Simple page with fewer distractions</div>\n              </div>\n\n              <div class=\"summary-item\">\n                <span class=\"summary-label\">Guidance need</span>\n                <div class=\"summary-value\">Rarely</div>\n              </div>\n\n              <div class=\"summary-item\">\n                <span class=\"summary-label\">Distraction sensitivity</span>\n                <div class=\"summary-value\">Moderately</div>\n              </div>\n\n              <div class=\"summary-item\">\n                <span class=\"summary-label\">Dense-content comfort</span>\n                <div class=\"summary-value\">Neutral</div>\n              </div>\n\n              <div class=\"summary-item\">\n                <span class=\"summary-label\">Preferred content format</span>\n                <div class=\"summary-value\">Written text</div>\n              </div>\n\n              <div class=\"summary-item\">\n                <span class=\"summary-label\">Task 1 result</span>\n                <div class=\"summary-value\">\n                  <span class=\"status-pill status-correct\">Correct</span>\n                  <div class=\"metric-list\">\n                    <div class=\"metric-line\"><strong>Your answer:</strong> A book about user experience design</div>\n                    <div class=\"metric-line\"><strong>Correct answer:</strong> A book about user experience design</div>\n                    <div class=\"metric-line\"><strong>Time on task:</strong> 19.32 s</div>\n                    <div class=\"metric-line\"><strong>Question time:</strong> 3.10 s</div>\n                    <div class=\"metric-line\"><strong>Errors:</strong> 0</div>\n                    <div class=\"metric-line\"><strong>Answer changes:</strong> 0</div>\n                    <div class=\"metric-line\"><strong>Hesitation:</strong> No</div>\n                    <div class=\"metric-line\"><strong>Backtracking:</strong> Yes</div>\n                    <div class=\"metric-line\"><strong>Gaze samples:</strong> 0</div>\n                    <div class=\"metric-line\"><strong>On-target ratio:</strong> -</div>\n                  </div>\n                </div>\n              </div>\n\n              <div class=\"summary-item\">\n                <span class=\"summary-label\">Task 2 result</span>\n                <div class=\"summary-value\">\n                  <span class=\"status-pill status-wrong\">Incorrect</span>\n                  <div class=\"metric-list\">\n                    <div class=\"metric-line\"><strong>Your answer:</strong> Room C301</div>\n                    <div class=\"metric-line\"><strong>Correct answer:</strong> Room B204</div>\n                    <div class=\"metric-line\"><strong>Time on task:</strong> 7.18 s</div>\n                    <div class=\"metric-line\"><strong>Question time:</strong> 3.82 s</div>\n                    <div class=\"metric-line\"><strong>Errors:</strong> 1</div>\n                    <div class=\"metric-line\"><strong>Answer changes:</strong> 0</div>\n                    <div class=\"metric-line\"><strong>Hesitation:</strong> No</div>\n                    <div class=\"metric-line\"><strong>Backtracking:</strong> No</div>\n                    <div class=\"metric-line\"><strong>Gaze samples:</strong> 0</div>\n                    <div class=\"metric-line\"><strong>On-target ratio:</strong> -</div>\n                  </div>\n                </div>\n              </div>\n            </div>\n\n            <div class=\"score-box\">\n              <div><strong>Overall score: 1 / 2</strong></div>\n              <div style=\"margin-top:8px;\"><strong>Errors:</strong> 1</div>\n              <div style=\"margin-top:8px;\"><strong>WebGazer:</strong> Fallback mode</div>\n            </div>\n          </div>\n        ",
+      "response": 0,
+      "phase": "end_screen",
+      "trial_type": "html-button-response",
+      "trial_index": 11,
+      "time_elapsed": 79845,
+      "internal_node_id": "0.0-7.0"
+    }
+  ],
+  "gaze": {
+    "webgazer_ready": false,
+    "task1_reading": {
+      "metrics": {
+        "total_samples": 0,
+        "in_target_samples": 0,
+        "on_target_ratio": null
+      },
+      "raw_samples": []
+    },
+    "task2_info": {
+      "metrics": {
+        "total_samples": 0,
+        "in_target_samples": 0,
+        "on_target_ratio": null
+      },
+      "raw_samples": []
+    }
+  }
+}

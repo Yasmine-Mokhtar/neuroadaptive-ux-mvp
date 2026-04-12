@@ -1,0 +1,2470 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Neuroadaptive UX Experiment</title>
+
+    <link rel="icon" href="data:," />
+
+    <script src="https://unpkg.com/jspsych@7.3.4"></script>
+    <link href="https://unpkg.com/jspsych@7.3.4/css/jspsych.css" rel="stylesheet" />
+
+    <script src="https://unpkg.com/@jspsych/plugin-html-button-response@1.1.3"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-survey-html-form@1.0.3"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-survey-multi-choice@1.1.3"></script>
+
+    <script src="webgazer.js"></script>
+
+    <style>
+        :root {
+          --primary: #002957;
+          --accent: #F1563F;
+          --bg: #f4f7fb;
+          --card: #ffffff;
+          --text: #1f2937;
+          --muted: #667085;
+          --border: #d7deea;
+          --success-bg: #eef8f1;
+          --success-text: #166534;
+          --warning-bg: #fff8eb;
+          --warning-text: #b45309;
+          --error-bg: #fff1f0;
+          --error-text: #b42318;
+          --soft: #fbfcfe;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+          margin: 0;
+          background: var(--bg);
+          color: var(--text);
+          font-family: Arial, sans-serif;
+          transition: all 0.25s ease;
+        }
+
+        .jspsych-display-element {
+          font-size: 18px;
+          line-height: 1.7;
+        }
+
+        .jspsych-content-wrapper {
+          width: 100%;
+        }
+
+        .jspsych-content {
+          max-width: 980px;
+          width: 100%;
+          margin: 0 auto;
+          padding: 40px 24px 56px;
+        }
+
+        .card,
+        .form-card {
+          max-width: 760px;
+          margin: 0 auto;
+          background: var(--card);
+          border: 1px solid var(--border);
+          border-radius: 24px;
+          padding: 36px;
+          box-shadow: 0 10px 28px rgba(0, 41, 87, 0.06);
+          text-align: left;
+          transition: all 0.25s ease;
+        }
+
+        .card h1,
+        .card h2,
+        .card h3,
+        .form-card h1,
+        .form-card h2,
+        .form-card h3 {
+          margin: 0 0 14px 0;
+          color: var(--primary);
+          line-height: 1.25;
+          text-align: left;
+        }
+
+        .card h1,
+        .form-card h1 {
+          font-size: 34px;
+          font-weight: 800;
+        }
+
+        .card h2,
+        .form-card h2 {
+          font-size: 30px;
+          font-weight: 800;
+        }
+
+        .card h3,
+        .form-card h3 {
+          font-size: 24px;
+          font-weight: 700;
+        }
+
+        .card p,
+        .form-card p {
+          margin: 0 0 12px 0;
+          font-size: 18px;
+          line-height: 1.75;
+          text-align: left;
+        }
+
+        .muted { color: var(--muted); }
+
+        .small-note {
+          margin-top: 14px;
+          font-size: 14px;
+          color: var(--muted);
+          line-height: 1.6;
+        }
+
+        .compact-note {
+          margin-top: 8px;
+          font-size: 15px;
+          color: var(--muted);
+          line-height: 1.6;
+        }
+
+        .logo-wrap {
+          margin-bottom: 28px;
+        }
+
+        .logo-wrap img {
+          max-width: 320px;
+          height: auto;
+          display: block;
+        }
+
+        .info-box {
+          margin-top: 14px;
+          padding: 20px 22px;
+          border: 1px solid var(--border);
+          border-left: 6px solid var(--accent);
+          border-radius: 16px;
+          background: #fbfcfe;
+          line-height: 1.9;
+          transition: all 0.25s ease;
+        }
+
+        .adapted-info-box {
+          margin-top: 16px;
+          padding: 18px 20px;
+          border: 1px solid var(--border);
+          border-radius: 16px;
+          background: var(--soft);
+        }
+
+        .adapted-info-box strong {
+          color: var(--primary);
+        }
+
+        .key-points {
+          margin: 14px 0 0 0;
+          padding-left: 20px;
+          line-height: 1.85;
+        }
+
+        .mini-grid {
+          margin-top: 16px;
+          display: grid;
+          gap: 10px;
+        }
+
+        .mini-grid .mini-item {
+          padding: 14px 16px;
+          border: 1px solid var(--border);
+          border-radius: 14px;
+          background: #fff;
+        }
+
+        .field-group {
+          margin-bottom: 22px;
+          text-align: left;
+        }
+
+        .field-group:last-child {
+          margin-bottom: 28px;
+        }
+
+        .form-label {
+          display: block;
+          margin-bottom: 10px;
+          font-size: 18px;
+          font-weight: 700;
+          color: var(--primary);
+          line-height: 1.5;
+          text-align: left;
+        }
+
+        select {
+          width: 100%;
+          min-height: 54px;
+          padding: 12px 56px 12px 14px;
+          border: 1px solid var(--border);
+          border-radius: 14px;
+          background-color: #fff;
+          color: var(--text);
+          font-size: 17px;
+          outline: none;
+          appearance: none;
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 20 20'%3E%3Cpath fill='%23002957' d='M5.5 7.5L10 12l4.5-4.5' stroke='%23002957' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
+          background-repeat: no-repeat;
+          background-position: right 18px center;
+          background-size: 18px;
+        }
+
+        select:focus {
+          border-color: var(--accent);
+          box-shadow: 0 0 0 3px rgba(241, 86, 63, 0.12);
+        }
+
+        .jspsych-btn {
+          background: var(--primary);
+          color: #fff;
+          border: none;
+          border-radius: 12px;
+          min-height: 48px;
+          padding: 12px 24px;
+          font-size: 17px;
+          font-weight: 700;
+          cursor: pointer;
+          transition: background 0.2s ease;
+          margin-top: 14px;
+        }
+
+        .jspsych-btn:hover {
+          background: var(--accent);
+        }
+
+        .secondary-btn {
+          background: #fff !important;
+          color: var(--primary) !important;
+          border: 1px solid var(--border) !important;
+        }
+
+        .secondary-btn:hover {
+          background: #f8fafc !important;
+          color: var(--primary) !important;
+        }
+
+        .jspsych-survey-html-form {
+          max-width: 760px;
+          margin: 0 auto;
+        }
+
+        .jspsych-survey-html-form .jspsych-btn {
+          display: block;
+          margin: 88px auto 0 !important;
+          min-width: 190px;
+        }
+
+        .form-card {
+          padding-bottom: 100px !important;
+        }
+
+        .jspsych-survey-multi-choice-question {
+          max-width: 760px;
+          margin: 0 auto 20px auto !important;
+          background: var(--card);
+          border: 1px solid var(--border);
+          border-radius: 24px;
+          padding: 30px 28px !important;
+          box-shadow: 0 10px 28px rgba(0, 41, 87, 0.06);
+          text-align: left !important;
+        }
+
+        .jspsych-survey-multi-choice-text {
+          margin-bottom: 18px !important;
+          text-align: left !important;
+        }
+
+        .jspsych-survey-multi-choice-text span:first-child {
+          font-size: 19px;
+          font-weight: 700;
+          color: var(--primary);
+          line-height: 1.6;
+        }
+
+        .jspsych-survey-multi-choice-text span.required {
+          color: var(--accent);
+          margin-left: 4px;
+        }
+
+        .jspsych-survey-multi-choice-option {
+          display: flex !important;
+          align-items: center !important;
+          margin: 14px 0 !important;
+          padding: 16px 18px;
+          border: 1px solid var(--border);
+          border-radius: 16px;
+          background: #fff;
+          transition: border-color 0.2s ease, background 0.2s ease;
+        }
+
+        .jspsych-survey-multi-choice-option:hover {
+          border-color: var(--accent);
+          background: #fff8f6;
+        }
+
+        .jspsych-survey-multi-choice-option input[type="radio"] {
+          margin: 0 18px 0 0 !important;
+          width: 22px;
+          height: 22px;
+          min-width: 22px;
+          accent-color: var(--accent);
+          flex-shrink: 0;
+        }
+
+        .jspsych-survey-multi-choice-option label {
+          margin: 0 !important;
+          padding-left: 0 !important;
+          font-size: 18px;
+          font-weight: 600;
+          color: var(--text);
+          line-height: 1.55;
+          width: 100%;
+          cursor: pointer;
+        }
+
+        #jspsych-survey-multi-choice-next {
+          display: inline-block;
+          margin: 32px 0 0;
+          min-width: 150px;
+        }
+
+        .button-row {
+          display: flex;
+          gap: 12px;
+          justify-content: center;
+          flex-wrap: wrap;
+          margin-top: 32px;
+        }
+
+        .summary-grid {
+          display: grid;
+          gap: 14px;
+          margin-top: 18px;
+        }
+
+        .summary-item {
+          padding: 16px 18px;
+          border: 1px solid var(--border);
+          border-radius: 16px;
+          background: #fbfcfe;
+        }
+
+        .summary-label {
+          display: block;
+          font-size: 15px;
+          font-weight: 700;
+          color: var(--muted);
+          margin-bottom: 6px;
+          text-transform: uppercase;
+          letter-spacing: 0.03em;
+        }
+
+        .summary-value {
+          font-size: 18px;
+          font-weight: 600;
+          color: var(--text);
+          line-height: 1.6;
+        }
+
+        .status-pill {
+          display: inline-block;
+          padding: 6px 12px;
+          border-radius: 999px;
+          font-size: 15px;
+          font-weight: 700;
+        }
+
+        .status-correct {
+          background: var(--success-bg);
+          color: var(--success-text);
+        }
+
+        .status-wrong {
+          background: var(--error-bg);
+          color: var(--error-text);
+        }
+
+        .score-box,
+        .comparison-box,
+        .recommendation-panel,
+        .save-status-box {
+          margin-top: 18px;
+          padding: 18px 20px;
+          border-radius: 18px;
+          border: 1px solid var(--border);
+          background: #fbfcfe;
+        }
+
+        .score-box {
+          background: linear-gradient(135deg, rgba(0,41,87,0.06), rgba(241,86,63,0.08));
+        }
+
+        .metric-list {
+          margin-top: 10px;
+          display: grid;
+          gap: 8px;
+        }
+
+        .metric-line {
+          font-size: 16px;
+          line-height: 1.5;
+        }
+
+        .status-ok {
+          color: var(--success-text);
+          font-weight: 700;
+        }
+
+        .status-fallback {
+          color: var(--warning-text);
+          font-weight: 700;
+        }
+
+        .lang-overlay {
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 24px;
+          background: var(--bg);
+        }
+
+        .lang-card {
+          width: 100%;
+          max-width: 680px;
+          background: var(--card);
+          border: 1px solid var(--border);
+          border-radius: 24px;
+          padding: 36px;
+          box-shadow: 0 10px 28px rgba(0, 41, 87, 0.06);
+        }
+
+        .lang-title {
+          font-size: 32px;
+          font-weight: 800;
+          color: var(--primary);
+          margin: 0 0 14px 0;
+        }
+
+        .lang-text {
+          font-size: 18px;
+          line-height: 1.75;
+          color: var(--text);
+          margin: 0 0 22px 0;
+        }
+
+        .lang-buttons {
+          display: flex;
+          gap: 14px;
+          flex-wrap: wrap;
+          margin-top: 18px;
+        }
+
+        .lang-buttons button {
+          background: var(--primary);
+          color: #fff;
+          border: none;
+          border-radius: 12px;
+          min-height: 52px;
+          padding: 12px 22px;
+          font-size: 18px;
+          font-weight: 700;
+          cursor: pointer;
+          transition: background 0.2s ease;
+        }
+
+        .lang-buttons button:hover {
+          background: var(--accent);
+        }
+
+        .calibration-area {
+          position: relative;
+          height: 420px;
+          margin-top: 18px;
+          border: 1px dashed var(--border);
+          border-radius: 18px;
+          background: #fff;
+        }
+
+        .calibration-dot {
+          position: absolute;
+          width: 24px;
+          height: 24px;
+          border: none;
+          border-radius: 999px;
+          background: var(--accent);
+          transform: translate(-50%, -50%);
+          cursor: pointer;
+          opacity: 0.45;
+          box-shadow: 0 0 0 8px rgba(241, 86, 63, 0.08);
+        }
+
+        .calibration-dot:hover {
+          opacity: 0.8;
+        }
+
+        .calibration-dot.calibration-done {
+          background: var(--primary);
+          opacity: 1;
+          box-shadow: 0 0 0 10px rgba(0, 41, 87, 0.10);
+        }
+
+        #webgazerVideoContainer {
+          position: fixed !important;
+          left: 16px !important;
+          top: 92px !important;
+          width: 260px !important;
+          height: 195px !important;
+          min-height: 195px !important;
+          z-index: 9999 !important;
+          border-radius: 16px !important;
+          overflow: hidden !important;
+          box-shadow: 0 10px 28px rgba(0, 41, 87, 0.12) !important;
+          border: 1px solid var(--border) !important;
+          background: #fff !important;
+        }
+
+        #webgazerVideoFeed,
+        #webgazerVideoCanvas,
+        #webgazerFaceOverlay {
+          width: 100% !important;
+          height: 100% !important;
+          display: block !important;
+        }
+
+        #webgazerVideoFeed {
+          object-fit: cover !important;
+          transform: scaleX(-1);
+        }
+
+        #webgazerFaceFeedbackBox {
+          z-index: 10000 !important;
+        }
+
+        #webgazerGazeDot {
+          z-index: 10001 !important;
+        }
+
+        .recommended-mode-badge {
+          display: inline-block;
+          padding: 6px 12px;
+          border-radius: 999px;
+          background: rgba(241, 86, 63, 0.12);
+          color: #F1563F;
+          font-weight: 800;
+          text-transform: uppercase;
+          letter-spacing: 0.03em;
+        }
+
+        .hidden-final-btn {
+          display: none !important;
+        }
+
+        .ui-standard .card,
+        .ui-standard .form-card {
+          max-width: 760px;
+        }
+
+        .ui-guided .card,
+        .ui-guided .form-card,
+        .ui-guided .jspsych-survey-multi-choice-question {
+          border-left: 8px solid var(--accent);
+        }
+
+        .ui-guided .info-box {
+          font-size: 20px;
+          line-height: 2;
+        }
+
+        .ui-guided .adapted-info-box {
+          background: #fff8f6;
+          border-left: 6px solid var(--accent);
+        }
+
+        .ui-guided .jspsych-btn {
+          min-height: 52px;
+          font-size: 18px;
+        }
+
+        .ui-reduced {
+          background: #ffffff;
+        }
+
+        .ui-reduced .card,
+        .ui-reduced .form-card,
+        .ui-reduced .jspsych-survey-multi-choice-question {
+          max-width: 680px;
+          box-shadow: none;
+        }
+
+        .ui-reduced .info-box {
+          font-size: 20px;
+          line-height: 2;
+          background: #fff;
+          border-left-width: 8px;
+        }
+
+        .ui-reduced .adapted-info-box {
+          background: #fff;
+          box-shadow: none;
+        }
+
+        .ui-reduced .jspsych-content {
+          max-width: 860px;
+        }
+
+        .soft-divider {
+          height: 1px;
+          background: var(--border);
+          margin: 18px 0;
+        }
+
+        @media (max-width: 1100px) {
+          #webgazerVideoContainer {
+            width: 200px !important;
+            height: 150px !important;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .jspsych-content {
+            padding: 26px 16px 40px;
+          }
+
+          .card,
+          .form-card,
+          .jspsych-survey-multi-choice-question,
+          .lang-card {
+            padding: 24px 20px !important;
+            border-radius: 18px;
+          }
+
+          .card h1,
+          .form-card h1,
+          .lang-title {
+            font-size: 28px;
+          }
+
+          .card h2,
+          .form-card h2 {
+            font-size: 25px;
+          }
+
+          .card p,
+          .form-card p,
+          .form-label,
+          .jspsych-survey-multi-choice-option label,
+          .lang-text {
+            font-size: 17px;
+          }
+
+          .calibration-area {
+            height: 340px;
+          }
+
+          #webgazerVideoContainer {
+            width: 150px !important;
+            height: 112px !important;
+            left: 10px !important;
+            top: 90px !important;
+          }
+        }
+    </style>
+</head>
+<body class="ui-standard"></body>
+
+<script>
+    const API_BASE_URL = "http://localhost:8000";
+
+    const RECOMMENDED_UI_URLS = {
+      standard: "https://xn--standard-jyvskyl-6nbe.framer.ai/",
+      guided: "https://xn--guided-jyvskyl-fibe.framer.ai/",
+      "reduced-distraction": "https://xn--reduced-distraction-jyvskyl-xkce.framer.ai/"
+    };
+
+    const HESITATION_THRESHOLD_MS = 12000;
+    const GAZE_SAMPLE_MS = 50;
+
+    const SHOW_FACE_BOX_IN_TASKS = true;
+    const SHOW_FACE_MESH_IN_TASKS = false;
+    const SHOW_GAZE_DOT_IN_TASKS = false;
+
+    function getOrCreatePersistentId(key) {
+      let value = localStorage.getItem(key);
+      if (!value) {
+        value = crypto.randomUUID();
+        localStorage.setItem(key, value);
+      }
+      return value;
+    }
+
+    const PARTICIPANT_ID = getOrCreatePersistentId("participant_id");
+    const SESSION_ID = crypto.randomUUID();
+
+    let currentLang = "en";
+    let jsPsych = null;
+    let webgazerReady = false;
+    let webgazerInitialized = false;
+    let webgazerPredictionCount = 0;
+    let webgazerStreamLive = false;
+    let currentGazePhase = null;
+    let currentGazeStartedAt = null;
+    let latestRecommendation = "standard";
+    let latestRecommendationMeta = null;
+    let latestProfileSummary = null;
+
+    const STRINGS = {
+      en: {
+        choose_language_title: "Choose demo language",
+        choose_language_text: "Select the language you want to use in the MVP demo.",
+        lang_en: "English",
+        lang_fi: "Suomi",
+
+        welcome_title: "Welcome to the University of Jyväskylä",
+        welcome_text_1: "Thank you for taking part in this short research demo.",
+        welcome_text_2: "This prototype demonstrates baseline profiling, browser-based gaze capture, adaptive recommendation, and an immediate validation task under the recommended interface.",
+        welcome_profile: "Participant profile",
+        welcome_profile_id: "Participant ID",
+        welcome_profile_sessions: "Previous completed sessions",
+        welcome_profile_baseline: "Baseline ready",
+
+        prototype_title: "Prototype Check",
+        prototype_text_1: "This MVP runs in the browser and connects to a backend for saving data, building a participant profile, and generating an adaptive recommendation.",
+        prototype_text_2: "The camera starts here. A short calibration step comes next before gaze-based reading analysis begins.",
+        prototype_ready: "Camera preview is visible.",
+        prototype_ready_note: "A short calibration step comes next. Gaze capture will be attempted during the reading tasks.",
+        prototype_fallback: "Camera check was inconclusive.",
+        prototype_fallback_note: "The demo will continue, and gaze capture will still be attempted during the reading tasks.",
+
+        calibration_title: "WebGazer Calibration",
+        calibration_text: "Look directly at each dot and click it twice while keeping your gaze on it. The face box and facial overlay remain visible here to support calibration quality.",
+        calibration_progress: "Calibration progress",
+        calibration_done: "Calibration complete. You can continue.",
+
+        baseline_title: "Baseline Questions",
+        baseline_text: "These questions capture stable preferences that help initialize the adaptive logic.",
+
+        age_group: "Age group",
+        age_placeholder: "Select age group",
+        digital_conf: "How confident are you with reading information on websites?",
+        digital_conf_placeholder: "Select confidence level",
+        page_style: "Which page style helps you most?",
+        page_style_placeholder: "Select preferred page style",
+        guidance_need: "How often do you need clear instructions in a new task?",
+        guidance_need_placeholder: "Select guidance level",
+        distraction: "How easily do screen elements distract you?",
+        distraction_placeholder: "Select distraction level",
+        dense_content: "How comfortable are you with text-heavy pages?",
+        dense_content_placeholder: "Select comfort level",
+        content_format: "Which content format helps you most?",
+        content_format_placeholder: "Select preferred content format",
+
+        task1_intro_title: "Task 1",
+        task1_intro_text: "Read the paragraph carefully, then answer one question.",
+        task1_read_btn: "Go to Question",
+        task1_back_btn: "Back to text",
+        task1_para_title: "Reading Task",
+        task1_para: "Lina is a university student who usually studies in the library after her classes. On Monday, she arrived at the library at 3:00 PM, spent one hour reading a research article, then worked on an assignment for two more hours. Before leaving, she borrowed a book about user experience design.",
+        task1_q: "What book did Lina borrow before leaving?",
+        task1_a1: "A book about psychology",
+        task1_a2: "A book about user experience design",
+        task1_a3: "A book about programming",
+        task1_a4: "A book about marketing",
+
+        task2_intro_title: "Task 2",
+        task2_intro_text: "Read the information card and answer one question based on it.",
+        task2_back_btn: "Back to info",
+        task2_info_title: "Workshop Information",
+        task2_info: `
+          <strong>Title:</strong> Introduction to Human-Computer Interaction<br>
+          <strong>Date:</strong> Thursday, May 15<br>
+          <strong>Time:</strong> 10:00 AM - 12:00 PM<br>
+          <strong>Location:</strong> Room B204<br>
+          <strong>Instructor:</strong> Dr. Sami
+        `,
+        task2_q: "Where will the workshop take place?",
+        task2_a1: "Room A102",
+        task2_a2: "Room B204",
+        task2_a3: "Room C301",
+        task2_a4: "Main Hall",
+
+        task3_intro_title: "Task 3 — Adapted Validation",
+        task3_intro_text: "The interface will now switch to the recommended mode for one short validation task. This lets the system compare performance before and after adaptation.",
+        task3_info_title: "Validation Task",
+        task3_read_btn: "Go to Question",
+        task3_back_btn: "Back to content",
+        task3_q: "Where will the study skills clinic take place?",
+        task3_a1: "Room A210",
+        task3_a2: "Room C115",
+        task3_a3: "Room D402",
+        task3_a4: "Main Auditorium",
+
+        recommendation_title: "Adaptive Recommendation",
+        recommendation_loading: "Analyzing Tasks 1–2 and requesting a recommendation...",
+        recommendation_label: "Recommended UI mode",
+        recommendation_source: "Recommendation source",
+        recommendation_rule: "Rule-based initialization",
+        recommendation_baseline: "Baseline-sensitive adjustment",
+        recommendation_sessions: "Previous completed sessions",
+        recommendation_baseline_ready: "Baseline ready",
+        recommendation_next: "The next task will run locally under this recommended interface so the experiment can compare performance before and after adaptation.",
+
+        end_title: "Experiment Summary",
+        end_text: "This screen summarizes behavioural performance, gaze-derived indicators, and the validation result after local adaptation.",
+        end_backend_title: "Save Results",
+        end_backend_loading: "Saving full experiment data and updating the participant profile...",
+        end_backend_saved: "Experiment saved successfully.",
+        end_backend_label: "Recommended UI mode",
+
+        summary_task1: "Task 1 result",
+        summary_task2: "Task 2 result",
+        summary_task3: "Task 3 result",
+        summary_answer: "Your answer",
+        summary_correct_answer: "Correct answer",
+        summary_score: "Overall score",
+
+        validation_title: "Pre/Post Adaptation Comparison",
+        validation_pre: "Pre-adaptation average question time",
+        validation_post: "Task 3 question time",
+        validation_pre_error: "Pre-adaptation total errors",
+        validation_post_error: "Task 3 errors",
+        validation_pre_focus: "Pre-adaptation average gaze ratio",
+        validation_post_focus: "Task 3 gaze ratio",
+        validation_speed_improved: "Faster than pre-adaptation average",
+        validation_accuracy_improved: "Accuracy better than pre-adaptation average",
+        validation_focus_improved: "Focus better than pre-adaptation average",
+
+        metric_time_on_task: "Time on task",
+        metric_errors: "Errors",
+        metric_changes: "Answer changes",
+        metric_hesitation: "Hesitation",
+        metric_backtracking: "Backtracking",
+        metric_question_time: "Question time",
+        metric_gaze_status: "WebGazer",
+        metric_gaze_samples: "Gaze samples",
+        metric_on_target_ratio: "On-target ratio",
+        metric_first_fixation: "First fixation latency",
+        metric_dwell_time: "Dwell time on target",
+        metric_no_gaze_samples: "Gaze data were unavailable for this screen in this run.",
+
+        yes: "Yes",
+        no: "No",
+        correct: "Correct",
+        wrong: "Incorrect",
+        enabled: "Enabled",
+        fallback: "Fallback mode",
+
+        save_no_recommendation: "Data saved successfully, but no recommendation was returned by the backend.",
+        save_failed: "Save failed",
+        save_backend_hint: "Check that the backend server is still running and that API_BASE_URL is correct.",
+
+        redirect_note: "Your recommended interface has been identified.",
+        redirect_btn: "Open recommended interface",
+        open_debug_btn: "Open Gaze Debug View",
+        finish_btn: "Finish",
+        continue_btn: "Continue"
+      },
+
+      fi: {
+        choose_language_title: "Valitse demon kieli",
+        choose_language_text: "Valitse kieli, jota haluat käyttää MVP-demossa.",
+        lang_en: "English",
+        lang_fi: "Suomi",
+
+        welcome_title: "Tervetuloa Jyväskylän yliopistoon",
+        welcome_text_1: "Kiitos, että osallistut tähän lyhyeen tutkimusdemoon.",
+        welcome_text_2: "Tämä prototyyppi esittelee lähtöprofiilin muodostusta, selainpohjaista katseenseurantaa, adaptiivista suositusta ja välitöntä validointitehtävää suositellulla käyttöliittymällä.",
+        welcome_profile: "Osallistujaprofiili",
+        welcome_profile_id: "Osallistujatunnus",
+        welcome_profile_sessions: "Aiemmin suoritetut sessiot",
+        welcome_profile_baseline: "Baseline valmis",
+
+        prototype_title: "Prototyypin tarkistus",
+        prototype_text_1: "Tämä MVP toimii selaimessa ja yhdistyy taustapalveluun datan tallentamista, osallistujaprofiilin rakentamista ja adaptiivisen suosituksen muodostamista varten.",
+        prototype_text_2: "Kamera käynnistyy tässä. Sen jälkeen tehdään lyhyt kalibrointi ennen katseeseen perustuvaa lukuanalyysiä.",
+        prototype_ready: "Kameran esikatselu näkyy.",
+        prototype_ready_note: "Seuraavaksi tehdään lyhyt kalibrointi. Katseen tallennusta yritetään lukutehtävien aikana.",
+        prototype_fallback: "Kameratarkistus ei ollut yksiselitteinen.",
+        prototype_fallback_note: "Demo jatkuu, ja katseen tallennusta yritetään silti lukutehtävien aikana.",
+
+        calibration_title: "WebGazer-kalibrointi",
+        calibration_text: "Katso suoraan jokaista pistettä ja klikkaa sitä kaksi kertaa pitäen katseen siinä. Kasvoboksi ja kasvojen overlay pysyvät näkyvissä kalibroinnin tueksi.",
+        calibration_progress: "Kalibroinnin eteneminen",
+        calibration_done: "Kalibrointi valmis. Voit jatkaa.",
+
+        baseline_title: "Lähtötason kysymykset",
+        baseline_text: "Nämä kysymykset kartoittavat suhteellisen pysyviä mieltymyksiä, joita käytetään adaptiivisen logiikan alustamiseen.",
+
+        age_group: "Ikäryhmä",
+        age_placeholder: "Valitse ikäryhmä",
+        digital_conf: "Kuinka varma olet lukiessasi verkkosivujen sisältöä?",
+        digital_conf_placeholder: "Valitse varmuustaso",
+        page_style: "Millainen sivutyyli auttaa sinua eniten?",
+        page_style_placeholder: "Valitse mieluisin sivutyyli",
+        guidance_need: "Kuinka usein tarvitset selkeitä ohjeita uudessa tehtävässä?",
+        guidance_need_placeholder: "Valitse ohjauksen tarve",
+        distraction: "Kuinka helposti ruudun elementit häiritsevät sinua?",
+        distraction_placeholder: "Valitse häiriötaso",
+        dense_content: "Kuinka mukavalta tekstipainotteiset sivut tuntuvat?",
+        dense_content_placeholder: "Valitse mukavuustaso",
+        content_format: "Mikä sisältömuoto auttaa sinua eniten?",
+        content_format_placeholder: "Valitse mieluisin sisältömuoto",
+
+        task1_intro_title: "Tehtävä 1",
+        task1_intro_text: "Lue kappale huolellisesti ja vastaa sitten yhteen kysymykseen.",
+        task1_read_btn: "Siirry kysymykseen",
+        task1_back_btn: "Takaisin tekstiin",
+        task1_para_title: "Lukutehtävä",
+        task1_para: "Lina on yliopisto-opiskelija, joka opiskelee yleensä kirjastossa luentojen jälkeen. Maanantaina hän saapui kirjastoon klo 15.00, käytti yhden tunnin tutkimusartikkelin lukemiseen ja työskenteli sen jälkeen kaksi tuntia tehtävän parissa. Ennen lähtöään hän lainasi kirjan käyttökokemuksen suunnittelusta.",
+        task1_q: "Minkä kirjan Lina lainasi ennen lähtöään?",
+        task1_a1: "Kirjan psykologiasta",
+        task1_a2: "Kirjan käyttökokemuksen suunnittelusta",
+        task1_a3: "Kirjan ohjelmoinnista",
+        task1_a4: "Kirjan markkinoinnista",
+
+        task2_intro_title: "Tehtävä 2",
+        task2_intro_text: "Lue tietokortti ja vastaa siihen perustuvaan kysymykseen.",
+        task2_back_btn: "Takaisin tietoihin",
+        task2_info_title: "Työpajan tiedot",
+        task2_info: `
+          <strong>Otsikko:</strong> Johdatus ihmisen ja tietokoneen vuorovaikutukseen<br>
+          <strong>Päivä:</strong> Torstai, 15. toukokuuta<br>
+          <strong>Aika:</strong> 10.00–12.00<br>
+          <strong>Paikka:</strong> Huone B204<br>
+          <strong>Kouluttaja:</strong> Dr. Sami
+        `,
+        task2_q: "Missä työpaja järjestetään?",
+        task2_a1: "Huone A102",
+        task2_a2: "Huone B204",
+        task2_a3: "Huone C301",
+        task2_a4: "Pääsali",
+
+        task3_intro_title: "Tehtävä 3 — Adaptoitu validointi",
+        task3_intro_text: "Käyttöliittymä vaihtuu nyt suositeltuun tilaan yhtä lyhyttä validointitehtävää varten. Tämän avulla järjestelmä voi verrata suoriutumista ennen ja jälkeen adaptaation.",
+        task3_info_title: "Validointitehtävä",
+        task3_read_btn: "Siirry kysymykseen",
+        task3_back_btn: "Takaisin sisältöön",
+        task3_q: "Missä opiskelutaitoklinikka järjestetään?",
+        task3_a1: "Huone A210",
+        task3_a2: "Huone C115",
+        task3_a3: "Huone D402",
+        task3_a4: "Pääauditorio",
+
+        recommendation_title: "Adaptiivinen suositus",
+        recommendation_loading: "Analysoidaan tehtäviä 1–2 ja pyydetään suositusta...",
+        recommendation_label: "Suositeltu käyttöliittymätila",
+        recommendation_source: "Suosituksen lähde",
+        recommendation_rule: "Sääntöpohjainen alustus",
+        recommendation_baseline: "Baseline-herkkä säätö",
+        recommendation_sessions: "Aiemmin suoritetut sessiot",
+        recommendation_baseline_ready: "Baseline valmis",
+        recommendation_next: "Seuraava tehtävä suoritetaan paikallisesti tällä suositellulla käyttöliittymällä, jotta koe voi verrata suoriutumista ennen ja jälkeen adaptaation.",
+
+        end_title: "Kokeen yhteenveto",
+        end_text: "Tämä näkymä näyttää käyttäytymisdatan, katseesta johdetut indikaattorit ja paikallisen adaptaation jälkeisen validointituloksen.",
+        end_backend_title: "Tallenna tulokset",
+        end_backend_loading: "Tallennetaan koko kokeen data ja päivitetään osallistujaprofiilia...",
+        end_backend_saved: "Koe tallennettu onnistuneesti.",
+        end_backend_label: "Suositeltu käyttöliittymätila",
+
+        summary_task1: "Tehtävän 1 tulos",
+        summary_task2: "Tehtävän 2 tulos",
+        summary_task3: "Tehtävän 3 tulos",
+        summary_answer: "Vastauksesi",
+        summary_correct_answer: "Oikea vastaus",
+        summary_score: "Kokonaispisteet",
+
+        validation_title: "Vertailu ennen/jälkeen adaptaation",
+        validation_pre: "Kysymysajan keskiarvo ennen adaptaatiota",
+        validation_post: "Tehtävän 3 kysymysaika",
+        validation_pre_error: "Virheet ennen adaptaatiota yhteensä",
+        validation_post_error: "Tehtävän 3 virheet",
+        validation_pre_focus: "Katseration keskiarvo ennen adaptaatiota",
+        validation_post_focus: "Tehtävän 3 katseratio",
+        validation_speed_improved: "Nopeampi kuin aiempi keskiarvo",
+        validation_accuracy_improved: "Tarkkuus parempi kuin aiempi keskiarvo",
+        validation_focus_improved: "Fokus parempi kuin aiempi keskiarvo",
+
+        metric_time_on_task: "Tehtävään kulunut aika",
+        metric_errors: "Virheet",
+        metric_changes: "Vastausmuutokset",
+        metric_hesitation: "Epäröinti",
+        metric_backtracking: "Paluut takaisin",
+        metric_question_time: "Kysymykseen kulunut aika",
+        metric_gaze_status: "WebGazer",
+        metric_gaze_samples: "Katseen näytteet",
+        metric_on_target_ratio: "Kohdealueen osuus",
+        metric_first_fixation: "Ensimmäisen fiksaation viive",
+        metric_dwell_time: "Kohdealueella vietetty aika",
+        metric_no_gaze_samples: "Katsetietoa ei ollut saatavilla tälle näytölle tällä ajokerralla.",
+
+        yes: "Kyllä",
+        no: "Ei",
+        correct: "Oikein",
+        wrong: "Väärin",
+        enabled: "Käytössä",
+        fallback: "Varatila",
+
+        save_no_recommendation: "Data tallennettiin onnistuneesti, mutta taustapalvelu ei palauttanut suositusta.",
+        save_failed: "Tallennus epäonnistui",
+        save_backend_hint: "Tarkista, että palvelin on käynnissä ja että API_BASE_URL on oikein.",
+
+        redirect_note: "Suositeltu käyttöliittymä on tunnistettu.",
+        redirect_btn: "Avaa suositeltu käyttöliittymä",
+        open_debug_btn: "Avaa Gaze Debug View",
+        finish_btn: "Lopeta",
+        continue_btn: "Jatka"
+      }
+    };
+
+    const OPTION_LABELS = {
+      age_group: {
+        "18-24": { en: "18-24", fi: "18–24" },
+        "25-34": { en: "25-34", fi: "25–34" },
+        "35-44": { en: "35-44", fi: "35–44" },
+        "45-54": { en: "45-54", fi: "45–54" },
+        "55+": { en: "55+", fi: "55+" }
+      },
+      digital_confidence: {
+        "Very low": { en: "Very low", fi: "Erittäin heikko" },
+        "Low": { en: "Low", fi: "Heikko" },
+        "Moderate": { en: "Moderate", fi: "Kohtalainen" },
+        "High": { en: "High", fi: "Hyvä" },
+        "Very high": { en: "Very high", fi: "Erittäin hyvä" }
+      },
+      page_style: {
+        "Clear sections and headings": { en: "Clear sections and headings", fi: "Selkeät osiot ja otsikot" },
+        "Step-by-step guidance": { en: "Step-by-step guidance", fi: "Vaiheittainen ohjaus" },
+        "Simple page with fewer distractions": { en: "Simple page with fewer distractions", fi: "Yksinkertainen sivu, jossa vähemmän häiriöitä" },
+        "Full detailed text": { en: "Full detailed text", fi: "Täydellinen yksityiskohtainen teksti" },
+        "Visual highlights and summaries": { en: "Visual highlights and summaries", fi: "Visuaaliset korostukset ja tiivistelmät" }
+      },
+      guidance_need: {
+        "Never": { en: "Never", fi: "En koskaan" },
+        "Rarely": { en: "Rarely", fi: "Harvoin" },
+        "Sometimes": { en: "Sometimes", fi: "Joskus" },
+        "Often": { en: "Often", fi: "Usein" },
+        "Very often": { en: "Very often", fi: "Erittäin usein" }
+      },
+      screen_distraction: {
+        "Not at all": { en: "Not at all", fi: "Ei lainkaan" },
+        "Slightly": { en: "Slightly", fi: "Hieman" },
+        "Moderately": { en: "Moderately", fi: "Kohtalaisesti" },
+        "Easily": { en: "Easily", fi: "Helposti" },
+        "Very easily": { en: "Very easily", fi: "Erittäin helposti" }
+      },
+      dense_content_tolerance: {
+        "Very uncomfortable": { en: "Very uncomfortable", fi: "Erittäin epämukava" },
+        "Uncomfortable": { en: "Uncomfortable", fi: "Epämukava" },
+        "Neutral": { en: "Neutral", fi: "Neutraali" },
+        "Comfortable": { en: "Comfortable", fi: "Mukava" },
+        "Very comfortable": { en: "Very comfortable", fi: "Erittäin mukava" }
+      },
+      content_format: {
+        "Written text": { en: "Written text", fi: "Kirjoitettu teksti" },
+        "Visual summaries / infographics": { en: "Visual summaries / infographics", fi: "Visuaaliset tiivistelmät / infografiikat" },
+        "Audio / video explanation": { en: "Audio / video explanation", fi: "Ääni- / videoselitys" },
+        "Interactive activities": { en: "Interactive activities", fi: "Interaktiiviset tehtävät" }
+      }
+    };
+
+    function s(key) {
+      return STRINGS[currentLang][key] || key;
+    }
+
+    function renderOptionTags(field) {
+      return Object.keys(OPTION_LABELS[field])
+        .map(value => `<option value="${value}">${OPTION_LABELS[field][value][currentLang]}</option>`)
+        .join("");
+    }
+
+    function average(values) {
+      const valid = values
+        .map(v => Number(v))
+        .filter(v => Number.isFinite(v));
+      if (!valid.length) return null;
+      return Number((valid.reduce((a, b) => a + b, 0) / valid.length).toFixed(2));
+    }
+
+    function getLastFinalTrial(allData, phase) {
+      return [...allData].reverse().find(d => d.phase === phase && !d.backtrack_only);
+    }
+
+    function serializeTaskResult(trial) {
+      if (!trial) return null;
+      return {
+        answer: trial.user_answer || null,
+        correct_answer: trial.correct_answer || null,
+        correct: trial.correct || 0,
+        time_on_task_ms: trial.time_on_task_ms || null,
+        question_time_ms: trial.question_time_ms || null,
+        answer_changes: trial.answer_changes || 0,
+        backtracking: trial.backtracking || 0,
+        hesitation: trial.hesitation || 0,
+        errors: trial.errors || 0
+      };
+    }
+
+    const metrics = {
+      task1: { startTime: null, questionStartTime: null, answerChanges: 0, backtracking: 0, firstSelectionMade: false },
+      task2: { startTime: null, questionStartTime: null, answerChanges: 0, backtracking: 0, firstSelectionMade: false },
+      task3: { startTime: null, questionStartTime: null, answerChanges: 0, backtracking: 0, firstSelectionMade: false }
+    };
+
+    const gazeStore = {
+      task1_reading: [],
+      task2_info: [],
+      task3_validation: []
+    };
+
+    const gazeRegions = {
+      task1_reading: null,
+      task2_info: null,
+      task3_validation: null
+    };
+
+    const gazeSummary = {
+      task1_reading: null,
+      task2_info: null,
+      task3_validation: null
+    };
+
+    function nowMs() {
+      return performance.now();
+    }
+
+    function msToSec(ms) {
+      if (ms === null || ms === undefined) return "-";
+      return `${(ms / 1000).toFixed(2)} s`;
+    }
+
+    function yesNo(value) {
+      return value ? s("yes") : s("no");
+    }
+
+    function applyRecommendedUI(uiMode) {
+      document.body.classList.remove("ui-standard", "ui-guided", "ui-reduced");
+      if (uiMode === "guided") {
+        document.body.classList.add("ui-guided");
+      } else if (uiMode === "reduced-distraction") {
+        document.body.classList.add("ui-reduced");
+      } else {
+        document.body.classList.add("ui-standard");
+      }
+    }
+
+    function getStoredUIMode() {
+      return localStorage.getItem("recommended_ui") || "standard";
+    }
+
+    function safeWebGazerCall(methodName, value) {
+      try {
+        if (window.webgazer && typeof window.webgazer[methodName] === "function") {
+          return window.webgazer[methodName](value);
+        }
+      } catch (error) {
+        console.warn(`WebGazer method failed: ${methodName}`, error);
+      }
+      return null;
+    }
+
+    function showCalibrationCameraUI() {
+      safeWebGazerCall("showVideo", true);
+      safeWebGazerCall("showFaceFeedbackBox", true);
+      safeWebGazerCall("showFaceOverlay", true);
+      safeWebGazerCall("showPredictionPoints", false);
+    }
+
+    function showTaskCameraUI() {
+      safeWebGazerCall("showVideo", true);
+      safeWebGazerCall("showFaceFeedbackBox", SHOW_FACE_BOX_IN_TASKS);
+      safeWebGazerCall("showFaceOverlay", SHOW_FACE_MESH_IN_TASKS);
+      safeWebGazerCall("showPredictionPoints", SHOW_GAZE_DOT_IN_TASKS);
+    }
+
+    async function initWebGazer() {
+      if (!window.webgazer) {
+        webgazerReady = false;
+        return false;
+      }
+
+      if (webgazerInitialized) {
+        showCalibrationCameraUI();
+        return webgazerReady;
+      }
+
+      try {
+        webgazerPredictionCount = 0;
+
+        if (typeof window.webgazer.setRegression === "function") {
+          window.webgazer.setRegression("ridge");
+        }
+
+        safeWebGazerCall("saveDataAcrossSessions", false);
+        safeWebGazerCall("applyKalmanFilter", true);
+
+        window.webgazer.setGazeListener((data) => {
+          if (data) {
+            webgazerPredictionCount += 1;
+          }
+
+          if (!data || !currentGazePhase) return;
+
+          const region = gazeRegions[currentGazePhase];
+          const width = region ? region.right - region.left : null;
+          const height = region ? region.bottom - region.top : null;
+
+          let relX = null;
+          let relY = null;
+          let inside = false;
+
+          if (region && width > 0 && height > 0) {
+            relX = (data.x - region.left) / width;
+            relY = (data.y - region.top) / height;
+            inside = relX >= 0 && relX <= 1 && relY >= 0 && relY <= 1;
+          }
+
+          gazeStore[currentGazePhase].push({
+            x: Number(data.x.toFixed(2)),
+            y: Number(data.y.toFixed(2)),
+            rel_x: relX !== null ? Number(relX.toFixed(4)) : null,
+            rel_y: relY !== null ? Number(relY.toFixed(4)) : null,
+            inside_target: inside,
+            offset_ms: currentGazeStartedAt !== null ? Math.round(nowMs() - currentGazeStartedAt) : null,
+            recorded_at: Date.now()
+          });
+        });
+
+        const beginResult = window.webgazer.begin();
+        if (beginResult && typeof beginResult.then === "function") {
+          await beginResult;
+        }
+
+        await new Promise(resolve => setTimeout(resolve, 3000));
+
+        showCalibrationCameraUI();
+
+        const container = document.querySelector("#webgazerVideoContainer");
+        const video = document.querySelector("#webgazerVideoFeed") || document.querySelector("video");
+
+        const previewVisible =
+          !!container &&
+          container.offsetWidth > 0 &&
+          container.offsetHeight > 0;
+
+        const stream = video?.srcObject;
+        const hasLiveTrack =
+          !!stream &&
+          typeof stream.getTracks === "function" &&
+          stream.getTracks().some(track => track.readyState === "live");
+
+        const hasVideoPixels =
+          !!video &&
+          video.videoWidth > 0 &&
+          video.videoHeight > 0;
+
+        webgazerStreamLive = hasLiveTrack;
+        webgazerReady = previewVisible || hasLiveTrack || hasVideoPixels;
+        webgazerInitialized = true;
+
+        return webgazerReady;
+      } catch (error) {
+        console.warn("WebGazer init warning:", error);
+        webgazerReady = false;
+        webgazerInitialized = false;
+        return false;
+      }
+    }
+
+    function setGazeRegion(phase, selector) {
+      const el = document.querySelector(selector);
+      if (!el) {
+        gazeRegions[phase] = null;
+        return;
+      }
+
+      const rect = el.getBoundingClientRect();
+      gazeRegions[phase] = {
+        left: rect.left,
+        right: rect.right,
+        top: rect.top,
+        bottom: rect.bottom,
+        width: rect.width,
+        height: rect.height
+      };
+    }
+
+    function startGazeCapture(phase, selector) {
+      if (!window.webgazer) return;
+
+      gazeStore[phase] = [];
+      currentGazePhase = null;
+      currentGazeStartedAt = null;
+
+      requestAnimationFrame(() => {
+        setGazeRegion(phase, selector);
+
+        setTimeout(() => {
+          currentGazePhase = phase;
+          currentGazeStartedAt = nowMs();
+        }, 600);
+      });
+    }
+
+    function summarizeGazePhase(phase) {
+      const samples = gazeStore[phase] || [];
+      const region = gazeRegions[phase];
+
+      const insideSamples = samples.filter(sample => sample.inside_target);
+      const firstInside = insideSamples.length > 0 ? insideSamples[0] : null;
+
+      return {
+        total_samples: samples.length,
+        in_target_samples: insideSamples.length,
+        on_target_ratio: samples.length > 0 ? Number((insideSamples.length / samples.length).toFixed(2)) : null,
+        first_fixation_latency_ms: firstInside ? firstInside.offset_ms : null,
+        dwell_time_ms: insideSamples.length * GAZE_SAMPLE_MS,
+        region_width: region?.width || null,
+        region_height: region?.height || null,
+        points: insideSamples
+          .filter(sample => sample.rel_x !== null && sample.rel_y !== null)
+          .map(sample => ({
+            rel_x: sample.rel_x,
+            rel_y: sample.rel_y
+          }))
+      };
+    }
+
+    function stopGazeCapture(phase) {
+      if (currentGazePhase === phase) {
+        currentGazePhase = null;
+        currentGazeStartedAt = null;
+      }
+
+      gazeSummary[phase] = summarizeGazePhase(phase);
+
+      if ((gazeSummary[phase]?.total_samples || 0) > 0) {
+        webgazerReady = true;
+      }
+    }
+
+    function persistGazeDebugSnapshot() {
+      const snapshot = {
+        lang: currentLang,
+        webgazerReady,
+        participant_id: PARTICIPANT_ID,
+        session_id: SESSION_ID,
+        recommendation: latestRecommendationMeta,
+        tasks: [
+          {
+            key: "task1",
+            title: s("summary_task1"),
+            heatmapTitle: currentLang === "fi" ? "Tehtävän 1 lukualue" : "Task 1 reading region",
+            summary: gazeSummary.task1_reading,
+            raw_samples: gazeStore.task1_reading
+          },
+          {
+            key: "task2",
+            title: s("summary_task2"),
+            heatmapTitle: currentLang === "fi" ? "Tehtävän 2 tietoalue" : "Task 2 information region",
+            summary: gazeSummary.task2_info,
+            raw_samples: gazeStore.task2_info
+          },
+          {
+            key: "task3",
+            title: s("summary_task3"),
+            heatmapTitle: currentLang === "fi" ? "Tehtävän 3 adaptoitu alue" : "Task 3 adapted region",
+            summary: gazeSummary.task3_validation,
+            raw_samples: gazeStore.task3_validation
+          }
+        ]
+      };
+
+      localStorage.setItem("latest_gaze_debug", JSON.stringify(snapshot));
+    }
+
+    function buildRecommendationPayload(allData) {
+      const baselineTrial = allData.find(d => d.phase === "baseline");
+      const task1Trial = getLastFinalTrial(allData, "task1_question");
+      const task2Trial = getLastFinalTrial(allData, "task2_question");
+
+      return {
+        participant_id: PARTICIPANT_ID,
+        session_id: SESSION_ID,
+        created_at: new Date().toISOString(),
+        baseline: baselineTrial?.response || {},
+        tasks: {
+          task1: serializeTaskResult(task1Trial),
+          task2: serializeTaskResult(task2Trial)
+        },
+        gaze: {
+          webgazer_ready: webgazerReady,
+          task1_reading: {
+            metrics: gazeSummary.task1_reading,
+            raw_samples: gazeStore.task1_reading
+          },
+          task2_info: {
+            metrics: gazeSummary.task2_info,
+            raw_samples: gazeStore.task2_info
+          }
+        },
+        raw_trials: allData
+      };
+    }
+
+    function computeValidationSummary(allData) {
+      const task1Trial = getLastFinalTrial(allData, "task1_question");
+      const task2Trial = getLastFinalTrial(allData, "task2_question");
+      const task3Trial = getLastFinalTrial(allData, "task3_question");
+
+      const preAvgQuestionTime = average([
+        task1Trial?.question_time_ms,
+        task2Trial?.question_time_ms
+      ]);
+
+      const preAvgAccuracy = average([
+        task1Trial?.correct,
+        task2Trial?.correct
+      ]);
+
+      const preTotalErrors = (task1Trial?.errors || 0) + (task2Trial?.errors || 0);
+
+      const preAvgGaze = average([
+        gazeSummary.task1_reading?.on_target_ratio,
+        gazeSummary.task2_info?.on_target_ratio
+      ]);
+
+      const postQuestionTime = task3Trial?.question_time_ms || null;
+      const postErrors = task3Trial?.errors || 0;
+      const postAccuracy = task3Trial?.correct || 0;
+      const postGaze = gazeSummary.task3_validation?.on_target_ratio ?? null;
+
+      return {
+        recommended_ui: latestRecommendation,
+        pre_adaptation_avg_question_time_ms: preAvgQuestionTime,
+        post_adaptation_question_time_ms: postQuestionTime,
+        pre_adaptation_avg_accuracy: preAvgAccuracy,
+        post_adaptation_accuracy: postAccuracy,
+        pre_adaptation_total_errors: preTotalErrors,
+        post_adaptation_errors: postErrors,
+        pre_adaptation_avg_gaze_ratio: preAvgGaze,
+        post_adaptation_gaze_ratio: postGaze,
+        improved_speed: preAvgQuestionTime !== null && postQuestionTime !== null ? postQuestionTime < preAvgQuestionTime : null,
+        improved_accuracy: preAvgAccuracy !== null ? postAccuracy > preAvgAccuracy : null,
+        improved_focus: preAvgGaze !== null && postGaze !== null ? postGaze > preAvgGaze : null
+      };
+    }
+
+    function buildFinalPayload(allData) {
+      const baselineTrial = allData.find(d => d.phase === "baseline");
+      const task1Trial = getLastFinalTrial(allData, "task1_question");
+      const task2Trial = getLastFinalTrial(allData, "task2_question");
+      const task3Trial = getLastFinalTrial(allData, "task3_question");
+
+      return {
+        participant_id: PARTICIPANT_ID,
+        session_id: SESSION_ID,
+        created_at: new Date().toISOString(),
+        baseline: baselineTrial?.response || {},
+        tasks: {
+          task1: serializeTaskResult(task1Trial),
+          task2: serializeTaskResult(task2Trial),
+          task3: serializeTaskResult(task3Trial)
+        },
+        gaze: {
+          webgazer_ready: webgazerReady,
+          task1_reading: {
+            metrics: gazeSummary.task1_reading,
+            raw_samples: gazeStore.task1_reading
+          },
+          task2_info: {
+            metrics: gazeSummary.task2_info,
+            raw_samples: gazeStore.task2_info
+          },
+          task3_validation: {
+            metrics: gazeSummary.task3_validation,
+            raw_samples: gazeStore.task3_validation
+          }
+        },
+        recommendation: latestRecommendationMeta,
+        validation: computeValidationSummary(allData),
+        raw_trials: allData
+      };
+    }
+
+    async function fetchProfileSummary() {
+      try {
+        const response = await fetch(`${API_BASE_URL}/api/profile/${PARTICIPANT_ID}`);
+        if (!response.ok) return null;
+        return await response.json();
+      } catch {
+        return null;
+      }
+    }
+
+    async function fetchRecommendation(payload) {
+      const response = await fetch(`${API_BASE_URL}/api/recommend`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const text = await response.text();
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${text}`);
+      }
+
+      try {
+        return JSON.parse(text);
+      } catch {
+        return { raw: text };
+      }
+    }
+
+    async function saveExperimentData(payload) {
+      const response = await fetch(`${API_BASE_URL}/api/experiment`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(payload)
+      });
+
+      const responseText = await response.text();
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${responseText}`);
+      }
+
+      try {
+        return JSON.parse(responseText);
+      } catch {
+        return { raw: responseText };
+      }
+    }
+
+    function getTask3Content(mode) {
+      if (mode === "guided") {
+        return `
+          <div id="task3-text-region" class="adapted-info-box">
+            <strong>Study Skills Clinic</strong>
+            <div class="small-note" style="margin-top:8px;">Focus on the key details below before you continue to the question.</div>
+            <ul class="key-points">
+              <li><strong>Date:</strong> Tuesday, May 20</li>
+              <li><strong>Time:</strong> 2:00 PM – 3:30 PM</li>
+              <li><strong>Location:</strong> Room C115</li>
+              <li><strong>Facilitator:</strong> Leena Korhonen</li>
+            </ul>
+          </div>
+        `;
+      }
+
+      if (mode === "reduced-distraction") {
+        return `
+          <div id="task3-text-region" class="adapted-info-box">
+            <div class="mini-grid">
+              <div class="mini-item"><strong>Event:</strong> Study Skills Clinic</div>
+              <div class="mini-item"><strong>Time:</strong> 2:00 PM – 3:30 PM</div>
+              <div class="mini-item"><strong>Location:</strong> Room C115</div>
+            </div>
+          </div>
+        `;
+      }
+
+      return `
+        <div id="task3-text-region" class="info-box">
+          The university is organizing a Study Skills Clinic on Tuesday, May 20. The session will run from 2:00 PM to 3:30 PM and will take place in Room C115. The clinic will be facilitated by Leena Korhonen and is intended for students who want practical support with note-taking, planning, and study routines.
+        </div>
+      `;
+    }
+
+    function setupQuestionInteractions(taskKey, backLabel) {
+      metrics[taskKey].questionStartTime = nowMs();
+
+      const radios = document.querySelectorAll('input[type="radio"][name="jspsych-survey-multi-choice-response-0"]');
+      radios.forEach((radio) => {
+        radio.addEventListener("change", function() {
+          if (!metrics[taskKey].firstSelectionMade) {
+            metrics[taskKey].firstSelectionMade = true;
+          } else {
+            metrics[taskKey].answerChanges += 1;
+          }
+        });
+      });
+
+      const nextButton = document.querySelector("#jspsych-survey-multi-choice-next");
+      if (nextButton && !document.querySelector(".button-row")) {
+        const wrapper = document.createElement("div");
+        wrapper.className = "button-row";
+
+        const backButton = document.createElement("button");
+        backButton.type = "button";
+        backButton.className = "jspsych-btn secondary-btn";
+        backButton.textContent = backLabel;
+        backButton.onclick = function() {
+          metrics[taskKey].backtracking += 1;
+          jsPsych.finishTrial({
+            phase: `${taskKey}_question`,
+            backtrack_only: true
+          });
+        };
+
+        nextButton.parentNode.insertBefore(wrapper, nextButton);
+        wrapper.appendChild(backButton);
+        wrapper.appendChild(nextButton);
+      }
+    }
+
+    function finalizeQuestionData(taskKey, data, correctAnswer) {
+      if (data.backtrack_only) return;
+
+      const response = data.response?.[`${taskKey}_answer`];
+      const totalTime = Math.round(nowMs() - metrics[taskKey].startTime);
+      const questionTime = Math.round(nowMs() - metrics[taskKey].questionStartTime);
+
+      data.user_answer = response;
+      data.correct_answer = correctAnswer;
+      data.correct = response === correctAnswer ? 1 : 0;
+      data.time_on_task_ms = totalTime;
+      data.question_time_ms = questionTime;
+      data.answer_changes = metrics[taskKey].answerChanges;
+      data.backtracking = metrics[taskKey].backtracking;
+      data.hesitation = questionTime > HESITATION_THRESHOLD_MS ? 1 : 0;
+      data.errors = data.correct === 1 ? 0 : 1;
+    }
+
+    function getTaskSummaryHTML(titleKey, trial, gaze) {
+      const isCorrect = trial?.correct === 1;
+      const statusClass = isCorrect ? "status-correct" : "status-wrong";
+      const statusText = isCorrect ? s("correct") : s("wrong");
+      const hasGaze = (gaze?.total_samples || 0) > 0;
+
+      return `
+        <div class="summary-item">
+          <span class="summary-label">${s(titleKey)}</span>
+          <div class="summary-value">
+            <span class="status-pill ${statusClass}">${statusText}</span>
+            <div class="metric-list">
+              <div class="metric-line"><strong>${s("summary_answer")}:</strong> ${trial?.user_answer || "-"}</div>
+              <div class="metric-line"><strong>${s("summary_correct_answer")}:</strong> ${trial?.correct_answer || "-"}</div>
+              <div class="metric-line"><strong>${s("metric_time_on_task")}:</strong> ${msToSec(trial?.time_on_task_ms || null)}</div>
+              <div class="metric-line"><strong>${s("metric_question_time")}:</strong> ${msToSec(trial?.question_time_ms || null)}</div>
+              <div class="metric-line"><strong>${s("metric_errors")}:</strong> ${trial?.errors || 0}</div>
+              <div class="metric-line"><strong>${s("metric_changes")}:</strong> ${trial?.answer_changes || 0}</div>
+              <div class="metric-line"><strong>${s("metric_hesitation")}:</strong> ${yesNo(trial?.hesitation)}</div>
+              <div class="metric-line"><strong>${s("metric_backtracking")}:</strong> ${yesNo((trial?.backtracking || 0) > 0)}</div>
+              ${
+                hasGaze
+                  ? `
+                    <div class="metric-line"><strong>${s("metric_gaze_samples")}:</strong> ${gaze.total_samples || 0}</div>
+                    <div class="metric-line"><strong>${s("metric_on_target_ratio")}:</strong> ${gaze.on_target_ratio ?? "-"}</div>
+                    <div class="metric-line"><strong>${s("metric_first_fixation")}:</strong> ${msToSec(gaze.first_fixation_latency_ms)}</div>
+                    <div class="metric-line"><strong>${s("metric_dwell_time")}:</strong> ${msToSec(gaze.dwell_time_ms)}</div>
+                  `
+                  : `
+                    <div class="metric-line compact-note">${s("metric_no_gaze_samples")}</div>
+                  `
+              }
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    function showLanguageSelector() {
+      document.body.innerHTML = `
+        <div class="lang-overlay">
+          <div class="lang-card">
+            <div class="logo-wrap">
+              <img src="jyu-logo.svg" alt="University of Jyväskylä logo" onerror="this.style.display='none'">
+            </div>
+            <h1 class="lang-title">${STRINGS.en.choose_language_title}</h1>
+            <p class="lang-text">${STRINGS.en.choose_language_text}</p>
+            <div class="lang-buttons">
+              <button id="choose-en">${STRINGS.en.lang_en}</button>
+              <button id="choose-fi">${STRINGS.fi.lang_fi}</button>
+            </div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("choose-en").onclick = () => startExperiment("en");
+      document.getElementById("choose-fi").onclick = () => startExperiment("fi");
+    }
+
+    async function startExperiment(lang) {
+      currentLang = lang;
+      localStorage.removeItem("latest_gaze_debug");
+      latestProfileSummary = await fetchProfileSummary();
+
+      document.body.innerHTML = "";
+      document.body.className = "ui-standard";
+      applyRecommendedUI(getStoredUIMode());
+
+      jsPsych = initJsPsych({
+        show_progress_bar: true,
+        message_progress_bar: "Completion Progress"
+      });
+
+      const universityIntro = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: `
+          <div class="card">
+            <div class="logo-wrap">
+              <img src="jyu-logo.svg" alt="University of Jyvaskyla logo" onerror="this.style.display='none'">
+            </div>
+            <h1>${s("welcome_title")}</h1>
+            <p>${s("welcome_text_1")}</p>
+            <p class="muted">${s("welcome_text_2")}</p>
+
+            <div class="recommendation-panel">
+              <p><strong>${s("welcome_profile")}:</strong></p>
+              <div class="metric-list">
+                <div class="metric-line"><strong>${s("welcome_profile_id")}:</strong> ${PARTICIPANT_ID}</div>
+                <div class="metric-line"><strong>${s("welcome_profile_sessions")}:</strong> ${latestProfileSummary?.sessions_completed ?? 0}</div>
+                <div class="metric-line"><strong>${s("welcome_profile_baseline")}:</strong> ${yesNo(latestProfileSummary?.baseline_ready)}</div>
+              </div>
+            </div>
+          </div>
+        `,
+        choices: [s("continue_btn")],
+        data: { phase: "university_intro" }
+      };
+
+      const prototypeCheck = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: `
+          <div class="card">
+            <h2>${s("prototype_title")}</h2>
+            <p>${s("prototype_text_1")}</p>
+            <p class="muted">${s("prototype_text_2")}</p>
+            <p id="webgazer-status" class="small-note">Initializing camera...</p>
+          </div>
+        `,
+        choices: [s("continue_btn")],
+        data: { phase: "prototype_check" },
+        on_load: function() {
+          const continueButton = document.getElementById("jspsych-html-button-response-button-0");
+          const statusEl = document.getElementById("webgazer-status");
+
+          if (continueButton) {
+            continueButton.disabled = true;
+            continueButton.style.opacity = "0.6";
+            continueButton.style.cursor = "not-allowed";
+          }
+
+          (async () => {
+            const ok = await initWebGazer();
+
+            if (statusEl) {
+              if (ok) {
+                statusEl.innerHTML = `<span class="status-ok">${s("prototype_ready")}</span> ${s("prototype_ready_note")}`;
+              } else {
+                statusEl.innerHTML = `<span class="status-fallback">${s("prototype_fallback")}</span> ${s("prototype_fallback_note")}`;
+              }
+            }
+
+            if (continueButton) {
+              continueButton.disabled = false;
+              continueButton.style.opacity = "1";
+              continueButton.style.cursor = "pointer";
+            }
+          })();
+        }
+      };
+
+      const baseline = {
+        type: jsPsychSurveyHtmlForm,
+        html: `
+          <div class="form-card">
+            <h2>${s("baseline_title")}</h2>
+            <p>${s("baseline_text")}</p>
+
+            <div class="field-group">
+              <label class="form-label" for="age_group">${s("age_group")}</label>
+              <select id="age_group" name="age_group" required>
+                <option value="" disabled selected>${s("age_placeholder")}</option>
+                ${renderOptionTags("age_group")}
+              </select>
+            </div>
+
+            <div class="field-group">
+              <label class="form-label" for="digital_confidence">${s("digital_conf")}</label>
+              <select id="digital_confidence" name="digital_confidence" required>
+                <option value="" disabled selected>${s("digital_conf_placeholder")}</option>
+                ${renderOptionTags("digital_confidence")}
+              </select>
+            </div>
+
+            <div class="field-group">
+              <label class="form-label" for="page_style">${s("page_style")}</label>
+              <select id="page_style" name="page_style" required>
+                <option value="" disabled selected>${s("page_style_placeholder")}</option>
+                ${renderOptionTags("page_style")}
+              </select>
+            </div>
+
+            <div class="field-group">
+              <label class="form-label" for="guidance_need">${s("guidance_need")}</label>
+              <select id="guidance_need" name="guidance_need" required>
+                <option value="" disabled selected>${s("guidance_need_placeholder")}</option>
+                ${renderOptionTags("guidance_need")}
+              </select>
+            </div>
+
+            <div class="field-group">
+              <label class="form-label" for="screen_distraction">${s("distraction")}</label>
+              <select id="screen_distraction" name="screen_distraction" required>
+                <option value="" disabled selected>${s("distraction_placeholder")}</option>
+                ${renderOptionTags("screen_distraction")}
+              </select>
+            </div>
+
+            <div class="field-group">
+              <label class="form-label" for="dense_content_tolerance">${s("dense_content")}</label>
+              <select id="dense_content_tolerance" name="dense_content_tolerance" required>
+                <option value="" disabled selected>${s("dense_content_placeholder")}</option>
+                ${renderOptionTags("dense_content_tolerance")}
+              </select>
+            </div>
+
+            <div class="field-group">
+              <label class="form-label" for="content_format">${s("content_format")}</label>
+              <select id="content_format" name="content_format" required>
+                <option value="" disabled selected>${s("content_format_placeholder")}</option>
+                ${renderOptionTags("content_format")}
+              </select>
+            </div>
+          </div>
+        `,
+        button_label: s("continue_btn"),
+        data: { phase: "baseline" }
+      };
+
+      const calibration = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: `
+          <div class="card">
+            <h2>${s("calibration_title")}</h2>
+            <p>${s("calibration_text")}</p>
+
+            <div id="calibration-area" class="calibration-area">
+              <button type="button" class="calibration-dot" style="left: 10%; top: 12%;" aria-label="Calibration point 1"></button>
+              <button type="button" class="calibration-dot" style="left: 50%; top: 12%;" aria-label="Calibration point 2"></button>
+              <button type="button" class="calibration-dot" style="left: 90%; top: 12%;" aria-label="Calibration point 3"></button>
+
+              <button type="button" class="calibration-dot" style="left: 10%; top: 50%;" aria-label="Calibration point 4"></button>
+              <button type="button" class="calibration-dot" style="left: 50%; top: 50%;" aria-label="Calibration point 5"></button>
+              <button type="button" class="calibration-dot" style="left: 90%; top: 50%;" aria-label="Calibration point 6"></button>
+
+              <button type="button" class="calibration-dot" style="left: 10%; top: 88%;" aria-label="Calibration point 7"></button>
+              <button type="button" class="calibration-dot" style="left: 50%; top: 88%;" aria-label="Calibration point 8"></button>
+              <button type="button" class="calibration-dot" style="left: 90%; top: 88%;" aria-label="Calibration point 9"></button>
+            </div>
+
+            <p id="calibration-status" class="small-note">${s("calibration_progress")}: 0 / 9</p>
+          </div>
+        `,
+        choices: [s("continue_btn")],
+        data: { phase: "calibration" },
+        on_load: function() {
+          showCalibrationCameraUI();
+
+          const continueButton = document.getElementById("jspsych-html-button-response-button-0");
+          const statusEl = document.getElementById("calibration-status");
+
+          if (continueButton) {
+            continueButton.disabled = true;
+            continueButton.style.opacity = "0.6";
+            continueButton.style.cursor = "not-allowed";
+          }
+
+          let finishedPoints = 0;
+          const requiredClicksPerPoint = 2;
+          const totalPoints = 9;
+
+          document.querySelectorAll(".calibration-dot").forEach((dot) => {
+            let clicks = 0;
+
+            dot.addEventListener("click", () => {
+              if (clicks >= requiredClicksPerPoint) return;
+
+              clicks += 1;
+              dot.style.opacity = String(0.45 + clicks * 0.2);
+
+              const rect = dot.getBoundingClientRect();
+              const x = rect.left + rect.width / 2;
+              const y = rect.top + rect.height / 2;
+
+              try {
+                if (window.webgazer && typeof window.webgazer.recordScreenPosition === "function") {
+                  window.webgazer.recordScreenPosition(x, y, "click");
+                }
+              } catch (e) {
+                console.warn("Calibration recordScreenPosition warning:", e);
+              }
+
+              if (clicks === requiredClicksPerPoint) {
+                finishedPoints += 1;
+                dot.classList.add("calibration-done");
+                dot.disabled = true;
+
+                if (statusEl) {
+                  statusEl.textContent = `${s("calibration_progress")}: ${finishedPoints} / ${totalPoints}`;
+                }
+
+                if (finishedPoints === totalPoints && continueButton) {
+                  continueButton.disabled = false;
+                  continueButton.style.opacity = "1";
+                  continueButton.style.cursor = "pointer";
+
+                  if (statusEl) {
+                    statusEl.textContent = s("calibration_done");
+                  }
+                }
+              }
+            });
+          });
+        }
+      };
+
+      const task1Intro = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: `
+          <div class="card">
+            <h2>${s("task1_intro_title")}</h2>
+            <p>${s("task1_intro_text")}</p>
+          </div>
+        `,
+        choices: [s("continue_btn")],
+        data: { phase: "task1_intro" },
+        on_start: function() {
+          applyRecommendedUI("standard");
+          metrics.task1.startTime = nowMs();
+          metrics.task1.questionStartTime = null;
+          metrics.task1.answerChanges = 0;
+          metrics.task1.backtracking = 0;
+          metrics.task1.firstSelectionMade = false;
+        }
+      };
+
+      const task1Reading = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: `
+          <div class="card">
+            <h2>${s("task1_para_title")}</h2>
+            <div id="task1-text-region" class="info-box">${s("task1_para")}</div>
+            <p id="task1-gaze-note" class="small-note">Stabilizing gaze capture...</p>
+          </div>
+        `,
+        choices: [s("task1_read_btn")],
+        data: { phase: "task1_reading" },
+        on_load: function() {
+          showTaskCameraUI();
+          startGazeCapture("task1_reading", "#task1-text-region");
+
+          const btn = document.getElementById("jspsych-html-button-response-button-0");
+          const note = document.getElementById("task1-gaze-note");
+
+          if (btn) {
+            btn.disabled = true;
+            btn.style.opacity = "0.6";
+            btn.style.cursor = "not-allowed";
+          }
+
+          setTimeout(() => {
+            if (btn) {
+              btn.disabled = false;
+              btn.style.opacity = "1";
+              btn.style.cursor = "pointer";
+            }
+            if (note) {
+              note.textContent = "Gaze capture active. Read naturally, then continue.";
+            }
+          }, 3500);
+        },
+        on_finish: function() {
+          stopGazeCapture("task1_reading");
+        }
+      };
+
+      const task1Question = {
+        type: jsPsychSurveyMultiChoice,
+        questions: [
+          {
+            prompt: s("task1_q"),
+            options: [s("task1_a1"), s("task1_a2"), s("task1_a3"), s("task1_a4")],
+            required: true,
+            name: "task1_answer"
+          }
+        ],
+        button_label: s("continue_btn"),
+        data: { phase: "task1_question" },
+        on_load: function() {
+          setupQuestionInteractions("task1", s("task1_back_btn"));
+        },
+        on_finish: function(data) {
+          finalizeQuestionData("task1", data, s("task1_a2"));
+        }
+      };
+
+      const task1Loop = {
+        timeline: [task1Reading, task1Question],
+        loop_function: function(data) {
+          const values = data.values();
+          const last = values[values.length - 1];
+          return !!last.backtrack_only;
+        }
+      };
+
+      const task2Intro = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: `
+          <div class="card">
+            <h2>${s("task2_intro_title")}</h2>
+            <p>${s("task2_intro_text")}</p>
+          </div>
+        `,
+        choices: [s("continue_btn")],
+        data: { phase: "task2_intro" },
+        on_start: function() {
+          applyRecommendedUI("standard");
+          metrics.task2.startTime = nowMs();
+          metrics.task2.questionStartTime = null;
+          metrics.task2.answerChanges = 0;
+          metrics.task2.backtracking = 0;
+          metrics.task2.firstSelectionMade = false;
+        }
+      };
+
+      const task2Info = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: `
+          <div class="card">
+            <h2>${s("task2_info_title")}</h2>
+            <div id="task2-info-region" class="info-box">${s("task2_info")}</div>
+            <p id="task2-gaze-note" class="small-note">Stabilizing gaze capture...</p>
+          </div>
+        `,
+        choices: [s("task1_read_btn")],
+        data: { phase: "task2_info" },
+        on_load: function() {
+          showTaskCameraUI();
+          startGazeCapture("task2_info", "#task2-info-region");
+
+          const btn = document.getElementById("jspsych-html-button-response-button-0");
+          const note = document.getElementById("task2-gaze-note");
+
+          if (btn) {
+            btn.disabled = true;
+            btn.style.opacity = "0.6";
+            btn.style.cursor = "not-allowed";
+          }
+
+          setTimeout(() => {
+            if (btn) {
+              btn.disabled = false;
+              btn.style.opacity = "1";
+              btn.style.cursor = "pointer";
+            }
+            if (note) {
+              note.textContent = "Gaze capture active. Read naturally, then continue.";
+            }
+          }, 3500);
+        },
+        on_finish: function() {
+          stopGazeCapture("task2_info");
+        }
+      };
+
+      const task2Question = {
+        type: jsPsychSurveyMultiChoice,
+        questions: [
+          {
+            prompt: s("task2_q"),
+            options: [s("task2_a1"), s("task2_a2"), s("task2_a3"), s("task2_a4")],
+            required: true,
+            name: "task2_answer"
+          }
+        ],
+        button_label: s("continue_btn"),
+        data: { phase: "task2_question" },
+        on_load: function() {
+          setupQuestionInteractions("task2", s("task2_back_btn"));
+        },
+        on_finish: function(data) {
+          finalizeQuestionData("task2", data, s("task2_a2"));
+        }
+      };
+
+      const task2Loop = {
+        timeline: [task2Info, task2Question],
+        loop_function: function(data) {
+          const values = data.values();
+          const last = values[values.length - 1];
+          return !!last.backtrack_only;
+        }
+      };
+
+      const recommendAndAdaptScreen = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: `
+          <div class="card">
+            <h2>${s("recommendation_title")}</h2>
+            <div class="save-status-box">
+              <p id="recommend-status">${s("recommendation_loading")}</p>
+            </div>
+          </div>
+        `,
+        choices: [s("continue_btn")],
+        data: { phase: "recommend_and_adapt" },
+        on_load: function() {
+          const continueButton = document.getElementById("jspsych-html-button-response-button-0");
+          const statusEl = document.getElementById("recommend-status");
+
+          if (continueButton) {
+            continueButton.disabled = true;
+            continueButton.style.opacity = "0.6";
+            continueButton.style.cursor = "not-allowed";
+          }
+
+          (async () => {
+            try {
+              const payload = buildRecommendationPayload(jsPsych.data.get().values());
+              const result = await fetchRecommendation(payload);
+
+              latestRecommendation = result.recommended_ui || "standard";
+              latestRecommendationMeta = result;
+
+              localStorage.setItem("recommended_ui", latestRecommendation);
+
+              const sourceLabel = result.source === "baseline_sensitive"
+                ? s("recommendation_baseline")
+                : s("recommendation_rule");
+
+              statusEl.innerHTML = `
+                <div class="recommendation-panel">
+                  <p>
+                    <strong>${s("recommendation_label")}:</strong>
+                    <span class="recommended-mode-badge">${latestRecommendation}</span>
+                  </p>
+                  <p><strong>${s("recommendation_source")}:</strong> ${sourceLabel}</p>
+                  <p><strong>${s("recommendation_sessions")}:</strong> ${result.sessions_completed_before ?? 0}</p>
+                  <p><strong>${s("recommendation_baseline_ready")}:</strong> ${yesNo(result.baseline_ready)}</p>
+                  <p class="small-note">${s("recommendation_next")}</p>
+                </div>
+              `;
+            } catch (error) {
+              console.error(error);
+              latestRecommendation = "standard";
+              latestRecommendationMeta = {
+                recommended_ui: "standard",
+                source: "rule_based",
+                baseline_ready: false,
+                sessions_completed_before: latestProfileSummary?.sessions_completed ?? 0,
+                error: error.message
+              };
+
+              statusEl.innerHTML = `
+                <strong>${s("save_failed")}:</strong> ${error.message}<br>
+                <span class="small-note">${s("save_backend_hint")}</span>
+              `;
+            } finally {
+              if (continueButton) {
+                continueButton.disabled = false;
+                continueButton.style.opacity = "1";
+                continueButton.style.cursor = "pointer";
+              }
+            }
+          })();
+        }
+      };
+
+      const task3Intro = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: `
+          <div class="card">
+            <h2>${s("task3_intro_title")}</h2>
+            <p>${s("task3_intro_text")}</p>
+            <div class="recommendation-panel">
+              <p>
+                <strong>${s("recommendation_label")}:</strong>
+                <span class="recommended-mode-badge">${latestRecommendation}</span>
+              </p>
+            </div>
+          </div>
+        `,
+        choices: [s("continue_btn")],
+        data: { phase: "task3_intro" },
+        on_start: function() {
+          applyRecommendedUI(latestRecommendation);
+          metrics.task3.startTime = nowMs();
+          metrics.task3.questionStartTime = null;
+          metrics.task3.answerChanges = 0;
+          metrics.task3.backtracking = 0;
+          metrics.task3.firstSelectionMade = false;
+        }
+      };
+
+      const task3Reading = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: function() {
+          return `
+            <div class="card">
+              <h2>${s("task3_info_title")}</h2>
+              ${getTask3Content(latestRecommendation)}
+              <p id="task3-gaze-note" class="small-note">Stabilizing gaze capture...</p>
+            </div>
+          `;
+        },
+        choices: [s("task3_read_btn")],
+        data: { phase: "task3_reading" },
+        on_load: function() {
+          showTaskCameraUI();
+          startGazeCapture("task3_validation", "#task3-text-region");
+
+          const btn = document.getElementById("jspsych-html-button-response-button-0");
+          const note = document.getElementById("task3-gaze-note");
+
+          if (btn) {
+            btn.disabled = true;
+            btn.style.opacity = "0.6";
+            btn.style.cursor = "not-allowed";
+          }
+
+          setTimeout(() => {
+            if (btn) {
+              btn.disabled = false;
+              btn.style.opacity = "1";
+              btn.style.cursor = "pointer";
+            }
+            if (note) {
+              note.textContent = "Gaze capture active. Read naturally, then continue.";
+            }
+          }, 3500);
+        },
+        on_finish: function() {
+          stopGazeCapture("task3_validation");
+        }
+      };
+
+      const task3Question = {
+        type: jsPsychSurveyMultiChoice,
+        questions: [
+          {
+            prompt: s("task3_q"),
+            options: [s("task3_a1"), s("task3_a2"), s("task3_a3"), s("task3_a4")],
+            required: true,
+            name: "task3_answer"
+          }
+        ],
+        button_label: s("continue_btn"),
+        data: { phase: "task3_question" },
+        on_load: function() {
+          setupQuestionInteractions("task3", s("task3_back_btn"));
+        },
+        on_finish: function(data) {
+          finalizeQuestionData("task3", data, s("task3_a2"));
+        }
+      };
+
+      const task3Loop = {
+        timeline: [task3Reading, task3Question],
+        loop_function: function(data) {
+          const values = data.values();
+          const last = values[values.length - 1];
+          return !!last.backtrack_only;
+        }
+      };
+
+      const finalSummary = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: function() {
+          const allData = jsPsych.data.get().values();
+          const task1Trial = getLastFinalTrial(allData, "task1_question");
+          const task2Trial = getLastFinalTrial(allData, "task2_question");
+          const task3Trial = getLastFinalTrial(allData, "task3_question");
+          const validation = computeValidationSummary(allData);
+
+          const score = (task1Trial?.correct || 0) + (task2Trial?.correct || 0) + (task3Trial?.correct || 0);
+          const totalErrors = (task1Trial?.errors || 0) + (task2Trial?.errors || 0) + (task3Trial?.errors || 0);
+
+          return `
+            <div class="card">
+              <h2>${s("end_title")}</h2>
+              <p>${s("end_text")}</p>
+
+              <div class="recommendation-panel">
+                <p>
+                  <strong>${s("end_backend_label")}:</strong>
+                  <span class="recommended-mode-badge">${latestRecommendation}</span>
+                </p>
+              </div>
+
+              <div class="summary-grid">
+                ${getTaskSummaryHTML("summary_task1", task1Trial, gazeSummary.task1_reading || {})}
+                ${getTaskSummaryHTML("summary_task2", task2Trial, gazeSummary.task2_info || {})}
+                ${getTaskSummaryHTML("summary_task3", task3Trial, gazeSummary.task3_validation || {})}
+              </div>
+
+              <div class="comparison-box">
+                <div><strong>${s("validation_title")}</strong></div>
+                <div class="metric-list">
+                  <div class="metric-line"><strong>${s("validation_pre")}:</strong> ${msToSec(validation.pre_adaptation_avg_question_time_ms)}</div>
+                  <div class="metric-line"><strong>${s("validation_post")}:</strong> ${msToSec(validation.post_adaptation_question_time_ms)}</div>
+                  <div class="metric-line"><strong>${s("validation_pre_error")}:</strong> ${validation.pre_adaptation_total_errors ?? "-"}</div>
+                  <div class="metric-line"><strong>${s("validation_post_error")}:</strong> ${validation.post_adaptation_errors ?? "-"}</div>
+                  <div class="metric-line"><strong>${s("validation_pre_focus")}:</strong> ${validation.pre_adaptation_avg_gaze_ratio ?? "-"}</div>
+                  <div class="metric-line"><strong>${s("validation_post_focus")}:</strong> ${validation.post_adaptation_gaze_ratio ?? "-"}</div>
+                  <div class="metric-line"><strong>${s("validation_speed_improved")}:</strong> ${yesNo(validation.improved_speed)}</div>
+                  <div class="metric-line"><strong>${s("validation_accuracy_improved")}:</strong> ${yesNo(validation.improved_accuracy)}</div>
+                  <div class="metric-line"><strong>${s("validation_focus_improved")}:</strong> ${yesNo(validation.improved_focus)}</div>
+                </div>
+              </div>
+
+              <div class="score-box">
+                <div><strong>${s("summary_score")}: ${score} / 3</strong></div>
+                <div style="margin-top:8px;"><strong>${s("metric_errors")}:</strong> ${totalErrors}</div>
+                <div style="margin-top:8px;"><strong>${s("metric_gaze_status")}:</strong> ${webgazerReady ? s("enabled") : s("fallback")}</div>
+              </div>
+            </div>
+          `;
+        },
+        choices: [s("continue_btn")],
+        data: { phase: "final_summary" }
+      };
+
+      const saveFinalScreen = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: `
+          <div class="card">
+            <h2>${s("end_backend_title")}</h2>
+            <div class="save-status-box">
+              <p id="save-status">${s("end_backend_loading")}</p>
+              <div id="save-actions" class="button-row"></div>
+            </div>
+          </div>
+        `,
+        choices: ["hidden"],
+        data: { phase: "save_final" },
+        on_load: function() {
+          const statusEl = document.getElementById("save-status");
+          const actionsEl = document.getElementById("save-actions");
+          const hiddenButton = document.getElementById("jspsych-html-button-response-button-0");
+
+          if (hiddenButton) {
+            hiddenButton.classList.add("hidden-final-btn");
+            hiddenButton.disabled = true;
+          }
+
+          persistGazeDebugSnapshot();
+
+          (async () => {
+            try {
+              const payload = buildFinalPayload(jsPsych.data.get().values());
+              const result = await saveExperimentData(payload);
+              latestProfileSummary = {
+                sessions_completed: result.sessions_completed,
+                baseline_ready: result.baseline_ready
+              };
+
+              statusEl.innerHTML = `
+                <span class="status-ok">${s("end_backend_saved")}</span><br>
+                <span class="small-note">
+                  ${s("recommendation_sessions")}: ${result.sessions_completed ?? "-"} |
+                  ${s("recommendation_baseline_ready")}: ${yesNo(result.baseline_ready)}
+                </span>
+              `;
+
+              const finishBtn = document.createElement("button");
+              finishBtn.type = "button";
+              finishBtn.className = "jspsych-btn";
+              finishBtn.textContent = s("finish_btn");
+              finishBtn.onclick = function() {
+                if (hiddenButton) hiddenButton.click();
+              };
+
+              const debugBtn = document.createElement("button");
+              debugBtn.type = "button";
+              debugBtn.className = "jspsych-btn secondary-btn";
+              debugBtn.textContent = s("open_debug_btn");
+              debugBtn.onclick = function() {
+                window.open("gaze_debug.html", "_blank", "noopener");
+              };
+
+              const openUiBtn = document.createElement("button");
+              openUiBtn.type = "button";
+              openUiBtn.className = "jspsych-btn secondary-btn";
+              openUiBtn.textContent = s("redirect_btn");
+              openUiBtn.onclick = function() {
+                const targetUrl = RECOMMENDED_UI_URLS[latestRecommendation];
+                if (targetUrl) window.open(targetUrl, "_blank", "noopener");
+              };
+
+              actionsEl.innerHTML = "";
+              actionsEl.appendChild(finishBtn);
+              actionsEl.appendChild(debugBtn);
+              actionsEl.appendChild(openUiBtn);
+            } catch (error) {
+              console.error(error);
+              statusEl.innerHTML = `
+                <strong>${s("save_failed")}:</strong> ${error.message}<br>
+                <span class="small-note">${s("save_backend_hint")}</span>
+              `;
+
+              const finishBtn = document.createElement("button");
+              finishBtn.type = "button";
+              finishBtn.className = "jspsych-btn";
+              finishBtn.textContent = s("finish_btn");
+              finishBtn.onclick = function() {
+                if (hiddenButton) hiddenButton.click();
+              };
+
+              const debugBtn = document.createElement("button");
+              debugBtn.type = "button";
+              debugBtn.className = "jspsych-btn secondary-btn";
+              debugBtn.textContent = s("open_debug_btn");
+              debugBtn.onclick = function() {
+                window.open("gaze_debug.html", "_blank", "noopener");
+              };
+
+              actionsEl.innerHTML = "";
+              actionsEl.appendChild(finishBtn);
+              actionsEl.appendChild(debugBtn);
+            }
+          })();
+        }
+      };
+
+      const timeline = [
+        universityIntro,
+        prototypeCheck,
+        baseline,
+        calibration,
+        task1Intro,
+        task1Loop,
+        task2Intro,
+        task2Loop,
+        recommendAndAdaptScreen,
+        task3Intro,
+        task3Loop,
+        finalSummary,
+        saveFinalScreen
+      ];
+
+      jsPsych.run(timeline);
+    }
+
+    showLanguageSelector();
+</script>
+</html>

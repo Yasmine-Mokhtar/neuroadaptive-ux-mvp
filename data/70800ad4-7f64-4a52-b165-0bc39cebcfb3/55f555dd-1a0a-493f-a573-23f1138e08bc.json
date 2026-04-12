@@ -1,0 +1,4190 @@
+{
+  "participant_id": "70800ad4-7f64-4a52-b165-0bc39cebcfb3",
+  "session_id": "55f555dd-1a0a-493f-a573-23f1138e08bc",
+  "created_at": "2026-04-11T15:32:15.601Z",
+  "baseline": {
+    "age_group": "25-34",
+    "digital_confidence": "Low",
+    "page_style": "Step-by-step guidance",
+    "guidance_need": "Rarely",
+    "screen_distraction": "Moderately",
+    "dense_content_tolerance": "Very uncomfortable",
+    "content_format": "Written text"
+  },
+  "tasks": {
+    "task1": {
+      "answer": "A book about marketing",
+      "correct": 0,
+      "time_on_task_ms": 10755,
+      "question_time_ms": 2426,
+      "answer_changes": 0,
+      "backtracking": 0,
+      "hesitation": 0,
+      "errors": 1
+    },
+    "task2": {
+      "answer": "Main Hall",
+      "correct": 0,
+      "time_on_task_ms": 7186,
+      "question_time_ms": 1678,
+      "answer_changes": 0,
+      "backtracking": 0,
+      "hesitation": 0,
+      "errors": 1
+    }
+  },
+  "raw_trials": [
+    {
+      "rt": 1549,
+      "stimulus": "\n          <div class=\"card\">\n            <div class=\"logo-wrap\">\n              <img src=\"jyu-logo.svg\" alt=\"University of Jyvaskyla logo\" onerror=\"this.style.display='none'\">\n            </div>\n            <h1>Welcome to the University of Jyväskylä</h1>\n            <p>Thank you for taking part in this short research demo.</p>\n            <p class=\"muted\">This prototype demonstrates baseline profiling, WebGazer-based attention capture, behavioural logging, and adaptive interface recommendation.</p>\n          </div>\n        ",
+      "response": 0,
+      "phase": "university_intro",
+      "trial_type": "html-button-response",
+      "trial_index": 0,
+      "time_elapsed": 1556,
+      "internal_node_id": "0.0-0.0"
+    },
+    {
+      "rt": 14201,
+      "stimulus": "\n          <div class=\"card\">\n            <h2>Prototype Check</h2>\n            <p>This MVP runs in the browser and connects to a backend for saving data and generating an adaptive recommendation.</p>\n            <p class=\"muted\">The camera starts here. After that, a short calibration step is used before gaze-based reading analysis begins.</p>\n            <p id=\"webgazer-status\" class=\"small-note\">Initializing camera...</p>\n          </div>\n        ",
+      "response": 0,
+      "phase": "prototype_check",
+      "trial_type": "html-button-response",
+      "trial_index": 1,
+      "time_elapsed": 15759,
+      "internal_node_id": "0.0-1.0"
+    },
+    {
+      "rt": 14871,
+      "response": {
+        "age_group": "25-34",
+        "digital_confidence": "Low",
+        "page_style": "Step-by-step guidance",
+        "guidance_need": "Rarely",
+        "screen_distraction": "Moderately",
+        "dense_content_tolerance": "Very uncomfortable",
+        "content_format": "Written text"
+      },
+      "phase": "baseline",
+      "trial_type": "survey-html-form",
+      "trial_index": 2,
+      "time_elapsed": 30632,
+      "internal_node_id": "0.0-2.0"
+    },
+    {
+      "rt": 22253,
+      "stimulus": "\n          <div class=\"card\">\n            <h2>WebGazer Calibration</h2>\n            <p>Look directly at each dot and click it twice while keeping your gaze on it. This calibrates webcam-based gaze estimation so the system can generate clearer heatmaps and gaze statistics during the reading tasks.</p>\n\n            <div id=\"calibration-area\" class=\"calibration-area\">\n              <button type=\"button\" class=\"calibration-dot\" style=\"left: 10%; top: 12%;\" aria-label=\"Calibration point 1\"></button>\n              <button type=\"button\" class=\"calibration-dot\" style=\"left: 50%; top: 12%;\" aria-label=\"Calibration point 2\"></button>\n              <button type=\"button\" class=\"calibration-dot\" style=\"left: 90%; top: 12%;\" aria-label=\"Calibration point 3\"></button>\n\n              <button type=\"button\" class=\"calibration-dot\" style=\"left: 10%; top: 50%;\" aria-label=\"Calibration point 4\"></button>\n              <button type=\"button\" class=\"calibration-dot\" style=\"left: 50%; top: 50%;\" aria-label=\"Calibration point 5\"></button>\n              <button type=\"button\" class=\"calibration-dot\" style=\"left: 90%; top: 50%;\" aria-label=\"Calibration point 6\"></button>\n\n              <button type=\"button\" class=\"calibration-dot\" style=\"left: 10%; top: 88%;\" aria-label=\"Calibration point 7\"></button>\n              <button type=\"button\" class=\"calibration-dot\" style=\"left: 50%; top: 88%;\" aria-label=\"Calibration point 8\"></button>\n              <button type=\"button\" class=\"calibration-dot\" style=\"left: 90%; top: 88%;\" aria-label=\"Calibration point 9\"></button>\n            </div>\n\n            <p id=\"calibration-status\" class=\"small-note\">Calibration progress: 0 / 9</p>\n          </div>\n        ",
+      "response": 0,
+      "phase": "calibration",
+      "trial_type": "html-button-response",
+      "trial_index": 3,
+      "time_elapsed": 52887,
+      "internal_node_id": "0.0-3.0"
+    },
+    {
+      "rt": 1510,
+      "stimulus": "\n          <div class=\"card\">\n            <h2>Task 1</h2>\n            <p>Read the paragraph carefully, then answer one question.</p>\n          </div>\n        ",
+      "response": 0,
+      "phase": "task1_intro",
+      "trial_type": "html-button-response",
+      "trial_index": 4,
+      "time_elapsed": 54397,
+      "internal_node_id": "0.0-4.0"
+    },
+    {
+      "rt": 6817,
+      "stimulus": "\n    <div class=\"card\">\n      <h2>Reading Task</h2>\n      <div id=\"task1-text-region\" class=\"info-box\">Lina is a university student who usually studies in the library after her classes. On Monday, she arrived at the library at 3:00 PM, spent one hour reading a research article, then worked on an assignment for two more hours. Before leaving, she borrowed a book about user experience design.</div>\n      <p id=\"task1-gaze-note\" class=\"small-note\">Stabilizing gaze capture...</p>\n    </div>\n  ",
+      "response": 0,
+      "phase": "task1_reading",
+      "trial_type": "html-button-response",
+      "trial_index": 5,
+      "time_elapsed": 61215,
+      "internal_node_id": "0.0-5.0-0.0"
+    },
+    {
+      "rt": 2426,
+      "response": {
+        "task1_answer": "A book about marketing"
+      },
+      "question_order": [
+        0
+      ],
+      "phase": "task1_question",
+      "trial_type": "survey-multi-choice",
+      "trial_index": 6,
+      "time_elapsed": 63642,
+      "internal_node_id": "0.0-5.0-1.0",
+      "user_answer": "A book about marketing",
+      "correct_answer": "A book about user experience design",
+      "correct": 0,
+      "time_on_task_ms": 10755,
+      "question_time_ms": 2426,
+      "answer_changes": 0,
+      "backtracking": 0,
+      "hesitation": 0,
+      "errors": 1
+    },
+    {
+      "rt": 838,
+      "stimulus": "\n          <div class=\"card\">\n            <h2>Task 2</h2>\n            <p>Read the information card and answer one question based on it.</p>\n          </div>\n        ",
+      "response": 0,
+      "phase": "task2_intro",
+      "trial_type": "html-button-response",
+      "trial_index": 7,
+      "time_elapsed": 64481,
+      "internal_node_id": "0.0-6.0"
+    },
+    {
+      "rt": 4669,
+      "stimulus": "\n    <div class=\"card\">\n      <h2>Workshop Information</h2>\n      <div id=\"task2-info-region\" class=\"info-box\">\n          <strong>Title:</strong> Introduction to Human-Computer Interaction<br>\n          <strong>Date:</strong> Thursday, May 15<br>\n          <strong>Time:</strong> 10:00 AM - 12:00 PM<br>\n          <strong>Location:</strong> Room B204<br>\n          <strong>Instructor:</strong> Dr. Sami\n        </div>\n      <p id=\"task2-gaze-note\" class=\"small-note\">Stabilizing gaze capture...</p>\n    </div>\n  ",
+      "response": 0,
+      "phase": "task2_info",
+      "trial_type": "html-button-response",
+      "trial_index": 8,
+      "time_elapsed": 69150,
+      "internal_node_id": "0.0-7.0-0.0"
+    },
+    {
+      "rt": 1677,
+      "response": {
+        "task2_answer": "Main Hall"
+      },
+      "question_order": [
+        0
+      ],
+      "phase": "task2_question",
+      "trial_type": "survey-multi-choice",
+      "trial_index": 9,
+      "time_elapsed": 70829,
+      "internal_node_id": "0.0-7.0-1.0",
+      "user_answer": "Main Hall",
+      "correct_answer": "Room B204",
+      "correct": 0,
+      "time_on_task_ms": 7186,
+      "question_time_ms": 1678,
+      "answer_changes": 0,
+      "backtracking": 0,
+      "hesitation": 0,
+      "errors": 1
+    },
+    {
+      "rt": 2415,
+      "stimulus": "\n            <div class=\"card\">\n              <h2>Experiment Completed</h2>\n              <p>This screen summarizes behavioural performance and gaze-derived indicators collected during the experiment.</p>\n\n              <div class=\"summary-grid\">\n                <div class=\"summary-item\">\n                  <span class=\"summary-label\">Task 1 result</span>\n                  <div class=\"summary-value\">\n                    <span class=\"status-pill status-wrong\">Incorrect</span>\n                    <div class=\"metric-list\">\n                      <div class=\"metric-line\"><strong>Your answer:</strong> A book about marketing</div>\n                      <div class=\"metric-line\"><strong>Correct answer:</strong> A book about user experience design</div>\n                      <div class=\"metric-line\"><strong>Time on task:</strong> 10.76 s</div>\n                      <div class=\"metric-line\"><strong>Question time:</strong> 2.43 s</div>\n                      <div class=\"metric-line\"><strong>Errors:</strong> 1</div>\n                      <div class=\"metric-line\"><strong>Answer changes:</strong> 0</div>\n                      <div class=\"metric-line\"><strong>Hesitation:</strong> No</div>\n                      <div class=\"metric-line\"><strong>Backtracking:</strong> No</div>\n                      \n                            <div class=\"metric-line\"><strong>Gaze samples:</strong> 262</div>\n                            <div class=\"metric-line\"><strong>On-target ratio:</strong> 0.05</div>\n                            <div class=\"metric-line\"><strong>First fixation latency:</strong> 0.62 s</div>\n                            <div class=\"metric-line\"><strong>Dwell time on target:</strong> 0.70 s</div>\n                          \n                    </div>\n                  </div>\n                </div>\n\n                <div class=\"summary-item\">\n                  <span class=\"summary-label\">Task 2 result</span>\n                  <div class=\"summary-value\">\n                    <span class=\"status-pill status-wrong\">Incorrect</span>\n                    <div class=\"metric-list\">\n                      <div class=\"metric-line\"><strong>Your answer:</strong> Main Hall</div>\n                      <div class=\"metric-line\"><strong>Correct answer:</strong> Room B204</div>\n                      <div class=\"metric-line\"><strong>Time on task:</strong> 7.19 s</div>\n                      <div class=\"metric-line\"><strong>Question time:</strong> 1.68 s</div>\n                      <div class=\"metric-line\"><strong>Errors:</strong> 1</div>\n                      <div class=\"metric-line\"><strong>Answer changes:</strong> 0</div>\n                      <div class=\"metric-line\"><strong>Hesitation:</strong> No</div>\n                      <div class=\"metric-line\"><strong>Backtracking:</strong> No</div>\n                      \n                            <div class=\"metric-line\"><strong>Gaze samples:</strong> 170</div>\n                            <div class=\"metric-line\"><strong>On-target ratio:</strong> 0.05</div>\n                            <div class=\"metric-line\"><strong>First fixation latency:</strong> 2.26 s</div>\n                            <div class=\"metric-line\"><strong>Dwell time on target:</strong> 0.40 s</div>\n                          \n                    </div>\n                  </div>\n                </div>\n              </div>\n\n              <div class=\"score-box\">\n                <div><strong>Overall score: 0 / 2</strong></div>\n                <div style=\"margin-top:8px;\"><strong>Errors:</strong> 2</div>\n                <div style=\"margin-top:8px;\"><strong>WebGazer:</strong> Enabled</div>\n              </div>\n            </div>\n          ",
+      "response": 0,
+      "phase": "end_screen",
+      "trial_type": "html-button-response",
+      "trial_index": 10,
+      "time_elapsed": 73245,
+      "internal_node_id": "0.0-8.0"
+    }
+  ],
+  "gaze": {
+    "webgazer_ready": true,
+    "task1_reading": {
+      "metrics": {
+        "total_samples": 262,
+        "in_target_samples": 14,
+        "on_target_ratio": 0.05,
+        "first_fixation_latency_ms": 618,
+        "dwell_time_ms": 700,
+        "region_width": 686.8923950195312,
+        "region_height": 177.9166717529297,
+        "points": [
+          {
+            "rel_x": 0.8049,
+            "rel_y": 0.9781
+          },
+          {
+            "rel_x": 0.7996,
+            "rel_y": 0.9651
+          },
+          {
+            "rel_x": 0.9843,
+            "rel_y": 0.8348
+          },
+          {
+            "rel_x": 0.9152,
+            "rel_y": 0.8286
+          },
+          {
+            "rel_x": 0.8736,
+            "rel_y": 0.7782
+          },
+          {
+            "rel_x": 0.8624,
+            "rel_y": 0.7105
+          },
+          {
+            "rel_x": 0.8881,
+            "rel_y": 0.567
+          },
+          {
+            "rel_x": 0.9018,
+            "rel_y": 0.5158
+          },
+          {
+            "rel_x": 0.89,
+            "rel_y": 0.4788
+          },
+          {
+            "rel_x": 0.94,
+            "rel_y": 0.3407
+          },
+          {
+            "rel_x": 0.936,
+            "rel_y": 0.1856
+          },
+          {
+            "rel_x": 0.9649,
+            "rel_y": 0.2619
+          },
+          {
+            "rel_x": 0.9886,
+            "rel_y": 0.1231
+          },
+          {
+            "rel_x": 0.9958,
+            "rel_y": 0.0903
+          }
+        ]
+      },
+      "raw_samples": [
+        {
+          "x": 843.22,
+          "y": 395.21,
+          "rel_x": 0.3688,
+          "rel_y": 1.1969,
+          "inside_target": false,
+          "offset_ms": 21,
+          "recorded_at": 1775921517430
+        },
+        {
+          "x": 829.4,
+          "y": 397.24,
+          "rel_x": 0.3487,
+          "rel_y": 1.2083,
+          "inside_target": false,
+          "offset_ms": 44,
+          "recorded_at": 1775921517453
+        },
+        {
+          "x": 821.88,
+          "y": 408.2,
+          "rel_x": 0.3377,
+          "rel_y": 1.2699,
+          "inside_target": false,
+          "offset_ms": 71,
+          "recorded_at": 1775921517480
+        },
+        {
+          "x": 828.63,
+          "y": 373.17,
+          "rel_x": 0.3476,
+          "rel_y": 1.073,
+          "inside_target": false,
+          "offset_ms": 94,
+          "recorded_at": 1775921517502
+        },
+        {
+          "x": 911.74,
+          "y": 459.13,
+          "rel_x": 0.4686,
+          "rel_y": 1.5562,
+          "inside_target": false,
+          "offset_ms": 118,
+          "recorded_at": 1775921517526
+        },
+        {
+          "x": 1005.99,
+          "y": 576.41,
+          "rel_x": 0.6058,
+          "rel_y": 2.2154,
+          "inside_target": false,
+          "offset_ms": 142,
+          "recorded_at": 1775921517550
+        },
+        {
+          "x": 1047.82,
+          "y": 635.11,
+          "rel_x": 0.6667,
+          "rel_y": 2.5453,
+          "inside_target": false,
+          "offset_ms": 165,
+          "recorded_at": 1775921517573
+        },
+        {
+          "x": 1087.15,
+          "y": 703.76,
+          "rel_x": 0.7239,
+          "rel_y": 2.9312,
+          "inside_target": false,
+          "offset_ms": 186,
+          "recorded_at": 1775921517595
+        },
+        {
+          "x": 1096.33,
+          "y": 774.6,
+          "rel_x": 0.7373,
+          "rel_y": 3.3293,
+          "inside_target": false,
+          "offset_ms": 210,
+          "recorded_at": 1775921517618
+        },
+        {
+          "x": 1122.86,
+          "y": 784.42,
+          "rel_x": 0.7759,
+          "rel_y": 3.3845,
+          "inside_target": false,
+          "offset_ms": 236,
+          "recorded_at": 1775921517644
+        },
+        {
+          "x": 1140.92,
+          "y": 779.25,
+          "rel_x": 0.8022,
+          "rel_y": 3.3555,
+          "inside_target": false,
+          "offset_ms": 258,
+          "recorded_at": 1775921517666
+        },
+        {
+          "x": 1147.07,
+          "y": 755.63,
+          "rel_x": 0.8112,
+          "rel_y": 3.2227,
+          "inside_target": false,
+          "offset_ms": 280,
+          "recorded_at": 1775921517688
+        },
+        {
+          "x": 1193.21,
+          "y": 742.98,
+          "rel_x": 0.8783,
+          "rel_y": 3.1516,
+          "inside_target": false,
+          "offset_ms": 304,
+          "recorded_at": 1775921517713
+        },
+        {
+          "x": 1227.08,
+          "y": 722.79,
+          "rel_x": 0.9276,
+          "rel_y": 3.0381,
+          "inside_target": false,
+          "offset_ms": 326,
+          "recorded_at": 1775921517735
+        },
+        {
+          "x": 1199.08,
+          "y": 714.08,
+          "rel_x": 0.8869,
+          "rel_y": 2.9892,
+          "inside_target": false,
+          "offset_ms": 348,
+          "recorded_at": 1775921517757
+        },
+        {
+          "x": 1159.7,
+          "y": 676.26,
+          "rel_x": 0.8296,
+          "rel_y": 2.7766,
+          "inside_target": false,
+          "offset_ms": 372,
+          "recorded_at": 1775921517780
+        },
+        {
+          "x": 1148.22,
+          "y": 624.51,
+          "rel_x": 0.8128,
+          "rel_y": 2.4857,
+          "inside_target": false,
+          "offset_ms": 395,
+          "recorded_at": 1775921517804
+        },
+        {
+          "x": 1105.69,
+          "y": 625.06,
+          "rel_x": 0.7509,
+          "rel_y": 2.4888,
+          "inside_target": false,
+          "offset_ms": 417,
+          "recorded_at": 1775921517826
+        },
+        {
+          "x": 1095.48,
+          "y": 603.18,
+          "rel_x": 0.7361,
+          "rel_y": 2.3659,
+          "inside_target": false,
+          "offset_ms": 439,
+          "recorded_at": 1775921517848
+        },
+        {
+          "x": 1078.53,
+          "y": 574.95,
+          "rel_x": 0.7114,
+          "rel_y": 2.2072,
+          "inside_target": false,
+          "offset_ms": 462,
+          "recorded_at": 1775921517871
+        },
+        {
+          "x": 1103.88,
+          "y": 572.75,
+          "rel_x": 0.7483,
+          "rel_y": 2.1948,
+          "inside_target": false,
+          "offset_ms": 483,
+          "recorded_at": 1775921517892
+        },
+        {
+          "x": 1115.21,
+          "y": 521.58,
+          "rel_x": 0.7648,
+          "rel_y": 1.9072,
+          "inside_target": false,
+          "offset_ms": 506,
+          "recorded_at": 1775921517915
+        },
+        {
+          "x": 1111.22,
+          "y": 493.27,
+          "rel_x": 0.759,
+          "rel_y": 1.7481,
+          "inside_target": false,
+          "offset_ms": 528,
+          "recorded_at": 1775921517937
+        },
+        {
+          "x": 1134.06,
+          "y": 499.76,
+          "rel_x": 0.7922,
+          "rel_y": 1.7846,
+          "inside_target": false,
+          "offset_ms": 551,
+          "recorded_at": 1775921517960
+        },
+        {
+          "x": 1106.8,
+          "y": 447.32,
+          "rel_x": 0.7525,
+          "rel_y": 1.4898,
+          "inside_target": false,
+          "offset_ms": 574,
+          "recorded_at": 1775921517982
+        },
+        {
+          "x": 1113.77,
+          "y": 390.97,
+          "rel_x": 0.7627,
+          "rel_y": 1.1731,
+          "inside_target": false,
+          "offset_ms": 596,
+          "recorded_at": 1775921518005
+        },
+        {
+          "x": 1142.79,
+          "y": 356.28,
+          "rel_x": 0.8049,
+          "rel_y": 0.9781,
+          "inside_target": true,
+          "offset_ms": 618,
+          "recorded_at": 1775921518027
+        },
+        {
+          "x": 1139.13,
+          "y": 353.96,
+          "rel_x": 0.7996,
+          "rel_y": 0.9651,
+          "inside_target": true,
+          "offset_ms": 642,
+          "recorded_at": 1775921518051
+        },
+        {
+          "x": 1213.2,
+          "y": 385.61,
+          "rel_x": 0.9074,
+          "rel_y": 1.143,
+          "inside_target": false,
+          "offset_ms": 665,
+          "recorded_at": 1775921518073
+        },
+        {
+          "x": 1262.16,
+          "y": 430.01,
+          "rel_x": 0.9787,
+          "rel_y": 1.3925,
+          "inside_target": false,
+          "offset_ms": 686,
+          "recorded_at": 1775921518095
+        },
+        {
+          "x": 1303.22,
+          "y": 440.36,
+          "rel_x": 1.0385,
+          "rel_y": 1.4507,
+          "inside_target": false,
+          "offset_ms": 709,
+          "recorded_at": 1775921518118
+        },
+        {
+          "x": 1351.13,
+          "y": 409.51,
+          "rel_x": 1.1082,
+          "rel_y": 1.2773,
+          "inside_target": false,
+          "offset_ms": 732,
+          "recorded_at": 1775921518141
+        },
+        {
+          "x": 1375.96,
+          "y": 406.16,
+          "rel_x": 1.1444,
+          "rel_y": 1.2585,
+          "inside_target": false,
+          "offset_ms": 755,
+          "recorded_at": 1775921518163
+        },
+        {
+          "x": 1389.65,
+          "y": 386.63,
+          "rel_x": 1.1643,
+          "rel_y": 1.1487,
+          "inside_target": false,
+          "offset_ms": 779,
+          "recorded_at": 1775921518188
+        },
+        {
+          "x": 1397.55,
+          "y": 331.79,
+          "rel_x": 1.1758,
+          "rel_y": 0.8405,
+          "inside_target": false,
+          "offset_ms": 805,
+          "recorded_at": 1775921518214
+        },
+        {
+          "x": 1375.11,
+          "y": 274.13,
+          "rel_x": 1.1432,
+          "rel_y": 0.5164,
+          "inside_target": false,
+          "offset_ms": 831,
+          "recorded_at": 1775921518240
+        },
+        {
+          "x": 1398.86,
+          "y": 270.32,
+          "rel_x": 1.1777,
+          "rel_y": 0.495,
+          "inside_target": false,
+          "offset_ms": 856,
+          "recorded_at": 1775921518265
+        },
+        {
+          "x": 1414.73,
+          "y": 275.84,
+          "rel_x": 1.2008,
+          "rel_y": 0.526,
+          "inside_target": false,
+          "offset_ms": 880,
+          "recorded_at": 1775921518288
+        },
+        {
+          "x": 1413.56,
+          "y": 300.23,
+          "rel_x": 1.1991,
+          "rel_y": 0.6631,
+          "inside_target": false,
+          "offset_ms": 902,
+          "recorded_at": 1775921518311
+        },
+        {
+          "x": 1346.87,
+          "y": 375.05,
+          "rel_x": 1.102,
+          "rel_y": 1.0836,
+          "inside_target": false,
+          "offset_ms": 924,
+          "recorded_at": 1775921518333
+        },
+        {
+          "x": 1340.46,
+          "y": 336.34,
+          "rel_x": 1.0927,
+          "rel_y": 0.866,
+          "inside_target": false,
+          "offset_ms": 947,
+          "recorded_at": 1775921518356
+        },
+        {
+          "x": 1355.78,
+          "y": 312.49,
+          "rel_x": 1.115,
+          "rel_y": 0.732,
+          "inside_target": false,
+          "offset_ms": 970,
+          "recorded_at": 1775921518379
+        },
+        {
+          "x": 1287.63,
+          "y": 365.59,
+          "rel_x": 1.0158,
+          "rel_y": 1.0304,
+          "inside_target": false,
+          "offset_ms": 991,
+          "recorded_at": 1775921518400
+        },
+        {
+          "x": 1298.23,
+          "y": 351.75,
+          "rel_x": 1.0312,
+          "rel_y": 0.9527,
+          "inside_target": false,
+          "offset_ms": 1013,
+          "recorded_at": 1775921518421
+        },
+        {
+          "x": 1266.02,
+          "y": 330.78,
+          "rel_x": 0.9843,
+          "rel_y": 0.8348,
+          "inside_target": true,
+          "offset_ms": 1035,
+          "recorded_at": 1775921518444
+        },
+        {
+          "x": 1218.54,
+          "y": 329.68,
+          "rel_x": 0.9152,
+          "rel_y": 0.8286,
+          "inside_target": true,
+          "offset_ms": 1058,
+          "recorded_at": 1775921518467
+        },
+        {
+          "x": 1189.96,
+          "y": 320.71,
+          "rel_x": 0.8736,
+          "rel_y": 0.7782,
+          "inside_target": true,
+          "offset_ms": 1080,
+          "recorded_at": 1775921518489
+        },
+        {
+          "x": 1182.28,
+          "y": 308.67,
+          "rel_x": 0.8624,
+          "rel_y": 0.7105,
+          "inside_target": true,
+          "offset_ms": 1103,
+          "recorded_at": 1775921518512
+        },
+        {
+          "x": 1199.91,
+          "y": 283.14,
+          "rel_x": 0.8881,
+          "rel_y": 0.567,
+          "inside_target": true,
+          "offset_ms": 1127,
+          "recorded_at": 1775921518535
+        },
+        {
+          "x": 1209.33,
+          "y": 274.02,
+          "rel_x": 0.9018,
+          "rel_y": 0.5158,
+          "inside_target": true,
+          "offset_ms": 1148,
+          "recorded_at": 1775921518557
+        },
+        {
+          "x": 1201.25,
+          "y": 267.44,
+          "rel_x": 0.89,
+          "rel_y": 0.4788,
+          "inside_target": true,
+          "offset_ms": 1173,
+          "recorded_at": 1775921518581
+        },
+        {
+          "x": 1235.55,
+          "y": 242.87,
+          "rel_x": 0.94,
+          "rel_y": 0.3407,
+          "inside_target": true,
+          "offset_ms": 1196,
+          "recorded_at": 1775921518605
+        },
+        {
+          "x": 1232.84,
+          "y": 215.28,
+          "rel_x": 0.936,
+          "rel_y": 0.1856,
+          "inside_target": true,
+          "offset_ms": 1217,
+          "recorded_at": 1775921518626
+        },
+        {
+          "x": 1252.68,
+          "y": 228.85,
+          "rel_x": 0.9649,
+          "rel_y": 0.2619,
+          "inside_target": true,
+          "offset_ms": 1239,
+          "recorded_at": 1775921518648
+        },
+        {
+          "x": 1268.93,
+          "y": 204.16,
+          "rel_x": 0.9886,
+          "rel_y": 0.1231,
+          "inside_target": true,
+          "offset_ms": 1261,
+          "recorded_at": 1775921518669
+        },
+        {
+          "x": 1273.92,
+          "y": 198.32,
+          "rel_x": 0.9958,
+          "rel_y": 0.0903,
+          "inside_target": true,
+          "offset_ms": 1282,
+          "recorded_at": 1775921518690
+        },
+        {
+          "x": 1280.08,
+          "y": 177.88,
+          "rel_x": 1.0048,
+          "rel_y": -0.0246,
+          "inside_target": false,
+          "offset_ms": 1306,
+          "recorded_at": 1775921518715
+        },
+        {
+          "x": 1322.29,
+          "y": 169.27,
+          "rel_x": 1.0663,
+          "rel_y": -0.073,
+          "inside_target": false,
+          "offset_ms": 1328,
+          "recorded_at": 1775921518736
+        },
+        {
+          "x": 1396.68,
+          "y": 192.88,
+          "rel_x": 1.1746,
+          "rel_y": 0.0597,
+          "inside_target": false,
+          "offset_ms": 1350,
+          "recorded_at": 1775921518758
+        },
+        {
+          "x": 1436.28,
+          "y": 171.83,
+          "rel_x": 1.2322,
+          "rel_y": -0.0586,
+          "inside_target": false,
+          "offset_ms": 1372,
+          "recorded_at": 1775921518781
+        },
+        {
+          "x": 1524.77,
+          "y": 146,
+          "rel_x": 1.361,
+          "rel_y": -0.2038,
+          "inside_target": false,
+          "offset_ms": 1394,
+          "recorded_at": 1775921518802
+        },
+        {
+          "x": 1545.37,
+          "y": 240.41,
+          "rel_x": 1.391,
+          "rel_y": 0.3269,
+          "inside_target": false,
+          "offset_ms": 1415,
+          "recorded_at": 1775921518824
+        },
+        {
+          "x": 1621.5,
+          "y": 252.29,
+          "rel_x": 1.5019,
+          "rel_y": 0.3936,
+          "inside_target": false,
+          "offset_ms": 1438,
+          "recorded_at": 1775921518847
+        },
+        {
+          "x": 1676.22,
+          "y": 280.68,
+          "rel_x": 1.5815,
+          "rel_y": 0.5532,
+          "inside_target": false,
+          "offset_ms": 1460,
+          "recorded_at": 1775921518869
+        },
+        {
+          "x": 1717.2,
+          "y": 311.74,
+          "rel_x": 1.6412,
+          "rel_y": 0.7278,
+          "inside_target": false,
+          "offset_ms": 1481,
+          "recorded_at": 1775921518890
+        },
+        {
+          "x": 1692.82,
+          "y": 405.93,
+          "rel_x": 1.6057,
+          "rel_y": 1.2572,
+          "inside_target": false,
+          "offset_ms": 1504,
+          "recorded_at": 1775921518913
+        },
+        {
+          "x": 1649.52,
+          "y": 469.94,
+          "rel_x": 1.5427,
+          "rel_y": 1.6169,
+          "inside_target": false,
+          "offset_ms": 1527,
+          "recorded_at": 1775921518936
+        },
+        {
+          "x": 1525.54,
+          "y": 441.46,
+          "rel_x": 1.3622,
+          "rel_y": 1.4569,
+          "inside_target": false,
+          "offset_ms": 1552,
+          "recorded_at": 1775921518961
+        },
+        {
+          "x": 1375.57,
+          "y": 458.29,
+          "rel_x": 1.1438,
+          "rel_y": 1.5515,
+          "inside_target": false,
+          "offset_ms": 1575,
+          "recorded_at": 1775921518983
+        },
+        {
+          "x": 1291.27,
+          "y": 490.57,
+          "rel_x": 1.0211,
+          "rel_y": 1.7329,
+          "inside_target": false,
+          "offset_ms": 1596,
+          "recorded_at": 1775921519005
+        },
+        {
+          "x": 1210.06,
+          "y": 479.27,
+          "rel_x": 0.9029,
+          "rel_y": 1.6694,
+          "inside_target": false,
+          "offset_ms": 1622,
+          "recorded_at": 1775921519030
+        },
+        {
+          "x": 1138.51,
+          "y": 516.05,
+          "rel_x": 0.7987,
+          "rel_y": 1.8761,
+          "inside_target": false,
+          "offset_ms": 1644,
+          "recorded_at": 1775921519053
+        },
+        {
+          "x": 1017.09,
+          "y": 580.67,
+          "rel_x": 0.6219,
+          "rel_y": 2.2393,
+          "inside_target": false,
+          "offset_ms": 1667,
+          "recorded_at": 1775921519075
+        },
+        {
+          "x": 959.27,
+          "y": 530.98,
+          "rel_x": 0.5378,
+          "rel_y": 1.96,
+          "inside_target": false,
+          "offset_ms": 1695,
+          "recorded_at": 1775921519103
+        },
+        {
+          "x": 914.92,
+          "y": 484.9,
+          "rel_x": 0.4732,
+          "rel_y": 1.7011,
+          "inside_target": false,
+          "offset_ms": 1717,
+          "recorded_at": 1775921519126
+        },
+        {
+          "x": 860.05,
+          "y": 431.69,
+          "rel_x": 0.3933,
+          "rel_y": 1.402,
+          "inside_target": false,
+          "offset_ms": 1744,
+          "recorded_at": 1775921519153
+        },
+        {
+          "x": 801,
+          "y": 434.18,
+          "rel_x": 0.3073,
+          "rel_y": 1.416,
+          "inside_target": false,
+          "offset_ms": 1772,
+          "recorded_at": 1775921519181
+        },
+        {
+          "x": 836.27,
+          "y": 445.51,
+          "rel_x": 0.3587,
+          "rel_y": 1.4796,
+          "inside_target": false,
+          "offset_ms": 1803,
+          "recorded_at": 1775921519212
+        },
+        {
+          "x": 688.23,
+          "y": 409.55,
+          "rel_x": 0.1432,
+          "rel_y": 1.2775,
+          "inside_target": false,
+          "offset_ms": 1829,
+          "recorded_at": 1775921519238
+        },
+        {
+          "x": 693.23,
+          "y": 438.4,
+          "rel_x": 0.1504,
+          "rel_y": 1.4397,
+          "inside_target": false,
+          "offset_ms": 1858,
+          "recorded_at": 1775921519266
+        },
+        {
+          "x": 701.87,
+          "y": 410.91,
+          "rel_x": 0.163,
+          "rel_y": 1.2852,
+          "inside_target": false,
+          "offset_ms": 1881,
+          "recorded_at": 1775921519290
+        },
+        {
+          "x": 775.1,
+          "y": 436.25,
+          "rel_x": 0.2696,
+          "rel_y": 1.4276,
+          "inside_target": false,
+          "offset_ms": 1910,
+          "recorded_at": 1775921519319
+        },
+        {
+          "x": 839.18,
+          "y": 464.56,
+          "rel_x": 0.3629,
+          "rel_y": 1.5867,
+          "inside_target": false,
+          "offset_ms": 1934,
+          "recorded_at": 1775921519343
+        },
+        {
+          "x": 797.78,
+          "y": 521.06,
+          "rel_x": 0.3027,
+          "rel_y": 1.9043,
+          "inside_target": false,
+          "offset_ms": 1962,
+          "recorded_at": 1775921519370
+        },
+        {
+          "x": 725.97,
+          "y": 559.97,
+          "rel_x": 0.1981,
+          "rel_y": 2.123,
+          "inside_target": false,
+          "offset_ms": 1986,
+          "recorded_at": 1775921519394
+        },
+        {
+          "x": 783.01,
+          "y": 542.45,
+          "rel_x": 0.2812,
+          "rel_y": 2.0245,
+          "inside_target": false,
+          "offset_ms": 2014,
+          "recorded_at": 1775921519423
+        },
+        {
+          "x": 811.56,
+          "y": 570.24,
+          "rel_x": 0.3227,
+          "rel_y": 2.1807,
+          "inside_target": false,
+          "offset_ms": 2039,
+          "recorded_at": 1775921519448
+        },
+        {
+          "x": 826.85,
+          "y": 540.78,
+          "rel_x": 0.345,
+          "rel_y": 2.0151,
+          "inside_target": false,
+          "offset_ms": 2067,
+          "recorded_at": 1775921519475
+        },
+        {
+          "x": 846.17,
+          "y": 499.81,
+          "rel_x": 0.3731,
+          "rel_y": 1.7848,
+          "inside_target": false,
+          "offset_ms": 2089,
+          "recorded_at": 1775921519498
+        },
+        {
+          "x": 832.43,
+          "y": 493.49,
+          "rel_x": 0.3531,
+          "rel_y": 1.7493,
+          "inside_target": false,
+          "offset_ms": 2113,
+          "recorded_at": 1775921519521
+        },
+        {
+          "x": 838.94,
+          "y": 479.5,
+          "rel_x": 0.3626,
+          "rel_y": 1.6707,
+          "inside_target": false,
+          "offset_ms": 2140,
+          "recorded_at": 1775921519549
+        },
+        {
+          "x": 864.2,
+          "y": 495.21,
+          "rel_x": 0.3994,
+          "rel_y": 1.759,
+          "inside_target": false,
+          "offset_ms": 2164,
+          "recorded_at": 1775921519572
+        },
+        {
+          "x": 936.96,
+          "y": 523.02,
+          "rel_x": 0.5053,
+          "rel_y": 1.9153,
+          "inside_target": false,
+          "offset_ms": 2191,
+          "recorded_at": 1775921519600
+        },
+        {
+          "x": 940.52,
+          "y": 508.74,
+          "rel_x": 0.5105,
+          "rel_y": 1.835,
+          "inside_target": false,
+          "offset_ms": 2216,
+          "recorded_at": 1775921519624
+        },
+        {
+          "x": 905.82,
+          "y": 485.68,
+          "rel_x": 0.4599,
+          "rel_y": 1.7054,
+          "inside_target": false,
+          "offset_ms": 2243,
+          "recorded_at": 1775921519652
+        },
+        {
+          "x": 875.69,
+          "y": 497.86,
+          "rel_x": 0.4161,
+          "rel_y": 1.7739,
+          "inside_target": false,
+          "offset_ms": 2267,
+          "recorded_at": 1775921519676
+        },
+        {
+          "x": 874.05,
+          "y": 516.07,
+          "rel_x": 0.4137,
+          "rel_y": 1.8763,
+          "inside_target": false,
+          "offset_ms": 2291,
+          "recorded_at": 1775921519699
+        },
+        {
+          "x": 857.2,
+          "y": 526.34,
+          "rel_x": 0.3892,
+          "rel_y": 1.934,
+          "inside_target": false,
+          "offset_ms": 2313,
+          "recorded_at": 1775921519722
+        },
+        {
+          "x": 826.66,
+          "y": 519.08,
+          "rel_x": 0.3447,
+          "rel_y": 1.8932,
+          "inside_target": false,
+          "offset_ms": 2337,
+          "recorded_at": 1775921519746
+        },
+        {
+          "x": 866.69,
+          "y": 485.53,
+          "rel_x": 0.403,
+          "rel_y": 1.7046,
+          "inside_target": false,
+          "offset_ms": 2360,
+          "recorded_at": 1775921519769
+        },
+        {
+          "x": 901.49,
+          "y": 456.77,
+          "rel_x": 0.4536,
+          "rel_y": 1.543,
+          "inside_target": false,
+          "offset_ms": 2382,
+          "recorded_at": 1775921519791
+        },
+        {
+          "x": 897.81,
+          "y": 447.1,
+          "rel_x": 0.4483,
+          "rel_y": 1.4886,
+          "inside_target": false,
+          "offset_ms": 2405,
+          "recorded_at": 1775921519814
+        },
+        {
+          "x": 927.56,
+          "y": 437.84,
+          "rel_x": 0.4916,
+          "rel_y": 1.4365,
+          "inside_target": false,
+          "offset_ms": 2429,
+          "recorded_at": 1775921519838
+        },
+        {
+          "x": 922.57,
+          "y": 422.43,
+          "rel_x": 0.4843,
+          "rel_y": 1.3499,
+          "inside_target": false,
+          "offset_ms": 2451,
+          "recorded_at": 1775921519859
+        },
+        {
+          "x": 893.35,
+          "y": 404.72,
+          "rel_x": 0.4418,
+          "rel_y": 1.2504,
+          "inside_target": false,
+          "offset_ms": 2474,
+          "recorded_at": 1775921519883
+        },
+        {
+          "x": 891.4,
+          "y": 413.17,
+          "rel_x": 0.439,
+          "rel_y": 1.2979,
+          "inside_target": false,
+          "offset_ms": 2497,
+          "recorded_at": 1775921519906
+        },
+        {
+          "x": 883.91,
+          "y": 402.92,
+          "rel_x": 0.428,
+          "rel_y": 1.2402,
+          "inside_target": false,
+          "offset_ms": 2520,
+          "recorded_at": 1775921519928
+        },
+        {
+          "x": 863.63,
+          "y": 425.13,
+          "rel_x": 0.3985,
+          "rel_y": 1.3651,
+          "inside_target": false,
+          "offset_ms": 2542,
+          "recorded_at": 1775921519951
+        },
+        {
+          "x": 859.59,
+          "y": 438.62,
+          "rel_x": 0.3926,
+          "rel_y": 1.4409,
+          "inside_target": false,
+          "offset_ms": 2566,
+          "recorded_at": 1775921519975
+        },
+        {
+          "x": 856.58,
+          "y": 450.45,
+          "rel_x": 0.3883,
+          "rel_y": 1.5074,
+          "inside_target": false,
+          "offset_ms": 2589,
+          "recorded_at": 1775921519997
+        },
+        {
+          "x": 875.65,
+          "y": 471.06,
+          "rel_x": 0.416,
+          "rel_y": 1.6233,
+          "inside_target": false,
+          "offset_ms": 2612,
+          "recorded_at": 1775921520020
+        },
+        {
+          "x": 901.18,
+          "y": 473.02,
+          "rel_x": 0.4532,
+          "rel_y": 1.6343,
+          "inside_target": false,
+          "offset_ms": 2637,
+          "recorded_at": 1775921520046
+        },
+        {
+          "x": 919.26,
+          "y": 492.28,
+          "rel_x": 0.4795,
+          "rel_y": 1.7425,
+          "inside_target": false,
+          "offset_ms": 2659,
+          "recorded_at": 1775921520068
+        },
+        {
+          "x": 916.15,
+          "y": 482.06,
+          "rel_x": 0.475,
+          "rel_y": 1.6851,
+          "inside_target": false,
+          "offset_ms": 2682,
+          "recorded_at": 1775921520090
+        },
+        {
+          "x": 902.66,
+          "y": 488.4,
+          "rel_x": 0.4553,
+          "rel_y": 1.7207,
+          "inside_target": false,
+          "offset_ms": 2706,
+          "recorded_at": 1775921520114
+        },
+        {
+          "x": 920.52,
+          "y": 475.84,
+          "rel_x": 0.4813,
+          "rel_y": 1.6501,
+          "inside_target": false,
+          "offset_ms": 2729,
+          "recorded_at": 1775921520137
+        },
+        {
+          "x": 919.03,
+          "y": 468.64,
+          "rel_x": 0.4792,
+          "rel_y": 1.6096,
+          "inside_target": false,
+          "offset_ms": 2752,
+          "recorded_at": 1775921520160
+        },
+        {
+          "x": 882.21,
+          "y": 491.4,
+          "rel_x": 0.4256,
+          "rel_y": 1.7375,
+          "inside_target": false,
+          "offset_ms": 2775,
+          "recorded_at": 1775921520184
+        },
+        {
+          "x": 833.54,
+          "y": 473.81,
+          "rel_x": 0.3547,
+          "rel_y": 1.6387,
+          "inside_target": false,
+          "offset_ms": 2799,
+          "recorded_at": 1775921520207
+        },
+        {
+          "x": 870.2,
+          "y": 498.77,
+          "rel_x": 0.4081,
+          "rel_y": 1.779,
+          "inside_target": false,
+          "offset_ms": 2822,
+          "recorded_at": 1775921520230
+        },
+        {
+          "x": 885.44,
+          "y": 508.42,
+          "rel_x": 0.4303,
+          "rel_y": 1.8332,
+          "inside_target": false,
+          "offset_ms": 2845,
+          "recorded_at": 1775921520253
+        },
+        {
+          "x": 908.9,
+          "y": 552.02,
+          "rel_x": 0.4644,
+          "rel_y": 2.0783,
+          "inside_target": false,
+          "offset_ms": 2871,
+          "recorded_at": 1775921520280
+        },
+        {
+          "x": 906.86,
+          "y": 552.41,
+          "rel_x": 0.4615,
+          "rel_y": 2.0805,
+          "inside_target": false,
+          "offset_ms": 2894,
+          "recorded_at": 1775921520302
+        },
+        {
+          "x": 897.39,
+          "y": 531.38,
+          "rel_x": 0.4477,
+          "rel_y": 1.9623,
+          "inside_target": false,
+          "offset_ms": 2916,
+          "recorded_at": 1775921520325
+        },
+        {
+          "x": 895.06,
+          "y": 491.01,
+          "rel_x": 0.4443,
+          "rel_y": 1.7354,
+          "inside_target": false,
+          "offset_ms": 2939,
+          "recorded_at": 1775921520348
+        },
+        {
+          "x": 872.04,
+          "y": 448.32,
+          "rel_x": 0.4108,
+          "rel_y": 1.4954,
+          "inside_target": false,
+          "offset_ms": 2961,
+          "recorded_at": 1775921520369
+        },
+        {
+          "x": 878.08,
+          "y": 389.5,
+          "rel_x": 0.4196,
+          "rel_y": 1.1648,
+          "inside_target": false,
+          "offset_ms": 2983,
+          "recorded_at": 1775921520392
+        },
+        {
+          "x": 838.28,
+          "y": 426.8,
+          "rel_x": 0.3616,
+          "rel_y": 1.3745,
+          "inside_target": false,
+          "offset_ms": 3006,
+          "recorded_at": 1775921520415
+        },
+        {
+          "x": 852.29,
+          "y": 550.58,
+          "rel_x": 0.382,
+          "rel_y": 2.0702,
+          "inside_target": false,
+          "offset_ms": 3030,
+          "recorded_at": 1775921520438
+        },
+        {
+          "x": 841.22,
+          "y": 617.69,
+          "rel_x": 0.3659,
+          "rel_y": 2.4474,
+          "inside_target": false,
+          "offset_ms": 3052,
+          "recorded_at": 1775921520460
+        },
+        {
+          "x": 838.56,
+          "y": 657.43,
+          "rel_x": 0.362,
+          "rel_y": 2.6707,
+          "inside_target": false,
+          "offset_ms": 3074,
+          "recorded_at": 1775921520482
+        },
+        {
+          "x": 845.79,
+          "y": 677.93,
+          "rel_x": 0.3726,
+          "rel_y": 2.786,
+          "inside_target": false,
+          "offset_ms": 3097,
+          "recorded_at": 1775921520505
+        },
+        {
+          "x": 809.57,
+          "y": 665.54,
+          "rel_x": 0.3198,
+          "rel_y": 2.7163,
+          "inside_target": false,
+          "offset_ms": 3118,
+          "recorded_at": 1775921520527
+        },
+        {
+          "x": 824.39,
+          "y": 662.39,
+          "rel_x": 0.3414,
+          "rel_y": 2.6986,
+          "inside_target": false,
+          "offset_ms": 3141,
+          "recorded_at": 1775921520550
+        },
+        {
+          "x": 843.39,
+          "y": 657.75,
+          "rel_x": 0.3691,
+          "rel_y": 2.6726,
+          "inside_target": false,
+          "offset_ms": 3165,
+          "recorded_at": 1775921520573
+        },
+        {
+          "x": 872.62,
+          "y": 655.6,
+          "rel_x": 0.4116,
+          "rel_y": 2.6604,
+          "inside_target": false,
+          "offset_ms": 3185,
+          "recorded_at": 1775921520594
+        },
+        {
+          "x": 877.44,
+          "y": 654.31,
+          "rel_x": 0.4186,
+          "rel_y": 2.6532,
+          "inside_target": false,
+          "offset_ms": 3209,
+          "recorded_at": 1775921520617
+        },
+        {
+          "x": 907.3,
+          "y": 663.41,
+          "rel_x": 0.4621,
+          "rel_y": 2.7044,
+          "inside_target": false,
+          "offset_ms": 3231,
+          "recorded_at": 1775921520640
+        },
+        {
+          "x": 932.27,
+          "y": 670.27,
+          "rel_x": 0.4985,
+          "rel_y": 2.7429,
+          "inside_target": false,
+          "offset_ms": 3252,
+          "recorded_at": 1775921520660
+        },
+        {
+          "x": 894.8,
+          "y": 677.57,
+          "rel_x": 0.4439,
+          "rel_y": 2.7839,
+          "inside_target": false,
+          "offset_ms": 3275,
+          "recorded_at": 1775921520684
+        },
+        {
+          "x": 867.28,
+          "y": 694.4,
+          "rel_x": 0.4038,
+          "rel_y": 2.8786,
+          "inside_target": false,
+          "offset_ms": 3299,
+          "recorded_at": 1775921520707
+        },
+        {
+          "x": 842.5,
+          "y": 714.39,
+          "rel_x": 0.3678,
+          "rel_y": 2.9909,
+          "inside_target": false,
+          "offset_ms": 3320,
+          "recorded_at": 1775921520729
+        },
+        {
+          "x": 805.65,
+          "y": 708.9,
+          "rel_x": 0.3141,
+          "rel_y": 2.9601,
+          "inside_target": false,
+          "offset_ms": 3343,
+          "recorded_at": 1775921520751
+        },
+        {
+          "x": 768.87,
+          "y": 712.45,
+          "rel_x": 0.2606,
+          "rel_y": 2.98,
+          "inside_target": false,
+          "offset_ms": 3365,
+          "recorded_at": 1775921520774
+        },
+        {
+          "x": 745.51,
+          "y": 709.3,
+          "rel_x": 0.2266,
+          "rel_y": 2.9623,
+          "inside_target": false,
+          "offset_ms": 3388,
+          "recorded_at": 1775921520797
+        },
+        {
+          "x": 734.54,
+          "y": 702.37,
+          "rel_x": 0.2106,
+          "rel_y": 2.9234,
+          "inside_target": false,
+          "offset_ms": 3411,
+          "recorded_at": 1775921520820
+        },
+        {
+          "x": 716.73,
+          "y": 659.18,
+          "rel_x": 0.1847,
+          "rel_y": 2.6806,
+          "inside_target": false,
+          "offset_ms": 3435,
+          "recorded_at": 1775921520844
+        },
+        {
+          "x": 724.18,
+          "y": 677.23,
+          "rel_x": 0.1955,
+          "rel_y": 2.7821,
+          "inside_target": false,
+          "offset_ms": 3457,
+          "recorded_at": 1775921520865
+        },
+        {
+          "x": 743.72,
+          "y": 672.25,
+          "rel_x": 0.224,
+          "rel_y": 2.7541,
+          "inside_target": false,
+          "offset_ms": 3480,
+          "recorded_at": 1775921520889
+        },
+        {
+          "x": 745.68,
+          "y": 670.63,
+          "rel_x": 0.2268,
+          "rel_y": 2.745,
+          "inside_target": false,
+          "offset_ms": 3503,
+          "recorded_at": 1775921520911
+        },
+        {
+          "x": 763.83,
+          "y": 696.28,
+          "rel_x": 0.2532,
+          "rel_y": 2.8892,
+          "inside_target": false,
+          "offset_ms": 3525,
+          "recorded_at": 1775921520934
+        },
+        {
+          "x": 763.67,
+          "y": 702.74,
+          "rel_x": 0.253,
+          "rel_y": 2.9255,
+          "inside_target": false,
+          "offset_ms": 3548,
+          "recorded_at": 1775921520956
+        },
+        {
+          "x": 773.97,
+          "y": 694.01,
+          "rel_x": 0.268,
+          "rel_y": 2.8764,
+          "inside_target": false,
+          "offset_ms": 3570,
+          "recorded_at": 1775921520979
+        },
+        {
+          "x": 776.9,
+          "y": 695.07,
+          "rel_x": 0.2723,
+          "rel_y": 2.8823,
+          "inside_target": false,
+          "offset_ms": 3592,
+          "recorded_at": 1775921521001
+        },
+        {
+          "x": 786.72,
+          "y": 684,
+          "rel_x": 0.2865,
+          "rel_y": 2.8201,
+          "inside_target": false,
+          "offset_ms": 3614,
+          "recorded_at": 1775921521023
+        },
+        {
+          "x": 808.61,
+          "y": 695.59,
+          "rel_x": 0.3184,
+          "rel_y": 2.8853,
+          "inside_target": false,
+          "offset_ms": 3637,
+          "recorded_at": 1775921521045
+        },
+        {
+          "x": 809.48,
+          "y": 678,
+          "rel_x": 0.3197,
+          "rel_y": 2.7864,
+          "inside_target": false,
+          "offset_ms": 3660,
+          "recorded_at": 1775921521068
+        },
+        {
+          "x": 786.89,
+          "y": 678.31,
+          "rel_x": 0.2868,
+          "rel_y": 2.7881,
+          "inside_target": false,
+          "offset_ms": 3681,
+          "recorded_at": 1775921521089
+        },
+        {
+          "x": 791.81,
+          "y": 686.57,
+          "rel_x": 0.294,
+          "rel_y": 2.8346,
+          "inside_target": false,
+          "offset_ms": 3705,
+          "recorded_at": 1775921521113
+        },
+        {
+          "x": 815.86,
+          "y": 700.27,
+          "rel_x": 0.329,
+          "rel_y": 2.9115,
+          "inside_target": false,
+          "offset_ms": 3728,
+          "recorded_at": 1775921521137
+        },
+        {
+          "x": 832.79,
+          "y": 682.56,
+          "rel_x": 0.3536,
+          "rel_y": 2.812,
+          "inside_target": false,
+          "offset_ms": 3749,
+          "recorded_at": 1775921521158
+        },
+        {
+          "x": 843.54,
+          "y": 691.85,
+          "rel_x": 0.3693,
+          "rel_y": 2.8642,
+          "inside_target": false,
+          "offset_ms": 3772,
+          "recorded_at": 1775921521181
+        },
+        {
+          "x": 843.34,
+          "y": 680.98,
+          "rel_x": 0.369,
+          "rel_y": 2.8031,
+          "inside_target": false,
+          "offset_ms": 3795,
+          "recorded_at": 1775921521203
+        },
+        {
+          "x": 837.94,
+          "y": 671.12,
+          "rel_x": 0.3611,
+          "rel_y": 2.7477,
+          "inside_target": false,
+          "offset_ms": 3816,
+          "recorded_at": 1775921521225
+        },
+        {
+          "x": 836.08,
+          "y": 692.16,
+          "rel_x": 0.3584,
+          "rel_y": 2.866,
+          "inside_target": false,
+          "offset_ms": 3838,
+          "recorded_at": 1775921521247
+        },
+        {
+          "x": 829.32,
+          "y": 690.41,
+          "rel_x": 0.3486,
+          "rel_y": 2.8561,
+          "inside_target": false,
+          "offset_ms": 3860,
+          "recorded_at": 1775921521268
+        },
+        {
+          "x": 818.24,
+          "y": 693.5,
+          "rel_x": 0.3324,
+          "rel_y": 2.8735,
+          "inside_target": false,
+          "offset_ms": 3881,
+          "recorded_at": 1775921521290
+        },
+        {
+          "x": 822.49,
+          "y": 695.25,
+          "rel_x": 0.3386,
+          "rel_y": 2.8833,
+          "inside_target": false,
+          "offset_ms": 3904,
+          "recorded_at": 1775921521313
+        },
+        {
+          "x": 822.46,
+          "y": 675.15,
+          "rel_x": 0.3386,
+          "rel_y": 2.7704,
+          "inside_target": false,
+          "offset_ms": 3928,
+          "recorded_at": 1775921521337
+        },
+        {
+          "x": 813.49,
+          "y": 695.62,
+          "rel_x": 0.3255,
+          "rel_y": 2.8854,
+          "inside_target": false,
+          "offset_ms": 3949,
+          "recorded_at": 1775921521358
+        },
+        {
+          "x": 810.78,
+          "y": 677.64,
+          "rel_x": 0.3216,
+          "rel_y": 2.7844,
+          "inside_target": false,
+          "offset_ms": 3970,
+          "recorded_at": 1775921521379
+        },
+        {
+          "x": 818.02,
+          "y": 644.94,
+          "rel_x": 0.3321,
+          "rel_y": 2.6005,
+          "inside_target": false,
+          "offset_ms": 3993,
+          "recorded_at": 1775921521401
+        },
+        {
+          "x": 842.89,
+          "y": 662.58,
+          "rel_x": 0.3683,
+          "rel_y": 2.6997,
+          "inside_target": false,
+          "offset_ms": 4014,
+          "recorded_at": 1775921521423
+        },
+        {
+          "x": 844.14,
+          "y": 664.15,
+          "rel_x": 0.3702,
+          "rel_y": 2.7085,
+          "inside_target": false,
+          "offset_ms": 4038,
+          "recorded_at": 1775921521447
+        },
+        {
+          "x": 819.66,
+          "y": 635.41,
+          "rel_x": 0.3345,
+          "rel_y": 2.547,
+          "inside_target": false,
+          "offset_ms": 4060,
+          "recorded_at": 1775921521469
+        },
+        {
+          "x": 767.84,
+          "y": 603.62,
+          "rel_x": 0.2591,
+          "rel_y": 2.3683,
+          "inside_target": false,
+          "offset_ms": 4081,
+          "recorded_at": 1775921521490
+        },
+        {
+          "x": 791.15,
+          "y": 626.74,
+          "rel_x": 0.293,
+          "rel_y": 2.4982,
+          "inside_target": false,
+          "offset_ms": 4103,
+          "recorded_at": 1775921521511
+        },
+        {
+          "x": 789.93,
+          "y": 598.29,
+          "rel_x": 0.2912,
+          "rel_y": 2.3384,
+          "inside_target": false,
+          "offset_ms": 4125,
+          "recorded_at": 1775921521533
+        },
+        {
+          "x": 807.11,
+          "y": 599.79,
+          "rel_x": 0.3162,
+          "rel_y": 2.3468,
+          "inside_target": false,
+          "offset_ms": 4147,
+          "recorded_at": 1775921521555
+        },
+        {
+          "x": 827.33,
+          "y": 605.95,
+          "rel_x": 0.3457,
+          "rel_y": 2.3814,
+          "inside_target": false,
+          "offset_ms": 4170,
+          "recorded_at": 1775921521578
+        },
+        {
+          "x": 844.53,
+          "y": 611.96,
+          "rel_x": 0.3707,
+          "rel_y": 2.4152,
+          "inside_target": false,
+          "offset_ms": 4191,
+          "recorded_at": 1775921521599
+        },
+        {
+          "x": 834.5,
+          "y": 623.38,
+          "rel_x": 0.3561,
+          "rel_y": 2.4794,
+          "inside_target": false,
+          "offset_ms": 4212,
+          "recorded_at": 1775921521621
+        },
+        {
+          "x": 829.34,
+          "y": 587.14,
+          "rel_x": 0.3486,
+          "rel_y": 2.2757,
+          "inside_target": false,
+          "offset_ms": 4235,
+          "recorded_at": 1775921521644
+        },
+        {
+          "x": 820.97,
+          "y": 569.02,
+          "rel_x": 0.3364,
+          "rel_y": 2.1738,
+          "inside_target": false,
+          "offset_ms": 4257,
+          "recorded_at": 1775921521665
+        },
+        {
+          "x": 812.38,
+          "y": 544.12,
+          "rel_x": 0.3239,
+          "rel_y": 2.0339,
+          "inside_target": false,
+          "offset_ms": 4279,
+          "recorded_at": 1775921521687
+        },
+        {
+          "x": 799.84,
+          "y": 507.65,
+          "rel_x": 0.3057,
+          "rel_y": 1.8289,
+          "inside_target": false,
+          "offset_ms": 4302,
+          "recorded_at": 1775921521711
+        },
+        {
+          "x": 812.61,
+          "y": 526.52,
+          "rel_x": 0.3242,
+          "rel_y": 1.935,
+          "inside_target": false,
+          "offset_ms": 4324,
+          "recorded_at": 1775921521732
+        },
+        {
+          "x": 834.27,
+          "y": 487.93,
+          "rel_x": 0.3558,
+          "rel_y": 1.7181,
+          "inside_target": false,
+          "offset_ms": 4346,
+          "recorded_at": 1775921521754
+        },
+        {
+          "x": 825.52,
+          "y": 489.43,
+          "rel_x": 0.343,
+          "rel_y": 1.7265,
+          "inside_target": false,
+          "offset_ms": 4368,
+          "recorded_at": 1775921521777
+        },
+        {
+          "x": 829.82,
+          "y": 515.56,
+          "rel_x": 0.3493,
+          "rel_y": 1.8734,
+          "inside_target": false,
+          "offset_ms": 4390,
+          "recorded_at": 1775921521798
+        },
+        {
+          "x": 829.69,
+          "y": 530.17,
+          "rel_x": 0.3491,
+          "rel_y": 1.9555,
+          "inside_target": false,
+          "offset_ms": 4412,
+          "recorded_at": 1775921521820
+        },
+        {
+          "x": 800.35,
+          "y": 507.65,
+          "rel_x": 0.3064,
+          "rel_y": 1.8289,
+          "inside_target": false,
+          "offset_ms": 4434,
+          "recorded_at": 1775921521843
+        },
+        {
+          "x": 823.96,
+          "y": 502.43,
+          "rel_x": 0.3408,
+          "rel_y": 1.7996,
+          "inside_target": false,
+          "offset_ms": 4456,
+          "recorded_at": 1775921521865
+        },
+        {
+          "x": 798.59,
+          "y": 482.94,
+          "rel_x": 0.3038,
+          "rel_y": 1.69,
+          "inside_target": false,
+          "offset_ms": 4478,
+          "recorded_at": 1775921521887
+        },
+        {
+          "x": 791.61,
+          "y": 460.46,
+          "rel_x": 0.2937,
+          "rel_y": 1.5637,
+          "inside_target": false,
+          "offset_ms": 4501,
+          "recorded_at": 1775921521910
+        },
+        {
+          "x": 767.19,
+          "y": 443,
+          "rel_x": 0.2581,
+          "rel_y": 1.4656,
+          "inside_target": false,
+          "offset_ms": 4522,
+          "recorded_at": 1775921521931
+        },
+        {
+          "x": 751.56,
+          "y": 441.59,
+          "rel_x": 0.2354,
+          "rel_y": 1.4576,
+          "inside_target": false,
+          "offset_ms": 4545,
+          "recorded_at": 1775921521954
+        },
+        {
+          "x": 732.77,
+          "y": 436.66,
+          "rel_x": 0.208,
+          "rel_y": 1.4299,
+          "inside_target": false,
+          "offset_ms": 4568,
+          "recorded_at": 1775921521977
+        },
+        {
+          "x": 728.71,
+          "y": 422.03,
+          "rel_x": 0.2021,
+          "rel_y": 1.3477,
+          "inside_target": false,
+          "offset_ms": 4591,
+          "recorded_at": 1775921522000
+        },
+        {
+          "x": 695.74,
+          "y": 437.29,
+          "rel_x": 0.1541,
+          "rel_y": 1.4334,
+          "inside_target": false,
+          "offset_ms": 4617,
+          "recorded_at": 1775921522026
+        },
+        {
+          "x": 688.86,
+          "y": 430.68,
+          "rel_x": 0.1441,
+          "rel_y": 1.3963,
+          "inside_target": false,
+          "offset_ms": 4640,
+          "recorded_at": 1775921522049
+        },
+        {
+          "x": 694.37,
+          "y": 421.81,
+          "rel_x": 0.1521,
+          "rel_y": 1.3464,
+          "inside_target": false,
+          "offset_ms": 4663,
+          "recorded_at": 1775921522071
+        },
+        {
+          "x": 753.76,
+          "y": 440.6,
+          "rel_x": 0.2386,
+          "rel_y": 1.4521,
+          "inside_target": false,
+          "offset_ms": 4690,
+          "recorded_at": 1775921522098
+        },
+        {
+          "x": 757.1,
+          "y": 431.92,
+          "rel_x": 0.2434,
+          "rel_y": 1.4032,
+          "inside_target": false,
+          "offset_ms": 4712,
+          "recorded_at": 1775921522121
+        },
+        {
+          "x": 776.03,
+          "y": 430.33,
+          "rel_x": 0.271,
+          "rel_y": 1.3943,
+          "inside_target": false,
+          "offset_ms": 4735,
+          "recorded_at": 1775921522144
+        },
+        {
+          "x": 755.57,
+          "y": 446.13,
+          "rel_x": 0.2412,
+          "rel_y": 1.4832,
+          "inside_target": false,
+          "offset_ms": 4763,
+          "recorded_at": 1775921522171
+        },
+        {
+          "x": 744.77,
+          "y": 440.57,
+          "rel_x": 0.2255,
+          "rel_y": 1.4519,
+          "inside_target": false,
+          "offset_ms": 4785,
+          "recorded_at": 1775921522194
+        },
+        {
+          "x": 724.81,
+          "y": 424.89,
+          "rel_x": 0.1964,
+          "rel_y": 1.3638,
+          "inside_target": false,
+          "offset_ms": 4815,
+          "recorded_at": 1775921522223
+        },
+        {
+          "x": 772.89,
+          "y": 397.56,
+          "rel_x": 0.2664,
+          "rel_y": 1.2101,
+          "inside_target": false,
+          "offset_ms": 4839,
+          "recorded_at": 1775921522247
+        },
+        {
+          "x": 789.35,
+          "y": 385.44,
+          "rel_x": 0.2904,
+          "rel_y": 1.142,
+          "inside_target": false,
+          "offset_ms": 4866,
+          "recorded_at": 1775921522274
+        },
+        {
+          "x": 779.36,
+          "y": 384.29,
+          "rel_x": 0.2758,
+          "rel_y": 1.1356,
+          "inside_target": false,
+          "offset_ms": 4887,
+          "recorded_at": 1775921522296
+        },
+        {
+          "x": 771.01,
+          "y": 395.96,
+          "rel_x": 0.2637,
+          "rel_y": 1.2012,
+          "inside_target": false,
+          "offset_ms": 4910,
+          "recorded_at": 1775921522319
+        },
+        {
+          "x": 777.93,
+          "y": 392.51,
+          "rel_x": 0.2738,
+          "rel_y": 1.1818,
+          "inside_target": false,
+          "offset_ms": 4936,
+          "recorded_at": 1775921522345
+        },
+        {
+          "x": 789.66,
+          "y": 397.87,
+          "rel_x": 0.2908,
+          "rel_y": 1.2119,
+          "inside_target": false,
+          "offset_ms": 4959,
+          "recorded_at": 1775921522368
+        },
+        {
+          "x": 799.36,
+          "y": 402.87,
+          "rel_x": 0.305,
+          "rel_y": 1.24,
+          "inside_target": false,
+          "offset_ms": 4981,
+          "recorded_at": 1775921522390
+        },
+        {
+          "x": 835.98,
+          "y": 409.75,
+          "rel_x": 0.3583,
+          "rel_y": 1.2786,
+          "inside_target": false,
+          "offset_ms": 5009,
+          "recorded_at": 1775921522418
+        },
+        {
+          "x": 860.29,
+          "y": 420.2,
+          "rel_x": 0.3937,
+          "rel_y": 1.3374,
+          "inside_target": false,
+          "offset_ms": 5032,
+          "recorded_at": 1775921522441
+        },
+        {
+          "x": 841.16,
+          "y": 424.64,
+          "rel_x": 0.3658,
+          "rel_y": 1.3624,
+          "inside_target": false,
+          "offset_ms": 5060,
+          "recorded_at": 1775921522469
+        },
+        {
+          "x": 835.89,
+          "y": 411.24,
+          "rel_x": 0.3581,
+          "rel_y": 1.287,
+          "inside_target": false,
+          "offset_ms": 5083,
+          "recorded_at": 1775921522491
+        },
+        {
+          "x": 840.82,
+          "y": 415.34,
+          "rel_x": 0.3653,
+          "rel_y": 1.3101,
+          "inside_target": false,
+          "offset_ms": 5110,
+          "recorded_at": 1775921522519
+        },
+        {
+          "x": 835.78,
+          "y": 433.27,
+          "rel_x": 0.358,
+          "rel_y": 1.4108,
+          "inside_target": false,
+          "offset_ms": 5135,
+          "recorded_at": 1775921522543
+        },
+        {
+          "x": 831.45,
+          "y": 426.48,
+          "rel_x": 0.3517,
+          "rel_y": 1.3727,
+          "inside_target": false,
+          "offset_ms": 5162,
+          "recorded_at": 1775921522571
+        },
+        {
+          "x": 827.37,
+          "y": 420.39,
+          "rel_x": 0.3457,
+          "rel_y": 1.3384,
+          "inside_target": false,
+          "offset_ms": 5185,
+          "recorded_at": 1775921522593
+        },
+        {
+          "x": 813.15,
+          "y": 421.84,
+          "rel_x": 0.325,
+          "rel_y": 1.3466,
+          "inside_target": false,
+          "offset_ms": 5210,
+          "recorded_at": 1775921522618
+        },
+        {
+          "x": 843.05,
+          "y": 432.99,
+          "rel_x": 0.3686,
+          "rel_y": 1.4093,
+          "inside_target": false,
+          "offset_ms": 5240,
+          "recorded_at": 1775921522649
+        },
+        {
+          "x": 841.6,
+          "y": 442.93,
+          "rel_x": 0.3665,
+          "rel_y": 1.4651,
+          "inside_target": false,
+          "offset_ms": 5265,
+          "recorded_at": 1775921522674
+        },
+        {
+          "x": 878.96,
+          "y": 438.06,
+          "rel_x": 0.4208,
+          "rel_y": 1.4378,
+          "inside_target": false,
+          "offset_ms": 5293,
+          "recorded_at": 1775921522702
+        },
+        {
+          "x": 910.38,
+          "y": 433.55,
+          "rel_x": 0.4666,
+          "rel_y": 1.4124,
+          "inside_target": false,
+          "offset_ms": 5316,
+          "recorded_at": 1775921522725
+        },
+        {
+          "x": 879.12,
+          "y": 449.64,
+          "rel_x": 0.4211,
+          "rel_y": 1.5028,
+          "inside_target": false,
+          "offset_ms": 5344,
+          "recorded_at": 1775921522753
+        },
+        {
+          "x": 888.15,
+          "y": 468.69,
+          "rel_x": 0.4342,
+          "rel_y": 1.6099,
+          "inside_target": false,
+          "offset_ms": 5368,
+          "recorded_at": 1775921522777
+        },
+        {
+          "x": 894.72,
+          "y": 464.36,
+          "rel_x": 0.4438,
+          "rel_y": 1.5856,
+          "inside_target": false,
+          "offset_ms": 5397,
+          "recorded_at": 1775921522805
+        },
+        {
+          "x": 920.08,
+          "y": 453.23,
+          "rel_x": 0.4807,
+          "rel_y": 1.523,
+          "inside_target": false,
+          "offset_ms": 5422,
+          "recorded_at": 1775921522830
+        },
+        {
+          "x": 912.45,
+          "y": 466.86,
+          "rel_x": 0.4696,
+          "rel_y": 1.5996,
+          "inside_target": false,
+          "offset_ms": 5450,
+          "recorded_at": 1775921522859
+        },
+        {
+          "x": 903.4,
+          "y": 472.74,
+          "rel_x": 0.4564,
+          "rel_y": 1.6327,
+          "inside_target": false,
+          "offset_ms": 5473,
+          "recorded_at": 1775921522882
+        },
+        {
+          "x": 886.1,
+          "y": 454.03,
+          "rel_x": 0.4312,
+          "rel_y": 1.5275,
+          "inside_target": false,
+          "offset_ms": 5497,
+          "recorded_at": 1775921522906
+        },
+        {
+          "x": 880.9,
+          "y": 448.94,
+          "rel_x": 0.4237,
+          "rel_y": 1.4989,
+          "inside_target": false,
+          "offset_ms": 5519,
+          "recorded_at": 1775921522928
+        },
+        {
+          "x": 897.58,
+          "y": 480.93,
+          "rel_x": 0.448,
+          "rel_y": 1.6787,
+          "inside_target": false,
+          "offset_ms": 5547,
+          "recorded_at": 1775921522956
+        },
+        {
+          "x": 920.16,
+          "y": 507.1,
+          "rel_x": 0.4808,
+          "rel_y": 1.8258,
+          "inside_target": false,
+          "offset_ms": 5570,
+          "recorded_at": 1775921522979
+        },
+        {
+          "x": 913.43,
+          "y": 544.03,
+          "rel_x": 0.471,
+          "rel_y": 2.0334,
+          "inside_target": false,
+          "offset_ms": 5593,
+          "recorded_at": 1775921523002
+        },
+        {
+          "x": 902.38,
+          "y": 570.87,
+          "rel_x": 0.4549,
+          "rel_y": 2.1842,
+          "inside_target": false,
+          "offset_ms": 5615,
+          "recorded_at": 1775921523024
+        },
+        {
+          "x": 902.27,
+          "y": 548.87,
+          "rel_x": 0.4548,
+          "rel_y": 2.0606,
+          "inside_target": false,
+          "offset_ms": 5643,
+          "recorded_at": 1775921523051
+        },
+        {
+          "x": 910.13,
+          "y": 541.64,
+          "rel_x": 0.4662,
+          "rel_y": 2.0199,
+          "inside_target": false,
+          "offset_ms": 5667,
+          "recorded_at": 1775921523076
+        },
+        {
+          "x": 892.87,
+          "y": 519.57,
+          "rel_x": 0.4411,
+          "rel_y": 1.8959,
+          "inside_target": false,
+          "offset_ms": 5694,
+          "recorded_at": 1775921523103
+        },
+        {
+          "x": 895.22,
+          "y": 509.25,
+          "rel_x": 0.4445,
+          "rel_y": 1.8379,
+          "inside_target": false,
+          "offset_ms": 5717,
+          "recorded_at": 1775921523126
+        },
+        {
+          "x": 872.44,
+          "y": 490.8,
+          "rel_x": 0.4114,
+          "rel_y": 1.7342,
+          "inside_target": false,
+          "offset_ms": 5745,
+          "recorded_at": 1775921523153
+        },
+        {
+          "x": 871.43,
+          "y": 485.04,
+          "rel_x": 0.4099,
+          "rel_y": 1.7018,
+          "inside_target": false,
+          "offset_ms": 5769,
+          "recorded_at": 1775921523178
+        },
+        {
+          "x": 923.07,
+          "y": 489.85,
+          "rel_x": 0.4851,
+          "rel_y": 1.7289,
+          "inside_target": false,
+          "offset_ms": 5797,
+          "recorded_at": 1775921523205
+        },
+        {
+          "x": 928.08,
+          "y": 481.72,
+          "rel_x": 0.4923,
+          "rel_y": 1.6832,
+          "inside_target": false,
+          "offset_ms": 5819,
+          "recorded_at": 1775921523228
+        },
+        {
+          "x": 931.77,
+          "y": 475.53,
+          "rel_x": 0.4977,
+          "rel_y": 1.6484,
+          "inside_target": false,
+          "offset_ms": 5843,
+          "recorded_at": 1775921523252
+        },
+        {
+          "x": 917.85,
+          "y": 510.64,
+          "rel_x": 0.4775,
+          "rel_y": 1.8457,
+          "inside_target": false,
+          "offset_ms": 5866,
+          "recorded_at": 1775921523275
+        },
+        {
+          "x": 902.08,
+          "y": 502.63,
+          "rel_x": 0.4545,
+          "rel_y": 1.8007,
+          "inside_target": false,
+          "offset_ms": 5889,
+          "recorded_at": 1775921523298
+        },
+        {
+          "x": 905.21,
+          "y": 501.05,
+          "rel_x": 0.4591,
+          "rel_y": 1.7918,
+          "inside_target": false,
+          "offset_ms": 5912,
+          "recorded_at": 1775921523320
+        },
+        {
+          "x": 867.37,
+          "y": 505.61,
+          "rel_x": 0.404,
+          "rel_y": 1.8175,
+          "inside_target": false,
+          "offset_ms": 5935,
+          "recorded_at": 1775921523344
+        },
+        {
+          "x": 858.78,
+          "y": 503.94,
+          "rel_x": 0.3915,
+          "rel_y": 1.8081,
+          "inside_target": false,
+          "offset_ms": 5957,
+          "recorded_at": 1775921523365
+        },
+        {
+          "x": 879.35,
+          "y": 501.35,
+          "rel_x": 0.4214,
+          "rel_y": 1.7935,
+          "inside_target": false,
+          "offset_ms": 5979,
+          "recorded_at": 1775921523388
+        },
+        {
+          "x": 923.71,
+          "y": 506.13,
+          "rel_x": 0.486,
+          "rel_y": 1.8203,
+          "inside_target": false,
+          "offset_ms": 6004,
+          "recorded_at": 1775921523413
+        },
+        {
+          "x": 913.5,
+          "y": 540.79,
+          "rel_x": 0.4711,
+          "rel_y": 2.0152,
+          "inside_target": false,
+          "offset_ms": 6028,
+          "recorded_at": 1775921523437
+        },
+        {
+          "x": 923.12,
+          "y": 560.99,
+          "rel_x": 0.4851,
+          "rel_y": 2.1287,
+          "inside_target": false,
+          "offset_ms": 6050,
+          "recorded_at": 1775921523459
+        },
+        {
+          "x": 916.62,
+          "y": 600.26,
+          "rel_x": 0.4757,
+          "rel_y": 2.3494,
+          "inside_target": false,
+          "offset_ms": 6074,
+          "recorded_at": 1775921523482
+        },
+        {
+          "x": 935.29,
+          "y": 672.77,
+          "rel_x": 0.5028,
+          "rel_y": 2.757,
+          "inside_target": false,
+          "offset_ms": 6096,
+          "recorded_at": 1775921523505
+        },
+        {
+          "x": 941.5,
+          "y": 706.54,
+          "rel_x": 0.5119,
+          "rel_y": 2.9468,
+          "inside_target": false,
+          "offset_ms": 6119,
+          "recorded_at": 1775921523527
+        },
+        {
+          "x": 945.74,
+          "y": 672.86,
+          "rel_x": 0.5181,
+          "rel_y": 2.7575,
+          "inside_target": false,
+          "offset_ms": 6142,
+          "recorded_at": 1775921523551
+        }
+      ]
+    },
+    "task2_info": {
+      "metrics": {
+        "total_samples": 170,
+        "in_target_samples": 8,
+        "on_target_ratio": 0.05,
+        "first_fixation_latency_ms": 2259,
+        "dwell_time_ms": 400,
+        "region_width": 686.8923950195312,
+        "region_height": 212.11807250976562,
+        "points": [
+          {
+            "rel_x": 0.1932,
+            "rel_y": 0.8871
+          },
+          {
+            "rel_x": 0.1603,
+            "rel_y": 0.9021
+          },
+          {
+            "rel_x": 0.1536,
+            "rel_y": 0.9723
+          },
+          {
+            "rel_x": 0.1664,
+            "rel_y": 0.9033
+          },
+          {
+            "rel_x": 0.1792,
+            "rel_y": 0.8465
+          },
+          {
+            "rel_x": 0.1918,
+            "rel_y": 0.8625
+          },
+          {
+            "rel_x": 0.1734,
+            "rel_y": 0.8892
+          },
+          {
+            "rel_x": 0.1584,
+            "rel_y": 0.9144
+          }
+        ]
+      },
+      "raw_samples": [
+        {
+          "x": 813.73,
+          "y": 423.84,
+          "rel_x": 0.3259,
+          "rel_y": 1.1389,
+          "inside_target": false,
+          "offset_ms": 23,
+          "recorded_at": 1775921527500
+        },
+        {
+          "x": 828.89,
+          "y": 467.53,
+          "rel_x": 0.348,
+          "rel_y": 1.3449,
+          "inside_target": false,
+          "offset_ms": 56,
+          "recorded_at": 1775921527534
+        },
+        {
+          "x": 842.67,
+          "y": 503.09,
+          "rel_x": 0.368,
+          "rel_y": 1.5125,
+          "inside_target": false,
+          "offset_ms": 86,
+          "recorded_at": 1775921527564
+        },
+        {
+          "x": 853.04,
+          "y": 540.92,
+          "rel_x": 0.3831,
+          "rel_y": 1.6909,
+          "inside_target": false,
+          "offset_ms": 113,
+          "recorded_at": 1775921527591
+        },
+        {
+          "x": 880.1,
+          "y": 561.3,
+          "rel_x": 0.4225,
+          "rel_y": 1.787,
+          "inside_target": false,
+          "offset_ms": 136,
+          "recorded_at": 1775921527614
+        },
+        {
+          "x": 856.24,
+          "y": 570.74,
+          "rel_x": 0.3878,
+          "rel_y": 1.8315,
+          "inside_target": false,
+          "offset_ms": 164,
+          "recorded_at": 1775921527642
+        },
+        {
+          "x": 867.42,
+          "y": 593.19,
+          "rel_x": 0.404,
+          "rel_y": 1.9373,
+          "inside_target": false,
+          "offset_ms": 188,
+          "recorded_at": 1775921527665
+        },
+        {
+          "x": 872.21,
+          "y": 604.68,
+          "rel_x": 0.411,
+          "rel_y": 1.9914,
+          "inside_target": false,
+          "offset_ms": 215,
+          "recorded_at": 1775921527693
+        },
+        {
+          "x": 877.66,
+          "y": 577.78,
+          "rel_x": 0.419,
+          "rel_y": 1.8646,
+          "inside_target": false,
+          "offset_ms": 238,
+          "recorded_at": 1775921527716
+        },
+        {
+          "x": 866.62,
+          "y": 567.09,
+          "rel_x": 0.4029,
+          "rel_y": 1.8142,
+          "inside_target": false,
+          "offset_ms": 265,
+          "recorded_at": 1775921527743
+        },
+        {
+          "x": 868.71,
+          "y": 535.12,
+          "rel_x": 0.4059,
+          "rel_y": 1.6635,
+          "inside_target": false,
+          "offset_ms": 288,
+          "recorded_at": 1775921527766
+        },
+        {
+          "x": 878.28,
+          "y": 542.24,
+          "rel_x": 0.4198,
+          "rel_y": 1.6971,
+          "inside_target": false,
+          "offset_ms": 315,
+          "recorded_at": 1775921527793
+        },
+        {
+          "x": 892.86,
+          "y": 531.74,
+          "rel_x": 0.4411,
+          "rel_y": 1.6476,
+          "inside_target": false,
+          "offset_ms": 338,
+          "recorded_at": 1775921527815
+        },
+        {
+          "x": 909.48,
+          "y": 522.42,
+          "rel_x": 0.4653,
+          "rel_y": 1.6036,
+          "inside_target": false,
+          "offset_ms": 361,
+          "recorded_at": 1775921527839
+        },
+        {
+          "x": 906.92,
+          "y": 516.16,
+          "rel_x": 0.4615,
+          "rel_y": 1.5741,
+          "inside_target": false,
+          "offset_ms": 390,
+          "recorded_at": 1775921527867
+        },
+        {
+          "x": 904.08,
+          "y": 510.86,
+          "rel_x": 0.4574,
+          "rel_y": 1.5491,
+          "inside_target": false,
+          "offset_ms": 412,
+          "recorded_at": 1775921527890
+        },
+        {
+          "x": 898.8,
+          "y": 521.13,
+          "rel_x": 0.4497,
+          "rel_y": 1.5976,
+          "inside_target": false,
+          "offset_ms": 435,
+          "recorded_at": 1775921527913
+        },
+        {
+          "x": 871.41,
+          "y": 526.13,
+          "rel_x": 0.4098,
+          "rel_y": 1.6211,
+          "inside_target": false,
+          "offset_ms": 458,
+          "recorded_at": 1775921527936
+        },
+        {
+          "x": 859.13,
+          "y": 537.96,
+          "rel_x": 0.392,
+          "rel_y": 1.6769,
+          "inside_target": false,
+          "offset_ms": 480,
+          "recorded_at": 1775921527958
+        },
+        {
+          "x": 832.99,
+          "y": 543.48,
+          "rel_x": 0.3539,
+          "rel_y": 1.7029,
+          "inside_target": false,
+          "offset_ms": 503,
+          "recorded_at": 1775921527981
+        },
+        {
+          "x": 837.63,
+          "y": 547.37,
+          "rel_x": 0.3607,
+          "rel_y": 1.7213,
+          "inside_target": false,
+          "offset_ms": 526,
+          "recorded_at": 1775921528004
+        },
+        {
+          "x": 845.52,
+          "y": 548.51,
+          "rel_x": 0.3722,
+          "rel_y": 1.7266,
+          "inside_target": false,
+          "offset_ms": 548,
+          "recorded_at": 1775921528026
+        },
+        {
+          "x": 815.14,
+          "y": 544.94,
+          "rel_x": 0.3279,
+          "rel_y": 1.7098,
+          "inside_target": false,
+          "offset_ms": 571,
+          "recorded_at": 1775921528049
+        },
+        {
+          "x": 800.68,
+          "y": 539.77,
+          "rel_x": 0.3069,
+          "rel_y": 1.6854,
+          "inside_target": false,
+          "offset_ms": 593,
+          "recorded_at": 1775921528071
+        },
+        {
+          "x": 789.23,
+          "y": 535.17,
+          "rel_x": 0.2902,
+          "rel_y": 1.6637,
+          "inside_target": false,
+          "offset_ms": 616,
+          "recorded_at": 1775921528093
+        },
+        {
+          "x": 790.92,
+          "y": 552.89,
+          "rel_x": 0.2927,
+          "rel_y": 1.7473,
+          "inside_target": false,
+          "offset_ms": 640,
+          "recorded_at": 1775921528118
+        },
+        {
+          "x": 822.15,
+          "y": 581.57,
+          "rel_x": 0.3381,
+          "rel_y": 1.8825,
+          "inside_target": false,
+          "offset_ms": 663,
+          "recorded_at": 1775921528141
+        },
+        {
+          "x": 795.86,
+          "y": 587.34,
+          "rel_x": 0.2999,
+          "rel_y": 1.9097,
+          "inside_target": false,
+          "offset_ms": 685,
+          "recorded_at": 1775921528163
+        },
+        {
+          "x": 775.52,
+          "y": 584.95,
+          "rel_x": 0.2703,
+          "rel_y": 1.8985,
+          "inside_target": false,
+          "offset_ms": 708,
+          "recorded_at": 1775921528186
+        },
+        {
+          "x": 793.63,
+          "y": 609.95,
+          "rel_x": 0.2966,
+          "rel_y": 2.0163,
+          "inside_target": false,
+          "offset_ms": 734,
+          "recorded_at": 1775921528212
+        },
+        {
+          "x": 824.78,
+          "y": 629.58,
+          "rel_x": 0.342,
+          "rel_y": 2.1088,
+          "inside_target": false,
+          "offset_ms": 758,
+          "recorded_at": 1775921528236
+        },
+        {
+          "x": 824.46,
+          "y": 634.89,
+          "rel_x": 0.3415,
+          "rel_y": 2.1339,
+          "inside_target": false,
+          "offset_ms": 782,
+          "recorded_at": 1775921528259
+        },
+        {
+          "x": 823.21,
+          "y": 638.29,
+          "rel_x": 0.3397,
+          "rel_y": 2.1499,
+          "inside_target": false,
+          "offset_ms": 807,
+          "recorded_at": 1775921528285
+        },
+        {
+          "x": 859.18,
+          "y": 637.02,
+          "rel_x": 0.392,
+          "rel_y": 2.1439,
+          "inside_target": false,
+          "offset_ms": 830,
+          "recorded_at": 1775921528308
+        },
+        {
+          "x": 888.6,
+          "y": 635.01,
+          "rel_x": 0.4349,
+          "rel_y": 2.1345,
+          "inside_target": false,
+          "offset_ms": 853,
+          "recorded_at": 1775921528331
+        },
+        {
+          "x": 895.9,
+          "y": 630.45,
+          "rel_x": 0.4455,
+          "rel_y": 2.1129,
+          "inside_target": false,
+          "offset_ms": 876,
+          "recorded_at": 1775921528353
+        },
+        {
+          "x": 874.58,
+          "y": 614.95,
+          "rel_x": 0.4145,
+          "rel_y": 2.0399,
+          "inside_target": false,
+          "offset_ms": 904,
+          "recorded_at": 1775921528382
+        },
+        {
+          "x": 852.53,
+          "y": 607.09,
+          "rel_x": 0.3824,
+          "rel_y": 2.0028,
+          "inside_target": false,
+          "offset_ms": 928,
+          "recorded_at": 1775921528406
+        },
+        {
+          "x": 863.88,
+          "y": 606.58,
+          "rel_x": 0.3989,
+          "rel_y": 2.0004,
+          "inside_target": false,
+          "offset_ms": 956,
+          "recorded_at": 1775921528434
+        },
+        {
+          "x": 873.45,
+          "y": 606.18,
+          "rel_x": 0.4128,
+          "rel_y": 1.9985,
+          "inside_target": false,
+          "offset_ms": 979,
+          "recorded_at": 1775921528457
+        },
+        {
+          "x": 865.11,
+          "y": 593.57,
+          "rel_x": 0.4007,
+          "rel_y": 1.9391,
+          "inside_target": false,
+          "offset_ms": 1002,
+          "recorded_at": 1775921528480
+        },
+        {
+          "x": 846.9,
+          "y": 571.64,
+          "rel_x": 0.3742,
+          "rel_y": 1.8357,
+          "inside_target": false,
+          "offset_ms": 1026,
+          "recorded_at": 1775921528503
+        },
+        {
+          "x": 831.25,
+          "y": 553.25,
+          "rel_x": 0.3514,
+          "rel_y": 1.749,
+          "inside_target": false,
+          "offset_ms": 1049,
+          "recorded_at": 1775921528527
+        },
+        {
+          "x": 836.15,
+          "y": 558.08,
+          "rel_x": 0.3585,
+          "rel_y": 1.7718,
+          "inside_target": false,
+          "offset_ms": 1072,
+          "recorded_at": 1775921528550
+        },
+        {
+          "x": 844.39,
+          "y": 573.2,
+          "rel_x": 0.3705,
+          "rel_y": 1.843,
+          "inside_target": false,
+          "offset_ms": 1097,
+          "recorded_at": 1775921528574
+        },
+        {
+          "x": 882,
+          "y": 574.61,
+          "rel_x": 0.4253,
+          "rel_y": 1.8497,
+          "inside_target": false,
+          "offset_ms": 1118,
+          "recorded_at": 1775921528595
+        },
+        {
+          "x": 909.6,
+          "y": 584.44,
+          "rel_x": 0.4654,
+          "rel_y": 1.8961,
+          "inside_target": false,
+          "offset_ms": 1140,
+          "recorded_at": 1775921528618
+        },
+        {
+          "x": 898.2,
+          "y": 596.66,
+          "rel_x": 0.4488,
+          "rel_y": 1.9536,
+          "inside_target": false,
+          "offset_ms": 1163,
+          "recorded_at": 1775921528641
+        },
+        {
+          "x": 869.5,
+          "y": 590.02,
+          "rel_x": 0.4071,
+          "rel_y": 1.9223,
+          "inside_target": false,
+          "offset_ms": 1185,
+          "recorded_at": 1775921528663
+        },
+        {
+          "x": 862.8,
+          "y": 602.49,
+          "rel_x": 0.3973,
+          "rel_y": 1.9811,
+          "inside_target": false,
+          "offset_ms": 1208,
+          "recorded_at": 1775921528686
+        },
+        {
+          "x": 841.63,
+          "y": 584.5,
+          "rel_x": 0.3665,
+          "rel_y": 1.8963,
+          "inside_target": false,
+          "offset_ms": 1231,
+          "recorded_at": 1775921528709
+        },
+        {
+          "x": 846.75,
+          "y": 560.3,
+          "rel_x": 0.374,
+          "rel_y": 1.7822,
+          "inside_target": false,
+          "offset_ms": 1255,
+          "recorded_at": 1775921528733
+        },
+        {
+          "x": 852.32,
+          "y": 543.21,
+          "rel_x": 0.3821,
+          "rel_y": 1.7016,
+          "inside_target": false,
+          "offset_ms": 1277,
+          "recorded_at": 1775921528755
+        },
+        {
+          "x": 871.99,
+          "y": 539.88,
+          "rel_x": 0.4107,
+          "rel_y": 1.686,
+          "inside_target": false,
+          "offset_ms": 1300,
+          "recorded_at": 1775921528778
+        },
+        {
+          "x": 895.65,
+          "y": 529.9,
+          "rel_x": 0.4451,
+          "rel_y": 1.6389,
+          "inside_target": false,
+          "offset_ms": 1323,
+          "recorded_at": 1775921528801
+        },
+        {
+          "x": 915.55,
+          "y": 522.06,
+          "rel_x": 0.4741,
+          "rel_y": 1.602,
+          "inside_target": false,
+          "offset_ms": 1344,
+          "recorded_at": 1775921528822
+        },
+        {
+          "x": 867.76,
+          "y": 518.73,
+          "rel_x": 0.4045,
+          "rel_y": 1.5862,
+          "inside_target": false,
+          "offset_ms": 1367,
+          "recorded_at": 1775921528845
+        },
+        {
+          "x": 834.16,
+          "y": 504.86,
+          "rel_x": 0.3556,
+          "rel_y": 1.5208,
+          "inside_target": false,
+          "offset_ms": 1392,
+          "recorded_at": 1775921528870
+        },
+        {
+          "x": 801.51,
+          "y": 503.69,
+          "rel_x": 0.3081,
+          "rel_y": 1.5154,
+          "inside_target": false,
+          "offset_ms": 1414,
+          "recorded_at": 1775921528891
+        },
+        {
+          "x": 800.59,
+          "y": 484.42,
+          "rel_x": 0.3067,
+          "rel_y": 1.4245,
+          "inside_target": false,
+          "offset_ms": 1436,
+          "recorded_at": 1775921528914
+        },
+        {
+          "x": 780.5,
+          "y": 462.46,
+          "rel_x": 0.2775,
+          "rel_y": 1.321,
+          "inside_target": false,
+          "offset_ms": 1458,
+          "recorded_at": 1775921528936
+        },
+        {
+          "x": 764.38,
+          "y": 444.73,
+          "rel_x": 0.254,
+          "rel_y": 1.2374,
+          "inside_target": false,
+          "offset_ms": 1480,
+          "recorded_at": 1775921528958
+        },
+        {
+          "x": 774.34,
+          "y": 456.2,
+          "rel_x": 0.2685,
+          "rel_y": 1.2915,
+          "inside_target": false,
+          "offset_ms": 1504,
+          "recorded_at": 1775921528981
+        },
+        {
+          "x": 751.34,
+          "y": 464.36,
+          "rel_x": 0.235,
+          "rel_y": 1.3299,
+          "inside_target": false,
+          "offset_ms": 1526,
+          "recorded_at": 1775921529004
+        },
+        {
+          "x": 732.68,
+          "y": 472.19,
+          "rel_x": 0.2079,
+          "rel_y": 1.3669,
+          "inside_target": false,
+          "offset_ms": 1549,
+          "recorded_at": 1775921529027
+        },
+        {
+          "x": 756.44,
+          "y": 480,
+          "rel_x": 0.2425,
+          "rel_y": 1.4037,
+          "inside_target": false,
+          "offset_ms": 1573,
+          "recorded_at": 1775921529051
+        },
+        {
+          "x": 770.86,
+          "y": 477.34,
+          "rel_x": 0.2635,
+          "rel_y": 1.3911,
+          "inside_target": false,
+          "offset_ms": 1595,
+          "recorded_at": 1775921529073
+        },
+        {
+          "x": 783.81,
+          "y": 475.29,
+          "rel_x": 0.2823,
+          "rel_y": 1.3815,
+          "inside_target": false,
+          "offset_ms": 1618,
+          "recorded_at": 1775921529096
+        },
+        {
+          "x": 764.54,
+          "y": 465.13,
+          "rel_x": 0.2543,
+          "rel_y": 1.3336,
+          "inside_target": false,
+          "offset_ms": 1641,
+          "recorded_at": 1775921529119
+        },
+        {
+          "x": 756.35,
+          "y": 460.11,
+          "rel_x": 0.2423,
+          "rel_y": 1.3099,
+          "inside_target": false,
+          "offset_ms": 1664,
+          "recorded_at": 1775921529142
+        },
+        {
+          "x": 789.03,
+          "y": 437.1,
+          "rel_x": 0.2899,
+          "rel_y": 1.2014,
+          "inside_target": false,
+          "offset_ms": 1688,
+          "recorded_at": 1775921529166
+        },
+        {
+          "x": 776.45,
+          "y": 439.91,
+          "rel_x": 0.2716,
+          "rel_y": 1.2147,
+          "inside_target": false,
+          "offset_ms": 1710,
+          "recorded_at": 1775921529187
+        },
+        {
+          "x": 786.01,
+          "y": 451.39,
+          "rel_x": 0.2855,
+          "rel_y": 1.2688,
+          "inside_target": false,
+          "offset_ms": 1732,
+          "recorded_at": 1775921529210
+        },
+        {
+          "x": 797.1,
+          "y": 464.6,
+          "rel_x": 0.3017,
+          "rel_y": 1.3311,
+          "inside_target": false,
+          "offset_ms": 1756,
+          "recorded_at": 1775921529234
+        },
+        {
+          "x": 806.43,
+          "y": 476.11,
+          "rel_x": 0.3152,
+          "rel_y": 1.3853,
+          "inside_target": false,
+          "offset_ms": 1778,
+          "recorded_at": 1775921529256
+        },
+        {
+          "x": 802.58,
+          "y": 466.8,
+          "rel_x": 0.3096,
+          "rel_y": 1.3414,
+          "inside_target": false,
+          "offset_ms": 1801,
+          "recorded_at": 1775921529279
+        },
+        {
+          "x": 812,
+          "y": 465.25,
+          "rel_x": 0.3234,
+          "rel_y": 1.3342,
+          "inside_target": false,
+          "offset_ms": 1825,
+          "recorded_at": 1775921529303
+        },
+        {
+          "x": 815.83,
+          "y": 467.61,
+          "rel_x": 0.3289,
+          "rel_y": 1.3452,
+          "inside_target": false,
+          "offset_ms": 1849,
+          "recorded_at": 1775921529327
+        },
+        {
+          "x": 838.59,
+          "y": 466.23,
+          "rel_x": 0.3621,
+          "rel_y": 1.3388,
+          "inside_target": false,
+          "offset_ms": 1873,
+          "recorded_at": 1775921529350
+        },
+        {
+          "x": 818.03,
+          "y": 452.75,
+          "rel_x": 0.3321,
+          "rel_y": 1.2752,
+          "inside_target": false,
+          "offset_ms": 1897,
+          "recorded_at": 1775921529375
+        },
+        {
+          "x": 820.78,
+          "y": 450.99,
+          "rel_x": 0.3361,
+          "rel_y": 1.2669,
+          "inside_target": false,
+          "offset_ms": 1919,
+          "recorded_at": 1775921529397
+        },
+        {
+          "x": 818.67,
+          "y": 441.35,
+          "rel_x": 0.3331,
+          "rel_y": 1.2214,
+          "inside_target": false,
+          "offset_ms": 1941,
+          "recorded_at": 1775921529418
+        },
+        {
+          "x": 815.56,
+          "y": 438.62,
+          "rel_x": 0.3285,
+          "rel_y": 1.2086,
+          "inside_target": false,
+          "offset_ms": 1966,
+          "recorded_at": 1775921529443
+        },
+        {
+          "x": 833.93,
+          "y": 440.33,
+          "rel_x": 0.3553,
+          "rel_y": 1.2166,
+          "inside_target": false,
+          "offset_ms": 1988,
+          "recorded_at": 1775921529466
+        },
+        {
+          "x": 849.43,
+          "y": 442.13,
+          "rel_x": 0.3779,
+          "rel_y": 1.2251,
+          "inside_target": false,
+          "offset_ms": 2009,
+          "recorded_at": 1775921529487
+        },
+        {
+          "x": 831.59,
+          "y": 436.07,
+          "rel_x": 0.3519,
+          "rel_y": 1.1966,
+          "inside_target": false,
+          "offset_ms": 2033,
+          "recorded_at": 1775921529511
+        },
+        {
+          "x": 829.43,
+          "y": 421.18,
+          "rel_x": 0.3487,
+          "rel_y": 1.1264,
+          "inside_target": false,
+          "offset_ms": 2056,
+          "recorded_at": 1775921529534
+        },
+        {
+          "x": 827.37,
+          "y": 408.79,
+          "rel_x": 0.3457,
+          "rel_y": 1.068,
+          "inside_target": false,
+          "offset_ms": 2077,
+          "recorded_at": 1775921529555
+        },
+        {
+          "x": 827.85,
+          "y": 411.83,
+          "rel_x": 0.3464,
+          "rel_y": 1.0823,
+          "inside_target": false,
+          "offset_ms": 2098,
+          "recorded_at": 1775921529576
+        },
+        {
+          "x": 841.51,
+          "y": 410.32,
+          "rel_x": 0.3663,
+          "rel_y": 1.0752,
+          "inside_target": false,
+          "offset_ms": 2121,
+          "recorded_at": 1775921529599
+        },
+        {
+          "x": 853.04,
+          "y": 409.51,
+          "rel_x": 0.3831,
+          "rel_y": 1.0713,
+          "inside_target": false,
+          "offset_ms": 2142,
+          "recorded_at": 1775921529620
+        },
+        {
+          "x": 814.65,
+          "y": 420.76,
+          "rel_x": 0.3272,
+          "rel_y": 1.1244,
+          "inside_target": false,
+          "offset_ms": 2166,
+          "recorded_at": 1775921529644
+        },
+        {
+          "x": 774.76,
+          "y": 429.13,
+          "rel_x": 0.2691,
+          "rel_y": 1.1639,
+          "inside_target": false,
+          "offset_ms": 2190,
+          "recorded_at": 1775921529668
+        },
+        {
+          "x": 741.11,
+          "y": 436.38,
+          "rel_x": 0.2202,
+          "rel_y": 1.198,
+          "inside_target": false,
+          "offset_ms": 2212,
+          "recorded_at": 1775921529690
+        },
+        {
+          "x": 734.62,
+          "y": 405.34,
+          "rel_x": 0.2107,
+          "rel_y": 1.0517,
+          "inside_target": false,
+          "offset_ms": 2236,
+          "recorded_at": 1775921529714
+        },
+        {
+          "x": 722.58,
+          "y": 370.43,
+          "rel_x": 0.1932,
+          "rel_y": 0.8871,
+          "inside_target": true,
+          "offset_ms": 2259,
+          "recorded_at": 1775921529737
+        },
+        {
+          "x": 699.98,
+          "y": 373.61,
+          "rel_x": 0.1603,
+          "rel_y": 0.9021,
+          "inside_target": true,
+          "offset_ms": 2281,
+          "recorded_at": 1775921529759
+        },
+        {
+          "x": 695.38,
+          "y": 388.49,
+          "rel_x": 0.1536,
+          "rel_y": 0.9723,
+          "inside_target": true,
+          "offset_ms": 2302,
+          "recorded_at": 1775921529780
+        },
+        {
+          "x": 704.17,
+          "y": 373.87,
+          "rel_x": 0.1664,
+          "rel_y": 0.9033,
+          "inside_target": true,
+          "offset_ms": 2325,
+          "recorded_at": 1775921529803
+        },
+        {
+          "x": 712.95,
+          "y": 361.82,
+          "rel_x": 0.1792,
+          "rel_y": 0.8465,
+          "inside_target": true,
+          "offset_ms": 2347,
+          "recorded_at": 1775921529824
+        },
+        {
+          "x": 721.64,
+          "y": 365.22,
+          "rel_x": 0.1918,
+          "rel_y": 0.8625,
+          "inside_target": true,
+          "offset_ms": 2368,
+          "recorded_at": 1775921529846
+        },
+        {
+          "x": 709.02,
+          "y": 370.88,
+          "rel_x": 0.1734,
+          "rel_y": 0.8892,
+          "inside_target": true,
+          "offset_ms": 2392,
+          "recorded_at": 1775921529869
+        },
+        {
+          "x": 698.71,
+          "y": 376.22,
+          "rel_x": 0.1584,
+          "rel_y": 0.9144,
+          "inside_target": true,
+          "offset_ms": 2414,
+          "recorded_at": 1775921529892
+        },
+        {
+          "x": 706.74,
+          "y": 419.31,
+          "rel_x": 0.1701,
+          "rel_y": 1.1176,
+          "inside_target": false,
+          "offset_ms": 2440,
+          "recorded_at": 1775921529918
+        },
+        {
+          "x": 728.62,
+          "y": 472.38,
+          "rel_x": 0.202,
+          "rel_y": 1.3677,
+          "inside_target": false,
+          "offset_ms": 2462,
+          "recorded_at": 1775921529940
+        },
+        {
+          "x": 784.55,
+          "y": 528.44,
+          "rel_x": 0.2834,
+          "rel_y": 1.632,
+          "inside_target": false,
+          "offset_ms": 2484,
+          "recorded_at": 1775921529962
+        },
+        {
+          "x": 860.61,
+          "y": 599.86,
+          "rel_x": 0.3941,
+          "rel_y": 1.9687,
+          "inside_target": false,
+          "offset_ms": 2507,
+          "recorded_at": 1775921529985
+        },
+        {
+          "x": 936.87,
+          "y": 646.94,
+          "rel_x": 0.5051,
+          "rel_y": 2.1907,
+          "inside_target": false,
+          "offset_ms": 2530,
+          "recorded_at": 1775921530008
+        },
+        {
+          "x": 972.64,
+          "y": 660.14,
+          "rel_x": 0.5572,
+          "rel_y": 2.2529,
+          "inside_target": false,
+          "offset_ms": 2552,
+          "recorded_at": 1775921530030
+        },
+        {
+          "x": 1001.02,
+          "y": 691.57,
+          "rel_x": 0.5985,
+          "rel_y": 2.4011,
+          "inside_target": false,
+          "offset_ms": 2575,
+          "recorded_at": 1775921530053
+        },
+        {
+          "x": 1014.86,
+          "y": 695.08,
+          "rel_x": 0.6187,
+          "rel_y": 2.4176,
+          "inside_target": false,
+          "offset_ms": 2601,
+          "recorded_at": 1775921530078
+        },
+        {
+          "x": 1011.91,
+          "y": 686.82,
+          "rel_x": 0.6144,
+          "rel_y": 2.3787,
+          "inside_target": false,
+          "offset_ms": 2626,
+          "recorded_at": 1775921530104
+        },
+        {
+          "x": 1006.44,
+          "y": 677.08,
+          "rel_x": 0.6064,
+          "rel_y": 2.3328,
+          "inside_target": false,
+          "offset_ms": 2649,
+          "recorded_at": 1775921530127
+        },
+        {
+          "x": 1011.64,
+          "y": 666.37,
+          "rel_x": 0.614,
+          "rel_y": 2.2823,
+          "inside_target": false,
+          "offset_ms": 2672,
+          "recorded_at": 1775921530150
+        },
+        {
+          "x": 980.3,
+          "y": 665.81,
+          "rel_x": 0.5684,
+          "rel_y": 2.2796,
+          "inside_target": false,
+          "offset_ms": 2694,
+          "recorded_at": 1775921530172
+        },
+        {
+          "x": 1022.81,
+          "y": 696.29,
+          "rel_x": 0.6303,
+          "rel_y": 2.4233,
+          "inside_target": false,
+          "offset_ms": 2717,
+          "recorded_at": 1775921530195
+        },
+        {
+          "x": 1054.82,
+          "y": 704.66,
+          "rel_x": 0.6769,
+          "rel_y": 2.4628,
+          "inside_target": false,
+          "offset_ms": 2740,
+          "recorded_at": 1775921530218
+        },
+        {
+          "x": 1084.67,
+          "y": 710.12,
+          "rel_x": 0.7203,
+          "rel_y": 2.4885,
+          "inside_target": false,
+          "offset_ms": 2763,
+          "recorded_at": 1775921530241
+        },
+        {
+          "x": 1108.19,
+          "y": 713.44,
+          "rel_x": 0.7546,
+          "rel_y": 2.5042,
+          "inside_target": false,
+          "offset_ms": 2785,
+          "recorded_at": 1775921530263
+        },
+        {
+          "x": 1128.19,
+          "y": 719.74,
+          "rel_x": 0.7837,
+          "rel_y": 2.5339,
+          "inside_target": false,
+          "offset_ms": 2808,
+          "recorded_at": 1775921530286
+        },
+        {
+          "x": 1138.32,
+          "y": 725.58,
+          "rel_x": 0.7984,
+          "rel_y": 2.5614,
+          "inside_target": false,
+          "offset_ms": 2832,
+          "recorded_at": 1775921530310
+        },
+        {
+          "x": 1101.31,
+          "y": 694.71,
+          "rel_x": 0.7445,
+          "rel_y": 2.4159,
+          "inside_target": false,
+          "offset_ms": 2855,
+          "recorded_at": 1775921530333
+        },
+        {
+          "x": 1080.39,
+          "y": 676.12,
+          "rel_x": 0.7141,
+          "rel_y": 2.3283,
+          "inside_target": false,
+          "offset_ms": 2877,
+          "recorded_at": 1775921530355
+        },
+        {
+          "x": 1108.38,
+          "y": 682.79,
+          "rel_x": 0.7548,
+          "rel_y": 2.3597,
+          "inside_target": false,
+          "offset_ms": 2903,
+          "recorded_at": 1775921530381
+        },
+        {
+          "x": 1141.54,
+          "y": 694.53,
+          "rel_x": 0.8031,
+          "rel_y": 2.415,
+          "inside_target": false,
+          "offset_ms": 2925,
+          "recorded_at": 1775921530403
+        },
+        {
+          "x": 1168.78,
+          "y": 704.44,
+          "rel_x": 0.8428,
+          "rel_y": 2.4618,
+          "inside_target": false,
+          "offset_ms": 2947,
+          "recorded_at": 1775921530425
+        },
+        {
+          "x": 1160.99,
+          "y": 721.78,
+          "rel_x": 0.8314,
+          "rel_y": 2.5435,
+          "inside_target": false,
+          "offset_ms": 2970,
+          "recorded_at": 1775921530448
+        },
+        {
+          "x": 1155.88,
+          "y": 717.81,
+          "rel_x": 0.824,
+          "rel_y": 2.5248,
+          "inside_target": false,
+          "offset_ms": 2992,
+          "recorded_at": 1775921530470
+        },
+        {
+          "x": 1140.6,
+          "y": 713.03,
+          "rel_x": 0.8018,
+          "rel_y": 2.5023,
+          "inside_target": false,
+          "offset_ms": 3015,
+          "recorded_at": 1775921530493
+        },
+        {
+          "x": 1155.96,
+          "y": 711.39,
+          "rel_x": 0.8241,
+          "rel_y": 2.4945,
+          "inside_target": false,
+          "offset_ms": 3039,
+          "recorded_at": 1775921530517
+        },
+        {
+          "x": 1145.94,
+          "y": 724.09,
+          "rel_x": 0.8095,
+          "rel_y": 2.5544,
+          "inside_target": false,
+          "offset_ms": 3063,
+          "recorded_at": 1775921530541
+        },
+        {
+          "x": 1144.54,
+          "y": 723.91,
+          "rel_x": 0.8075,
+          "rel_y": 2.5536,
+          "inside_target": false,
+          "offset_ms": 3086,
+          "recorded_at": 1775921530564
+        },
+        {
+          "x": 1143.41,
+          "y": 721,
+          "rel_x": 0.8058,
+          "rel_y": 2.5398,
+          "inside_target": false,
+          "offset_ms": 3111,
+          "recorded_at": 1775921530589
+        },
+        {
+          "x": 1149.67,
+          "y": 691.73,
+          "rel_x": 0.815,
+          "rel_y": 2.4019,
+          "inside_target": false,
+          "offset_ms": 3134,
+          "recorded_at": 1775921530612
+        },
+        {
+          "x": 1150.78,
+          "y": 677.08,
+          "rel_x": 0.8166,
+          "rel_y": 2.3328,
+          "inside_target": false,
+          "offset_ms": 3158,
+          "recorded_at": 1775921530636
+        },
+        {
+          "x": 1147.18,
+          "y": 695.28,
+          "rel_x": 0.8113,
+          "rel_y": 2.4186,
+          "inside_target": false,
+          "offset_ms": 3180,
+          "recorded_at": 1775921530658
+        },
+        {
+          "x": 1093.55,
+          "y": 670.93,
+          "rel_x": 0.7333,
+          "rel_y": 2.3038,
+          "inside_target": false,
+          "offset_ms": 3203,
+          "recorded_at": 1775921530681
+        },
+        {
+          "x": 993.84,
+          "y": 636.21,
+          "rel_x": 0.5881,
+          "rel_y": 2.1401,
+          "inside_target": false,
+          "offset_ms": 3225,
+          "recorded_at": 1775921530703
+        },
+        {
+          "x": 926.56,
+          "y": 587.56,
+          "rel_x": 0.4901,
+          "rel_y": 1.9108,
+          "inside_target": false,
+          "offset_ms": 3249,
+          "recorded_at": 1775921530727
+        },
+        {
+          "x": 877.95,
+          "y": 552.73,
+          "rel_x": 0.4194,
+          "rel_y": 1.7465,
+          "inside_target": false,
+          "offset_ms": 3271,
+          "recorded_at": 1775921530749
+        },
+        {
+          "x": 834.23,
+          "y": 522.97,
+          "rel_x": 0.3557,
+          "rel_y": 1.6062,
+          "inside_target": false,
+          "offset_ms": 3293,
+          "recorded_at": 1775921530771
+        },
+        {
+          "x": 800.52,
+          "y": 499.69,
+          "rel_x": 0.3067,
+          "rel_y": 1.4965,
+          "inside_target": false,
+          "offset_ms": 3316,
+          "recorded_at": 1775921530794
+        },
+        {
+          "x": 774.49,
+          "y": 477.41,
+          "rel_x": 0.2687,
+          "rel_y": 1.3915,
+          "inside_target": false,
+          "offset_ms": 3339,
+          "recorded_at": 1775921530817
+        },
+        {
+          "x": 791.9,
+          "y": 450.8,
+          "rel_x": 0.2941,
+          "rel_y": 1.266,
+          "inside_target": false,
+          "offset_ms": 3361,
+          "recorded_at": 1775921530839
+        },
+        {
+          "x": 762.11,
+          "y": 444.89,
+          "rel_x": 0.2507,
+          "rel_y": 1.2381,
+          "inside_target": false,
+          "offset_ms": 3384,
+          "recorded_at": 1775921530861
+        },
+        {
+          "x": 737.42,
+          "y": 436.25,
+          "rel_x": 0.2148,
+          "rel_y": 1.1974,
+          "inside_target": false,
+          "offset_ms": 3405,
+          "recorded_at": 1775921530883
+        },
+        {
+          "x": 788.35,
+          "y": 459.06,
+          "rel_x": 0.2889,
+          "rel_y": 1.3049,
+          "inside_target": false,
+          "offset_ms": 3427,
+          "recorded_at": 1775921530905
+        },
+        {
+          "x": 803.58,
+          "y": 464.44,
+          "rel_x": 0.3111,
+          "rel_y": 1.3303,
+          "inside_target": false,
+          "offset_ms": 3454,
+          "recorded_at": 1775921530932
+        },
+        {
+          "x": 818.04,
+          "y": 470.31,
+          "rel_x": 0.3322,
+          "rel_y": 1.358,
+          "inside_target": false,
+          "offset_ms": 3476,
+          "recorded_at": 1775921530954
+        },
+        {
+          "x": 835.83,
+          "y": 467.65,
+          "rel_x": 0.358,
+          "rel_y": 1.3454,
+          "inside_target": false,
+          "offset_ms": 3500,
+          "recorded_at": 1775921530977
+        },
+        {
+          "x": 832.48,
+          "y": 466.92,
+          "rel_x": 0.3532,
+          "rel_y": 1.342,
+          "inside_target": false,
+          "offset_ms": 3532,
+          "recorded_at": 1775921531010
+        },
+        {
+          "x": 829.08,
+          "y": 465.15,
+          "rel_x": 0.3482,
+          "rel_y": 1.3337,
+          "inside_target": false,
+          "offset_ms": 3561,
+          "recorded_at": 1775921531038
+        },
+        {
+          "x": 840.58,
+          "y": 469.73,
+          "rel_x": 0.365,
+          "rel_y": 1.3553,
+          "inside_target": false,
+          "offset_ms": 3591,
+          "recorded_at": 1775921531069
+        },
+        {
+          "x": 834.93,
+          "y": 475.2,
+          "rel_x": 0.3567,
+          "rel_y": 1.381,
+          "inside_target": false,
+          "offset_ms": 3614,
+          "recorded_at": 1775921531092
+        },
+        {
+          "x": 840.11,
+          "y": 495.14,
+          "rel_x": 0.3643,
+          "rel_y": 1.475,
+          "inside_target": false,
+          "offset_ms": 3637,
+          "recorded_at": 1775921531115
+        },
+        {
+          "x": 837.84,
+          "y": 488.49,
+          "rel_x": 0.361,
+          "rel_y": 1.4437,
+          "inside_target": false,
+          "offset_ms": 3661,
+          "recorded_at": 1775921531138
+        },
+        {
+          "x": 856.61,
+          "y": 511.75,
+          "rel_x": 0.3883,
+          "rel_y": 1.5533,
+          "inside_target": false,
+          "offset_ms": 3689,
+          "recorded_at": 1775921531167
+        },
+        {
+          "x": 874.72,
+          "y": 519.99,
+          "rel_x": 0.4147,
+          "rel_y": 1.5922,
+          "inside_target": false,
+          "offset_ms": 3712,
+          "recorded_at": 1775921531190
+        },
+        {
+          "x": 892.46,
+          "y": 521.87,
+          "rel_x": 0.4405,
+          "rel_y": 1.6011,
+          "inside_target": false,
+          "offset_ms": 3740,
+          "recorded_at": 1775921531218
+        },
+        {
+          "x": 889.73,
+          "y": 531.89,
+          "rel_x": 0.4365,
+          "rel_y": 1.6483,
+          "inside_target": false,
+          "offset_ms": 3763,
+          "recorded_at": 1775921531241
+        },
+        {
+          "x": 885.87,
+          "y": 530.28,
+          "rel_x": 0.4309,
+          "rel_y": 1.6407,
+          "inside_target": false,
+          "offset_ms": 3791,
+          "recorded_at": 1775921531269
+        },
+        {
+          "x": 882,
+          "y": 528.37,
+          "rel_x": 0.4253,
+          "rel_y": 1.6317,
+          "inside_target": false,
+          "offset_ms": 3814,
+          "recorded_at": 1775921531292
+        },
+        {
+          "x": 889.52,
+          "y": 525.26,
+          "rel_x": 0.4362,
+          "rel_y": 1.6171,
+          "inside_target": false,
+          "offset_ms": 3842,
+          "recorded_at": 1775921531320
+        },
+        {
+          "x": 894.56,
+          "y": 518.36,
+          "rel_x": 0.4435,
+          "rel_y": 1.5845,
+          "inside_target": false,
+          "offset_ms": 3866,
+          "recorded_at": 1775921531343
+        },
+        {
+          "x": 892.17,
+          "y": 511.47,
+          "rel_x": 0.4401,
+          "rel_y": 1.552,
+          "inside_target": false,
+          "offset_ms": 3890,
+          "recorded_at": 1775921531368
+        },
+        {
+          "x": 896.8,
+          "y": 511.82,
+          "rel_x": 0.4468,
+          "rel_y": 1.5537,
+          "inside_target": false,
+          "offset_ms": 3917,
+          "recorded_at": 1775921531395
+        },
+        {
+          "x": 892.83,
+          "y": 487.03,
+          "rel_x": 0.441,
+          "rel_y": 1.4368,
+          "inside_target": false,
+          "offset_ms": 3939,
+          "recorded_at": 1775921531417
+        },
+        {
+          "x": 887.28,
+          "y": 475.68,
+          "rel_x": 0.433,
+          "rel_y": 1.3833,
+          "inside_target": false,
+          "offset_ms": 3963,
+          "recorded_at": 1775921531441
+        },
+        {
+          "x": 882.34,
+          "y": 466.48,
+          "rel_x": 0.4258,
+          "rel_y": 1.3399,
+          "inside_target": false,
+          "offset_ms": 3985,
+          "recorded_at": 1775921531463
+        },
+        {
+          "x": 896.63,
+          "y": 471.02,
+          "rel_x": 0.4466,
+          "rel_y": 1.3613,
+          "inside_target": false,
+          "offset_ms": 4008,
+          "recorded_at": 1775921531486
+        }
+      ]
+    }
+  }
+}

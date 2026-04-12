@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gaze Debug View</title>
+
+    <link rel="icon" href="data:," />
+
+    <script src="https://cdn.jsdelivr.net/npm/heatmap.js@2.0.5/build/heatmap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+        :root {
+          --primary: #002957;
+          --accent: #F1563F;
+          --bg: #f4f7fb;
+          --card: #ffffff;
+          --text: #1f2937;
+          --muted: #667085;
+          --border: #d7deea;
+          --success-text: #166534;
+          --warning-text: #b45309;
+          --soft: #fbfcfe;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+          margin: 0;
+          background: var(--bg);
+          color: var(--text);
+          font-family: Arial, sans-serif;
+          padding: 32px 20px 48px;
+        }
+
+        .wrap {
+          max-width: 1180px;
+          margin: 0 auto;
+        }
+
+        .header {
+          background: var(--card);
+          border: 1px solid var(--border);
+          border-radius: 24px;
+          padding: 28px;
+          box-shadow: 0 10px 28px rgba(0, 41, 87, 0.06);
+          margin-bottom: 20px;
+        }
+
+        .header h1 {
+          margin: 0 0 10px 0;
+          color: var(--primary);
+          font-size: 34px;
+          font-weight: 800;
+        }
+
+        .header p {
+          margin: 0;
+          font-size: 18px;
+          line-height: 1.7;
+          color: var(--muted);
+        }
+
+        .status-line {
+          margin-top: 14px;
+          font-size: 17px;
+          font-weight: 700;
+        }
+
+        .ok { color: var(--success-text); }
+        .warn { color: var(--warning-text); }
+
+        .grid {
+          display: grid;
+          gap: 18px;
+        }
+
+        .card {
+          background: var(--card);
+          border: 1px solid var(--border);
+          border-radius: 24px;
+          padding: 24px;
+          box-shadow: 0 10px 28px rgba(0, 41, 87, 0.06);
+        }
+
+        .card h2 {
+          margin: 0 0 14px 0;
+          color: var(--primary);
+          font-size: 28px;
+          font-weight: 800;
+        }
+
+        .stats-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+          gap: 12px;
+          margin-bottom: 18px;
+        }
+
+        .stat-box {
+          background: var(--soft);
+          border: 1px solid var(--border);
+          border-radius: 16px;
+          padding: 14px 16px;
+        }
+
+        .stat-label {
+          font-size: 13px;
+          color: var(--muted);
+          font-weight: 700;
+          text-transform: uppercase;
+          letter-spacing: 0.03em;
+          margin-bottom: 6px;
+        }
+
+        .stat-value {
+          font-size: 24px;
+          font-weight: 800;
+          color: var(--primary);
+        }
+
+        .heatmap-box {
+          position: relative;
+          width: 100%;
+          height: 320px;
+          border-radius: 16px;
+          border: 1px solid var(--border);
+          background:
+            linear-gradient(to right, rgba(0,41,87,0.05) 1px, transparent 1px),
+            linear-gradient(to bottom, rgba(0,41,87,0.05) 1px, transparent 1px),
+            #ffffff;
+          background-size: 40px 40px;
+          overflow: hidden;
+          margin-top: 10px;
+        }
+
+        .section-title {
+          margin-top: 22px;
+          margin-bottom: 10px;
+          font-size: 18px;
+          font-weight: 800;
+          color: var(--primary);
+        }
+
+        .chart-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 16px;
+          margin-top: 14px;
+        }
+
+        .chart-card {
+          background: var(--soft);
+          border: 1px solid var(--border);
+          border-radius: 16px;
+          padding: 14px;
+        }
+
+        .ratio-wrap {
+          margin-top: 16px;
+          background: var(--soft);
+          border: 1px solid var(--border);
+          border-radius: 16px;
+          padding: 16px;
+        }
+
+        .ratio-track {
+          width: 100%;
+          height: 16px;
+          background: #e9eef6;
+          border-radius: 999px;
+          overflow: hidden;
+          margin-top: 10px;
+        }
+
+        .ratio-fill {
+          height: 100%;
+          background: linear-gradient(90deg, #5bc0de, #002957);
+          border-radius: 999px;
+        }
+
+        .raw-box {
+          margin-top: 16px;
+          background: #fbfcfe;
+          border: 1px solid var(--border);
+          border-radius: 16px;
+          padding: 16px;
+        }
+
+        .raw-box h3 {
+          margin: 0 0 10px 0;
+          color: var(--primary);
+          font-size: 18px;
+          font-weight: 800;
+        }
+
+        .raw-box pre {
+          margin: 0;
+          white-space: pre-wrap;
+          word-break: break-word;
+          font-size: 13px;
+          line-height: 1.5;
+          color: var(--text);
+          max-height: 240px;
+          overflow: auto;
+        }
+
+        .toolbar {
+          display: flex;
+          gap: 12px;
+          flex-wrap: wrap;
+          margin-top: 18px;
+        }
+
+        .btn {
+          display: inline-block;
+          background: var(--primary);
+          color: #fff;
+          border: none;
+          border-radius: 12px;
+          padding: 12px 20px;
+          font-size: 16px;
+          font-weight: 700;
+          cursor: pointer;
+          text-decoration: none;
+        }
+
+        .btn.secondary {
+          background: #fff;
+          color: var(--primary);
+          border: 1px solid var(--border);
+        }
+
+        @media (max-width: 900px) {
+          .chart-grid {
+            grid-template-columns: 1fr;
+          }
+        }
+
+        @media (max-width: 768px) {
+          .header,
+          .card {
+            border-radius: 18px;
+            padding: 20px;
+          }
+
+          .header h1 {
+            font-size: 28px;
+          }
+
+          .card h2 {
+            font-size: 24px;
+          }
+
+          .heatmap-box {
+            height: 260px;
+          }
+
+          .stat-value {
+            font-size: 20px;
+          }
+        }
+    </style>
+</head>
+<body>
+<div class="wrap">
+    <div class="header">
+        <h1>Gaze Debug View</h1>
+        <p>This page shows stored heatmaps and gaze-derived summaries for the reading screens.</p>
+        <div id="status-line" class="status-line"></div>
+        <div class="toolbar">
+            <button class="btn" onclick="if (window.opener) { window.close(); } else { history.back(); }">Continue</button>
+            <button class="btn secondary" id="download-json">Download debug JSON</button>
+        </div>
+    </div>
+
+    <div id="content" class="grid"></div>
+</div>
+
+<script>
+    const DEBUG_MODE = new URLSearchParams(location.search).get("dev") === "1";
+    const SHOW_RAW_SAMPLES = DEBUG_MODE;
+
+    function msToSec(ms) {
+      if (ms === null || ms === undefined) return "-";
+      return `${(ms / 1000).toFixed(2)} s`;
+    }
+
+    function renderHeatmap(containerId, summary) {
+      const container = document.getElementById(containerId);
+      if (!container) return;
+      if (!summary || !summary.points || summary.points.length === 0) return;
+
+      container.innerHTML = "";
+
+      const width = container.clientWidth || 800;
+      const height = container.clientHeight || 320;
+
+      const heatmap = h337.create({
+        container,
+        radius: 28,
+        maxOpacity: 0.78,
+        minOpacity: 0.05,
+        blur: 0.88
+      });
+
+      const points = summary.points.map(point => ({
+        x: Math.max(4, Math.min(width - 4, Math.round(point.rel_x * width))),
+        y: Math.max(4, Math.min(height - 4, Math.round(point.rel_y * height))),
+        value: 1
+      }));
+
+      heatmap.setData({
+        max: 4,
+        data: points
+      });
+    }
+
+    function renderSamplesChart(canvasId, summary) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas || !summary) return;
+
+      new Chart(canvas, {
+        type: "bar",
+        data: {
+          labels: ["Total samples", "In-target samples"],
+          datasets: [{
+            label: "Samples",
+            data: [
+              summary.total_samples ?? 0,
+              summary.in_target_samples ?? 0
+            ]
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    }
+
+    function renderTimingChart(canvasId, summary) {
+      const canvas = document.getElementById(canvasId);
+      if (!canvas || !summary) return;
+
+      const fixationSec = summary.first_fixation_latency_ms != null
+        ? Number((summary.first_fixation_latency_ms / 1000).toFixed(2))
+        : 0;
+
+      const dwellSec = summary.dwell_time_ms != null
+        ? Number((summary.dwell_time_ms / 1000).toFixed(2))
+        : 0;
+
+      new Chart(canvas, {
+        type: "bar",
+        data: {
+          labels: ["First fixation (s)", "Dwell time (s)"],
+          datasets: [{
+            label: "Seconds",
+            data: [fixationSec, dwellSec]
+          }]
+        },
+        options: {
+          responsive: true,
+          plugins: {
+            legend: { display: false }
+          },
+          scales: {
+            y: { beginAtZero: true }
+          }
+        }
+      });
+    }
+
+    function buildTaskCard(task) {
+      const summary = task?.summary || {};
+      const rawSamples = task?.raw_samples || [];
+      const hasHeatmapData = Array.isArray(summary.points) && summary.points.length > 0;
+      const hasAnySamples = (summary.total_samples ?? 0) > 0;
+      const ratioPercent = summary.on_target_ratio != null
+        ? Math.round(summary.on_target_ratio * 100)
+        : 0;
+
+      return `
+        <div class="card">
+          <h2>${task?.title || task?.key || "Task"}</h2>
+
+          <div class="stats-grid">
+            <div class="stat-box">
+              <div class="stat-label">Total gaze samples</div>
+              <div class="stat-value">${summary.total_samples ?? 0}</div>
+            </div>
+
+            <div class="stat-box">
+              <div class="stat-label">In-target samples</div>
+              <div class="stat-value">${summary.in_target_samples ?? 0}</div>
+            </div>
+
+            <div class="stat-box">
+              <div class="stat-label">First fixation latency</div>
+              <div class="stat-value">${msToSec(summary.first_fixation_latency_ms)}</div>
+            </div>
+
+            <div class="stat-box">
+              <div class="stat-label">Dwell time on target</div>
+              <div class="stat-value">${msToSec(summary.dwell_time_ms)}</div>
+            </div>
+
+            <div class="stat-box">
+              <div class="stat-label">Region width</div>
+              <div class="stat-value">${summary.region_width != null ? Math.round(summary.region_width) : "-"}</div>
+            </div>
+
+            <div class="stat-box">
+              <div class="stat-label">Region height</div>
+              <div class="stat-value">${summary.region_height != null ? Math.round(summary.region_height) : "-"}</div>
+            </div>
+          </div>
+
+          <div class="ratio-wrap">
+            <div><strong>On-target ratio:</strong> ${summary.on_target_ratio ?? "-"}</div>
+            <div class="ratio-track">
+              <div class="ratio-fill" style="width:${ratioPercent}%"></div>
+            </div>
+          </div>
+
+          <div class="section-title">${task?.heatmapTitle || "Heatmap"}</div>
+          ${
+            hasHeatmapData
+              ? `<div id="${task.key}-heatmap" class="heatmap-box"></div>`
+              : `
+                <div class="raw-box">
+                  <h3>Gaze data unavailable in this run</h3>
+                  <pre>${
+                    hasAnySamples
+                      ? "Samples were recorded, but none were usable for heatmap rendering inside the target region."
+                      : "No usable gaze data were captured for this screen in this run."
+                  }</pre>
+                </div>
+              `
+          }
+
+          <div class="chart-grid">
+            <div class="chart-card">
+              <div class="section-title" style="margin-top:0;">Sample distribution</div>
+              <canvas id="${task.key}-samples-chart"></canvas>
+            </div>
+
+            <div class="chart-card">
+              <div class="section-title" style="margin-top:0;">Timing metrics</div>
+              <canvas id="${task.key}-timing-chart"></canvas>
+            </div>
+          </div>
+
+          ${
+            SHOW_RAW_SAMPLES && rawSamples.length > 0
+              ? `
+                <div class="raw-box">
+                  <h3>Raw samples preview</h3>
+                  <pre>${JSON.stringify(rawSamples.slice(0, 40), null, 2)}</pre>
+                </div>
+              `
+              : ""
+          }
+        </div>
+      `;
+    }
+
+    const snapshotRaw = localStorage.getItem("latest_gaze_debug");
+    const content = document.getElementById("content");
+    const statusLine = document.getElementById("status-line");
+
+    if (!snapshotRaw) {
+      statusLine.className = "status-line warn";
+      statusLine.textContent = "No stored gaze debug data was found in localStorage.";
+      content.innerHTML = `
+        <div class="card">
+          <h2>No data available</h2>
+          <p>Run the experiment first, then open this page from the saved results screen.</p>
+        </div>
+      `;
+    } else {
+      const snapshot = JSON.parse(snapshotRaw);
+      const tasks = Array.isArray(snapshot.tasks)
+        ? snapshot.tasks
+        : [
+            snapshot.task1 ? { key: "task1", ...snapshot.task1 } : null,
+            snapshot.task2 ? { key: "task2", ...snapshot.task2 } : null
+          ].filter(Boolean);
+
+      const totalSamples = tasks.reduce((sum, task) => sum + (task?.summary?.total_samples || 0), 0);
+
+      if (totalSamples > 0) {
+        statusLine.className = "status-line ok";
+        statusLine.textContent = `WebGazer status: ${totalSamples} gaze samples captured`;
+      } else {
+        statusLine.className = "status-line warn";
+        statusLine.textContent = "WebGazer status: Gaze data unavailable in this run";
+      }
+
+      content.innerHTML = tasks.map(buildTaskCard).join("");
+
+      requestAnimationFrame(() => {
+        tasks.forEach(task => {
+          const summary = task.summary || {};
+
+          if (document.getElementById(`${task.key}-samples-chart`)) {
+            renderSamplesChart(`${task.key}-samples-chart`, summary);
+          }
+
+          if (document.getElementById(`${task.key}-timing-chart`)) {
+            renderTimingChart(`${task.key}-timing-chart`, summary);
+          }
+
+          if (summary?.points?.length && document.getElementById(`${task.key}-heatmap`)) {
+            renderHeatmap(`${task.key}-heatmap`, summary);
+          }
+        });
+      });
+
+      document.getElementById("download-json").onclick = function () {
+        const blob = new Blob([JSON.stringify(snapshot, null, 2)], { type: "application/json" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "gaze_debug_snapshot.json";
+        a.click();
+        URL.revokeObjectURL(url);
+      };
+    }
+</script>
+</body>
+</html>

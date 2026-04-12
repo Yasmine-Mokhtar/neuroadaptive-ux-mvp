@@ -1,0 +1,178 @@
+{
+  "participant_id": "1762764f-b91e-44d4-8072-28355046fe7c",
+  "session_id": "40cc6268-f5c2-418f-82e5-cd0380e23e43",
+  "created_at": "2026-04-11T04:37:46.475Z",
+  "baseline": {
+    "age_group": "18-24",
+    "digital_confidence": "Low",
+    "web_use_frequency": "A few times a week",
+    "search_strategy": "Scanning the full text",
+    "screen_distraction": "Sometimes"
+  },
+  "tasks": {
+    "task1": {
+      "answer": "A book about marketing",
+      "correct": 0,
+      "time_on_task_ms": 6365,
+      "question_time_ms": 3849,
+      "answer_changes": 0,
+      "backtracking": 0,
+      "hesitation": 0,
+      "errors": 1
+    },
+    "task2": {
+      "answer": "Main Hall",
+      "correct": 0,
+      "time_on_task_ms": 6150,
+      "question_time_ms": 3317,
+      "answer_changes": 0,
+      "backtracking": 0,
+      "hesitation": 0,
+      "errors": 1
+    }
+  },
+  "raw_trials": [
+    {
+      "rt": 5541956,
+      "stimulus": "\n        <div class=\"card\">\n          <div class=\"logo-wrap\">\n            <img src=\"jyu-logo.svg\" alt=\"University of Jyvaskyla logo\" onerror=\"this.style.display='none'\">\n          </div>\n          <h1>Welcome to the University of Jyvaskyla</h1>\n          <p>Thank you for taking part in this short research experiment.</p>\n          <p class=\"muted\">\n            In this study, you will answer a few baseline questions and complete two short reading-related tasks.\n            Your responses will help us understand digital reading habits, information search behavior, and task performance.\n          </p>\n        </div>\n      ",
+      "response": 0,
+      "phase": "university_intro",
+      "trial_type": "html-button-response",
+      "trial_index": 0,
+      "time_elapsed": 46315757,
+      "internal_node_id": "0.0-0.0"
+    },
+    {
+      "rt": 1043,
+      "stimulus": "\n        <div class=\"card\">\n          <h1>Welcome</h1>\n          <p>This experiment includes a short baseline section followed by two short tasks.</p>\n          <p class=\"muted\">Please read carefully and answer as accurately as possible.</p>\n        </div>\n      ",
+      "response": 0,
+      "phase": "welcome",
+      "trial_type": "html-button-response",
+      "trial_index": 1,
+      "time_elapsed": 46316803,
+      "internal_node_id": "0.0-1.0"
+    },
+    {
+      "rt": 899,
+      "stimulus": "\n        <div class=\"card\">\n          <h2>System Check</h2>\n          <p>Frontend is ready.</p>\n          <p class=\"muted\">\n            Backend server is expected at <strong>http://127.0.0.1:8000</strong>.\n          </p>\n          <p class=\"small-note\">\n            Continue to start the experiment. Data saving will be tested at the end.\n          </p>\n        </div>\n      ",
+      "response": 0,
+      "phase": "backend_check",
+      "trial_type": "html-button-response",
+      "trial_index": 2,
+      "time_elapsed": 46317702,
+      "internal_node_id": "0.0-2.0"
+    },
+    {
+      "rt": 10179,
+      "response": {
+        "age_group": "18-24",
+        "digital_confidence": "Low",
+        "web_use_frequency": "A few times a week",
+        "search_strategy": "Scanning the full text",
+        "screen_distraction": "Sometimes"
+      },
+      "phase": "baseline",
+      "trial_type": "survey-html-form",
+      "trial_index": 3,
+      "time_elapsed": 46327888,
+      "internal_node_id": "0.0-3.0"
+    },
+    {
+      "rt": 1432,
+      "stimulus": "\n        <div class=\"card\">\n          <h2>Task 1</h2>\n          <p>Read the paragraph carefully, then answer one question.</p>\n        </div>\n      ",
+      "response": 0,
+      "phase": "task1_intro",
+      "trial_type": "html-button-response",
+      "trial_index": 4,
+      "time_elapsed": 46329321,
+      "internal_node_id": "0.0-4.0"
+    },
+    {
+      "rt": 1082,
+      "stimulus": "\n        <div class=\"card\">\n          <h2>Reading Task</h2>\n          <div class=\"info-box\">Lina is a university student who usually studies in the library after her classes. On Monday, she arrived at the library at 3:00 PM, spent one hour reading a research article, then worked on an assignment for two more hours. Before leaving, she borrowed a book about user experience design.</div>\n        </div>\n      ",
+      "response": 0,
+      "phase": "task1_reading",
+      "trial_type": "html-button-response",
+      "trial_index": 5,
+      "time_elapsed": 46330403,
+      "internal_node_id": "0.0-5.0-0.0"
+    },
+    {
+      "rt": 3848,
+      "response": {
+        "task1_answer": "A book about marketing"
+      },
+      "question_order": [
+        0
+      ],
+      "phase": "task1_question",
+      "trial_type": "survey-multi-choice",
+      "trial_index": 6,
+      "time_elapsed": 46334253,
+      "internal_node_id": "0.0-5.0-1.0",
+      "user_answer": "A book about marketing",
+      "correct_answer": "A book about user experience design",
+      "correct": 0,
+      "time_on_task_ms": 6365,
+      "question_time_ms": 3849,
+      "answer_changes": 0,
+      "backtracking": 0,
+      "hesitation": 0,
+      "errors": 1
+    },
+    {
+      "rt": 931,
+      "stimulus": "\n        <div class=\"card\">\n          <h2>Task 2</h2>\n          <p>Read the information card and answer one question based on it.</p>\n        </div>\n      ",
+      "response": 0,
+      "phase": "task2_intro",
+      "trial_type": "html-button-response",
+      "trial_index": 7,
+      "time_elapsed": 46335186,
+      "internal_node_id": "0.0-6.0"
+    },
+    {
+      "rt": 1899,
+      "stimulus": "\n        <div class=\"card\">\n          <h2>Workshop Information</h2>\n          <div class=\"info-box\">\n        <strong>Title:</strong> Introduction to Human-Computer Interaction<br>\n        <strong>Date:</strong> Thursday, May 15<br>\n        <strong>Time:</strong> 10:00 AM - 12:00 PM<br>\n        <strong>Location:</strong> Room B204<br>\n        <strong>Instructor:</strong> Dr. Sami\n      </div>\n        </div>\n      ",
+      "response": 0,
+      "phase": "task2_info",
+      "trial_type": "html-button-response",
+      "trial_index": 8,
+      "time_elapsed": 46337086,
+      "internal_node_id": "0.0-7.0-0.0"
+    },
+    {
+      "rt": 3317,
+      "response": {
+        "task2_answer": "Main Hall"
+      },
+      "question_order": [
+        0
+      ],
+      "phase": "task2_question",
+      "trial_type": "survey-multi-choice",
+      "trial_index": 9,
+      "time_elapsed": 46340403,
+      "internal_node_id": "0.0-7.0-1.0",
+      "user_answer": "Main Hall",
+      "correct_answer": "Room B204",
+      "correct": 0,
+      "time_on_task_ms": 6150,
+      "question_time_ms": 3317,
+      "answer_changes": 0,
+      "backtracking": 0,
+      "hesitation": 0,
+      "errors": 1
+    },
+    {
+      "rt": 16163,
+      "stimulus": "\n          <div class=\"card\">\n            <h2>Experiment Completed</h2>\n            <p>Here is a clear summary of your responses and behavioral metrics.</p>\n\n            <div class=\"summary-grid\">\n              <div class=\"summary-item\">\n                <span class=\"summary-label\">Age group</span>\n                <div class=\"summary-value\">18-24</div>\n              </div>\n\n              <div class=\"summary-item\">\n                <span class=\"summary-label\">Digital reading confidence</span>\n                <div class=\"summary-value\">Low</div>\n              </div>\n\n              <div class=\"summary-item\">\n                <span class=\"summary-label\">Website usage frequency</span>\n                <div class=\"summary-value\">A few times a week</div>\n              </div>\n\n              <div class=\"summary-item\">\n                <span class=\"summary-label\">Information search strategy</span>\n                <div class=\"summary-value\">Scanning the full text</div>\n              </div>\n\n              <div class=\"summary-item\">\n                <span class=\"summary-label\">Screen distraction frequency</span>\n                <div class=\"summary-value\">Sometimes</div>\n              </div>\n\n              <div class=\"summary-item\">\n                <span class=\"summary-label\">Task 1 result</span>\n                <div class=\"summary-value\">\n                  <span class=\"status-pill status-wrong\">Incorrect</span>\n                  <div class=\"metric-list\">\n                    <div class=\"metric-line\"><strong>Your answer:</strong> A book about marketing</div>\n                    <div class=\"metric-line\"><strong>Correct answer:</strong> A book about user experience design</div>\n                    <div class=\"metric-line\"><strong>Time on task:</strong> 6.37 s</div>\n                    <div class=\"metric-line\"><strong>Question time:</strong> 3.85 s</div>\n                    <div class=\"metric-line\"><strong>Errors:</strong> 1</div>\n                    <div class=\"metric-line\"><strong>Answer changes:</strong> 0</div>\n                    <div class=\"metric-line\"><strong>Hesitation:</strong> No</div>\n                    <div class=\"metric-line\"><strong>Backtracking:</strong> No</div>\n                  </div>\n                </div>\n              </div>\n\n              <div class=\"summary-item\">\n                <span class=\"summary-label\">Task 2 result</span>\n                <div class=\"summary-value\">\n                  <span class=\"status-pill status-wrong\">Incorrect</span>\n                  <div class=\"metric-list\">\n                    <div class=\"metric-line\"><strong>Your answer:</strong> Main Hall</div>\n                    <div class=\"metric-line\"><strong>Correct answer:</strong> Room B204</div>\n                    <div class=\"metric-line\"><strong>Time on task:</strong> 6.15 s</div>\n                    <div class=\"metric-line\"><strong>Question time:</strong> 3.32 s</div>\n                    <div class=\"metric-line\"><strong>Errors:</strong> 1</div>\n                    <div class=\"metric-line\"><strong>Answer changes:</strong> 0</div>\n                    <div class=\"metric-line\"><strong>Hesitation:</strong> No</div>\n                    <div class=\"metric-line\"><strong>Backtracking:</strong> No</div>\n                  </div>\n                </div>\n              </div>\n            </div>\n\n            <div class=\"score-box\">\n              <div><strong>Overall score: 0 / 2</strong></div>\n              <div style=\"margin-top:8px;\"><strong>Errors:</strong> 2</div>\n            </div>\n          </div>\n        ",
+      "response": 0,
+      "phase": "end_screen",
+      "trial_type": "html-button-response",
+      "trial_index": 10,
+      "time_elapsed": 46356570,
+      "internal_node_id": "0.0-8.0"
+    }
+  ],
+  "gaze": {}
+}
