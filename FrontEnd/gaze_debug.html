@@ -202,7 +202,7 @@
           font-size: 13px;
           line-height: 1.5;
           color: var(--text);
-          max-height: 240px;
+          max-height: 260px;
           overflow: auto;
         }
 
@@ -377,6 +377,30 @@
       });
     }
 
+    function buildDiagnosticText(snapshot, totalSamples) {
+      const cameraReady = !!snapshot.camera_ready;
+      const streamLive = !!snapshot.stream_live;
+      const predictionCount = snapshot.prediction_count ?? 0;
+
+      if (totalSamples > 0) {
+        return "Usable gaze samples were stored successfully in this run.";
+      }
+
+      if (cameraReady && predictionCount === 0) {
+        return "Camera preview was available, but WebGazer did not return usable gaze predictions in this run.";
+      }
+
+      if (streamLive && predictionCount === 0) {
+        return "A live camera stream was detected, but no usable WebGazer predictions were produced.";
+      }
+
+      if (!cameraReady) {
+        return "The camera preview itself was not confirmed as ready during this run.";
+      }
+
+      return "No usable gaze data were captured for this run.";
+    }
+
     function buildTaskCard(taskKey, taskData) {
       const summary = taskData?.summary || {};
       const rawSamples = taskData?.raw_samples || [];
@@ -461,11 +485,11 @@
                 </div>
 
                 <div class="raw-box">
-                  <h3>Gaze data unavailable in this run</h3>
+                  <h3>Gaze data unavailable in this task</h3>
                   <pre>${
                     hasAnySamples
-                      ? "Samples were recorded, but none were usable for heatmap rendering in the target reading region."
-                      : "No usable gaze data were captured for this screen in this run."
+                      ? "Samples were recorded, but none were usable for heatmap rendering inside the target reading region."
+                      : "No usable gaze data were captured for this task in this run."
                   }</pre>
                 </div>
               `
@@ -505,6 +529,10 @@
       const task2Samples = snapshot.task2?.summary?.total_samples || 0;
       const totalSamples = task1Samples + task2Samples;
 
+      const cameraReady = !!snapshot.camera_ready;
+      const streamLive = !!snapshot.stream_live;
+      const predictionCount = snapshot.prediction_count ?? 0;
+
       if (totalSamples > 0) {
         statusLine.className = "status-line ok";
         statusLine.textContent = `WebGazer status: ${totalSamples} gaze samples captured`;
@@ -514,6 +542,36 @@
       }
 
       content.innerHTML = `
+        <div class="card">
+          <h2>Run diagnostics</h2>
+          <div class="stats-grid">
+            <div class="stat-box">
+              <div class="stat-label">Camera ready</div>
+              <div class="stat-value">${cameraReady ? "Yes" : "No"}</div>
+            </div>
+
+            <div class="stat-box">
+              <div class="stat-label">Live stream detected</div>
+              <div class="stat-value">${streamLive ? "Yes" : "No"}</div>
+            </div>
+
+            <div class="stat-box">
+              <div class="stat-label">Prediction count</div>
+              <div class="stat-value">${predictionCount}</div>
+            </div>
+
+            <div class="stat-box">
+              <div class="stat-label">Stored samples</div>
+              <div class="stat-value">${totalSamples}</div>
+            </div>
+          </div>
+
+          <div class="raw-box">
+            <h3>Diagnostic interpretation</h3>
+            <pre>${buildDiagnosticText(snapshot, totalSamples)}</pre>
+          </div>
+        </div>
+
         ${buildTaskCard("task1", snapshot.task1)}
         ${buildTaskCard("task2", snapshot.task2)}
       `;

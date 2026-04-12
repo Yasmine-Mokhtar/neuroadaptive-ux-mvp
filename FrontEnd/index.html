@@ -668,7 +668,8 @@
 
     let currentLang = "en";
     let jsPsych = null;
-    let webgazerReady = false;
+    let webgazerReady = false;          // usable gaze predictions observed
+    let webgazerCameraReady = false;    // camera/preview/stream is live
     let webgazerInitialized = false;
     let webgazerPredictionCount = 0;
     let webgazerStreamLive = false;
@@ -689,13 +690,16 @@
         prototype_title: "Prototype Check",
         prototype_text_1: "This MVP runs in the browser and connects to a backend for saving data and generating an adaptive recommendation.",
         prototype_text_2: "The camera starts here. After that, a short calibration step is used before gaze-based reading analysis begins.",
-        prototype_ready: "Camera preview is visible.",
+        initializing_camera: "Initializing camera...",
+        prototype_ready: "Camera preview is visible and WebGazer predictions are active.",
         prototype_ready_note: "A short calibration step comes next. Gaze capture will be attempted during the reading tasks.",
         prototype_fallback: "Camera check was inconclusive.",
         prototype_fallback_note: "The demo will continue, and gaze capture will still be attempted during the reading tasks.",
+        prototype_camera_only: "Camera is live, but WebGazer is not returning usable predictions yet.",
+        prototype_camera_only_note: "Keep your face centered, improve lighting if needed, then continue to calibration.",
 
         calibration_title: "WebGazer Calibration",
-        calibration_text: "Look directly at each dot and click it twice while keeping your gaze on it. This calibrates webcam-based gaze estimation so the system can generate clearer heatmaps and gaze statistics during the reading tasks.",
+        calibration_text: "Look directly at each dot and click it five times while keeping your gaze on it. This calibrates webcam-based gaze estimation so the system can generate clearer heatmaps and gaze statistics during the reading tasks.",
         calibration_progress: "Calibration progress",
         calibration_done: "Calibration complete. You can continue.",
 
@@ -748,6 +752,10 @@
         task2_a2: "Room B204",
         task2_a3: "Room C301",
         task2_a4: "Main Hall",
+
+        task_gaze_waiting: "Waiting for usable gaze predictions...",
+        task_gaze_active: "Gaze capture active. Read naturally, then continue.",
+        task_gaze_unavailable: "Camera is on, but usable gaze predictions are still unavailable in this run.",
 
         continue_btn: "Continue",
 
@@ -804,13 +812,16 @@
         prototype_title: "Prototyypin tarkistus",
         prototype_text_1: "Tämä MVP toimii selaimessa ja yhdistyy taustapalveluun datan tallentamista ja adaptiivisen suosituksen muodostamista varten.",
         prototype_text_2: "Kamera käynnistyy tässä. Sen jälkeen tehdään lyhyt kalibrointi ennen katseeseen perustuvaa lukuanalyysiä.",
-        prototype_ready: "Kameran esikatselu näkyy.",
+        initializing_camera: "Kameraa alustetaan...",
+        prototype_ready: "Kameran esikatselu näkyy ja WebGazerin ennusteet toimivat.",
         prototype_ready_note: "Seuraavaksi tehdään lyhyt kalibrointi. Katseen tallennusta yritetään lukutehtävien aikana.",
         prototype_fallback: "Kameratarkistus ei ollut yksiselitteinen.",
         prototype_fallback_note: "Demo jatkuu, ja katseen tallennusta yritetään silti lukutehtävien aikana.",
+        prototype_camera_only: "Kamera toimii, mutta WebGazer ei vielä palauta käyttökelpoisia katse-ennusteita.",
+        prototype_camera_only_note: "Pidä kasvot keskellä kuvaa, paranna valaistusta tarvittaessa ja jatka kalibrointiin.",
 
         calibration_title: "WebGazer-kalibrointi",
-        calibration_text: "Katso suoraan jokaista pistettä ja klikkaa sitä kaksi kertaa pitäen katseen siinä. Tämä kalibroi webcam-pohjaisen katse-estimoinnin, jotta järjestelmä voi tuottaa selkeämpiä heatmappeja ja katsetilastoja lukutehtävissä.",
+        calibration_text: "Katso suoraan jokaista pistettä ja klikkaa sitä viisi kertaa pitäen katseen siinä. Tämä kalibroi webcam-pohjaisen katse-estimoinnin, jotta järjestelmä voi tuottaa selkeämpiä heatmappeja ja katsetilastoja lukutehtävissä.",
         calibration_progress: "Kalibroinnin eteneminen",
         calibration_done: "Kalibrointi valmis. Voit jatkaa.",
 
@@ -863,6 +874,10 @@
         task2_a2: "Huone B204",
         task2_a3: "Huone C301",
         task2_a4: "Pääsali",
+
+        task_gaze_waiting: "Odotetaan käyttökelpoisia katse-ennusteita...",
+        task_gaze_active: "Katseen tallennus on aktiivinen. Lue normaalisti ja jatka sitten.",
+        task_gaze_unavailable: "Kamera on päällä, mutta käyttökelpoisia katse-ennusteita ei ole vielä saatavilla tällä ajokerralla.",
 
         continue_btn: "Jatka",
 
@@ -1034,26 +1049,59 @@
       safeWebGazerCall("showPredictionPoints", true);
     }
 
+    // Debug-first: keep overlay and prediction points visible during task screens
     function hideTaskCameraUI() {
-  safeWebGazerCall("showVideo", true);
-  safeWebGazerCall("showFaceFeedbackBox", true);
-  safeWebGazerCall("showFaceOverlay", false);
-  safeWebGazerCall("showPredictionPoints", false);
-}
+      safeWebGazerCall("showVideo", true);
+      safeWebGazerCall("showFaceFeedbackBox", true);
+      safeWebGazerCall("showFaceOverlay", true);
+      safeWebGazerCall("showPredictionPoints", true);
+    }
+
+    async function waitForUsablePredictions(timeoutMs = 8000) {
+      if (!window.webgazer) return false;
+
+      if (webgazerPredictionCount > 0) {
+        webgazerReady = true;
+        return true;
+      }
+
+      const startedAt = performance.now();
+
+      return new Promise((resolve) => {
+        const timer = setInterval(() => {
+          const elapsed = performance.now() - startedAt;
+          const hasPredictions = webgazerPredictionCount > 0;
+
+          if (hasPredictions) {
+            clearInterval(timer);
+            webgazerReady = true;
+            resolve(true);
+            return;
+          }
+
+          if (elapsed >= timeoutMs) {
+            clearInterval(timer);
+            resolve(false);
+          }
+        }, 150);
+      });
+    }
 
     async function initWebGazer() {
       if (!window.webgazer) {
+        webgazerCameraReady = false;
         webgazerReady = false;
         return false;
       }
 
       if (webgazerInitialized) {
         showCalibrationCameraUI();
-        return webgazerReady;
+        return webgazerCameraReady;
       }
 
       try {
         webgazerPredictionCount = 0;
+        webgazerReady = false;
 
         if (typeof window.webgazer.setRegression === "function") {
           window.webgazer.setRegression("ridge");
@@ -1065,6 +1113,7 @@
         window.webgazer.setGazeListener((data) => {
           if (data) {
             webgazerPredictionCount += 1;
+            webgazerReady = true;
           }
 
           if (!data || !currentGazePhase) return;
@@ -1123,12 +1172,13 @@
           video.videoHeight > 0;
 
         webgazerStreamLive = hasLiveTrack;
-        webgazerReady = previewVisible || hasLiveTrack || hasVideoPixels;
+        webgazerCameraReady = previewVisible || hasLiveTrack || hasVideoPixels;
         webgazerInitialized = true;
 
-        return webgazerReady;
+        return webgazerCameraReady;
       } catch (error) {
         console.warn("WebGazer init warning:", error);
+        webgazerCameraReady = false;
         webgazerReady = false;
         webgazerInitialized = false;
         return false;
@@ -1211,6 +1261,9 @@
       const snapshot = {
         lang: currentLang,
         webgazerReady,
+        camera_ready: webgazerCameraReady,
+        prediction_count: webgazerPredictionCount,
+        stream_live: webgazerStreamLive,
         task1: {
           title: s("summary_task1"),
           heatmapTitle: currentLang === "fi" ? "Tehtävän 1 lukualue" : "Task 1 reading region",
@@ -1262,6 +1315,9 @@
         },
         gaze: {
           webgazer_ready: webgazerReady,
+          webgazer_camera_ready: webgazerCameraReady,
+          prediction_count: webgazerPredictionCount,
+          stream_live: webgazerStreamLive,
           task1_reading: {
             metrics: gazeSummary.task1_reading,
             raw_samples: gazeStore.task1_reading
@@ -1353,7 +1409,7 @@
             <h2>${s("prototype_title")}</h2>
             <p>${s("prototype_text_1")}</p>
             <p class="muted">${s("prototype_text_2")}</p>
-            <p id="webgazer-status" class="small-note">Initializing camera...</p>
+            <p id="webgazer-status" class="small-note">${s("initializing_camera")}</p>
           </div>
         `,
         choices: [s("continue_btn")],
@@ -1369,11 +1425,14 @@
           }
 
           (async () => {
-            const ok = await initWebGazer();
+            const cameraOk = await initWebGazer();
+            const predictionOk = cameraOk ? await waitForUsablePredictions(6000) : false;
 
             if (statusEl) {
-              if (ok) {
+              if (predictionOk) {
                 statusEl.innerHTML = `<span class="status-ok">${s("prototype_ready")}</span> ${s("prototype_ready_note")}`;
+              } else if (cameraOk) {
+                statusEl.innerHTML = `<span class="status-fallback">${s("prototype_camera_only")}</span> ${s("prototype_camera_only_note")}`;
               } else {
                 statusEl.innerHTML = `<span class="status-fallback">${s("prototype_fallback")}</span> ${s("prototype_fallback_note")}`;
               }
@@ -1495,7 +1554,7 @@
           }
 
           let finishedPoints = 0;
-          const requiredClicksPerPoint = 2;
+          const requiredClicksPerPoint = 5;
           const totalPoints = 9;
 
           document.querySelectorAll(".calibration-dot").forEach((dot) => {
@@ -1505,7 +1564,7 @@
               if (clicks >= requiredClicksPerPoint) return;
 
               clicks += 1;
-              dot.style.opacity = String(0.45 + clicks * 0.2);
+              dot.style.opacity = String(0.35 + clicks * 0.12);
 
               const rect = dot.getBoundingClientRect();
               const x = rect.left + rect.width / 2;
@@ -1568,14 +1627,13 @@
           <div class="card">
             <h2>${s("task1_para_title")}</h2>
             <div id="task1-text-region" class="info-box">${s("task1_para")}</div>
-            <p id="task1-gaze-note" class="small-note">Stabilizing gaze capture...</p>
+            <p id="task1-gaze-note" class="small-note">${s("task_gaze_waiting")}</p>
           </div>
         `,
         choices: [s("task1_read_btn")],
         data: { phase: "task1_reading" },
         on_load: function() {
           hideTaskCameraUI();
-          startGazeCapture("task1_reading", "#task1-text-region");
 
           const btn = document.getElementById("jspsych-html-button-response-button-0");
           const note = document.getElementById("task1-gaze-note");
@@ -1586,16 +1644,24 @@
             btn.style.cursor = "not-allowed";
           }
 
-          setTimeout(() => {
-            if (btn) {
-              btn.disabled = false;
-              btn.style.opacity = "1";
-              btn.style.cursor = "pointer";
+          (async () => {
+            const predictionOk = await waitForUsablePredictions(5000);
+
+            if (predictionOk) {
+              startGazeCapture("task1_reading", "#task1-text-region");
+              if (note) note.textContent = s("task_gaze_active");
+            } else {
+              if (note) note.textContent = s("task_gaze_unavailable");
             }
-            if (note) {
-              note.textContent = "Gaze capture active. Read naturally, then continue.";
-            }
-          }, 3500);
+
+            setTimeout(() => {
+              if (btn) {
+                btn.disabled = false;
+                btn.style.opacity = "1";
+                btn.style.cursor = "pointer";
+              }
+            }, 1500);
+          })();
         },
         on_finish: function() {
           stopGazeCapture("task1_reading");
@@ -1704,14 +1770,13 @@
           <div class="card">
             <h2>${s("task2_info_title")}</h2>
             <div id="task2-info-region" class="info-box">${s("task2_info")}</div>
-            <p id="task2-gaze-note" class="small-note">Stabilizing gaze capture...</p>
+            <p id="task2-gaze-note" class="small-note">${s("task_gaze_waiting")}</p>
           </div>
         `,
         choices: [s("task1_read_btn")],
         data: { phase: "task2_info" },
         on_load: function() {
           hideTaskCameraUI();
-          startGazeCapture("task2_info", "#task2-info-region");
 
           const btn = document.getElementById("jspsych-html-button-response-button-0");
           const note = document.getElementById("task2-gaze-note");
@@ -1722,16 +1787,24 @@
             btn.style.cursor = "not-allowed";
           }
 
-          setTimeout(() => {
-            if (btn) {
-              btn.disabled = false;
-              btn.style.opacity = "1";
-              btn.style.cursor = "pointer";
+          (async () => {
+            const predictionOk = await waitForUsablePredictions(5000);
+
+            if (predictionOk) {
+              startGazeCapture("task2_info", "#task2-info-region");
+              if (note) note.textContent = s("task_gaze_active");
+            } else {
+              if (note) note.textContent = s("task_gaze_unavailable");
             }
-            if (note) {
-              note.textContent = "Gaze capture active. Read naturally, then continue.";
-            }
-          }, 3500);
+
+            setTimeout(() => {
+              if (btn) {
+                btn.disabled = false;
+                btn.style.opacity = "1";
+                btn.style.cursor = "pointer";
+              }
+            }, 1500);
+          })();
         },
         on_finish: function() {
           stopGazeCapture("task2_info");
