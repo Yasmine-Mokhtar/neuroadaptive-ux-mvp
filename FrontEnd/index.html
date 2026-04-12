@@ -15,8 +15,6 @@
     <script src="https://cdn.jsdelivr.net/gh/jspsych/jspsych@jspsych@7.0.0/examples/js/webgazer/webgazer.js"></script>
     <script src="https://unpkg.com/@jspsych/extension-webgazer@1.0.3"></script>
     <script src="https://unpkg.com/@jspsych/plugin-webgazer-init-camera@1.0.3"></script>
-    <script src="https://unpkg.com/@jspsych/plugin-webgazer-calibrate@1.0.3"></script>
-    <script src="https://unpkg.com/@jspsych/plugin-webgazer-validate@1.0.3"></script>
 
     <!-- Other plugins -->
     <script src="https://unpkg.com/@jspsych/plugin-html-button-response@1.1.3"></script>
@@ -48,8 +46,10 @@ body.has-side-camera .jspsych-content {
   min-height: calc(100vh - 70px);
   padding: 40px 24px 56px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+  gap: 18px;
 }
 
 body.has-side-camera .card,
@@ -80,6 +80,11 @@ body.has-side-camera .jspsych-survey-multi-choice-question {
 #webgazerFaceOverlay {
   width: 100% !important;
   height: 100% !important;
+  display: block !important;
+}
+
+#webgazerFaceFeedbackBox,
+#webgazerFaceOverlay {
   display: block !important;
 }
 
@@ -651,6 +656,9 @@ body.validation-phase .jspsych-content {
             font-size: 17px;
           }
         }
+        .jspsych-html-button-response-button-parent {
+  text-align: center;
+}
     </style>
 </head>
 <body class="ui-standard"></body>
@@ -987,11 +995,30 @@ body.validation-phase .jspsych-content {
     function getStoredUIMode() {
       return localStorage.getItem("recommended_ui") || "standard";
     }
+
     function showSideCamera(showPredictions = false) {
   document.body.classList.add("has-side-camera");
 
   try {
     jsPsych.extensions.webgazer.showVideo();
+  } catch (e) {}
+
+  try {
+    if (window.webgazer && typeof window.webgazer.showFaceFeedbackBox === "function") {
+      window.webgazer.showFaceFeedbackBox(true);
+    }
+  } catch (e) {}
+
+  try {
+    if (window.webgazer && typeof window.webgazer.showFaceOverlay === "function") {
+      window.webgazer.showFaceOverlay(true);
+    }
+  } catch (e) {}
+
+  try {
+    if (window.webgazer && typeof window.webgazer.showPredictionPoints === "function") {
+      window.webgazer.showPredictionPoints(showPredictions);
+    }
   } catch (e) {}
 
   try {
@@ -1101,7 +1128,6 @@ function averageArray(arr) {
   const task2QuestionTrial = [...allData].reverse().find(d => d.phase === "task2_question" && !d.backtrack_only);
   const task1ReadingTrial = [...allData].reverse().find(d => d.phase === "task1_reading");
   const task2InfoTrial = [...allData].reverse().find(d => d.phase === "task2_info");
-
   const task1Gaze = summarizeTrialGaze(task1ReadingTrial, "#task1-text-region");
   const task2Gaze = summarizeTrialGaze(task2InfoTrial, "#task2-info-region");
 
@@ -1145,6 +1171,38 @@ function averageArray(arr) {
     },
     raw_trials: allData
   };
+
+}
+function persistGazeDebugSnapshot() {
+  const allData = jsPsych.data.get().values();
+
+  const task1ReadingTrial = [...allData].reverse().find(d => d.phase === "task1_reading");
+  const task2InfoTrial = [...allData].reverse().find(d => d.phase === "task2_info");
+
+  const task1Summary = summarizeTrialGaze(task1ReadingTrial, "#task1-text-region");
+  const task2Summary = summarizeTrialGaze(task2InfoTrial, "#task2-info-region");
+
+  const snapshot = {
+    lang: currentLang,
+    camera_ready: true,
+    stream_live: true,
+    prediction_count: (task1Summary.total_samples || 0) + (task2Summary.total_samples || 0),
+    validation: null,
+    task1: {
+      title: currentLang === "fi" ? "Tehtävän 1 tulos" : "Task 1 result",
+      heatmapTitle: currentLang === "fi" ? "Tehtävän 1 lukualue" : "Task 1 reading region",
+      summary: task1Summary,
+      raw_samples: task1ReadingTrial?.webgazer_data || []
+    },
+    task2: {
+      title: currentLang === "fi" ? "Tehtävän 2 tulos" : "Task 2 result",
+      heatmapTitle: currentLang === "fi" ? "Tehtävän 2 tietoalue" : "Task 2 information region",
+      summary: task2Summary,
+      raw_samples: task2InfoTrial?.webgazer_data || []
+    }
+  };
+
+  localStorage.setItem("latest_gaze_debug", JSON.stringify(snapshot));
 }
 
     async function saveExperimentData(payload) {
@@ -1217,6 +1275,7 @@ function averageArray(arr) {
     function startExperiment(lang) {
   currentLang = lang;
   document.body.innerHTML = "";
+  localStorage.removeItem("latest_gaze_debug");
   applyRecommendedUI(getStoredUIMode());
 
   fetch(`${API_BASE_URL}/`).catch(() => {});
@@ -1275,6 +1334,9 @@ function averageArray(arr) {
   `,
   button_text: s("continue_btn"),
   data: { phase: "init_camera" },
+  on_load: function() {
+    showSideCamera(false);
+  },
   on_finish: function() {
     showSideCamera(false);
     setPhaseBodyClass("");
@@ -1760,101 +1822,107 @@ const validationSummary = {
       };
 
       const endScreen = {
-        type: jsPsychHtmlButtonResponse,
-        stimulus: function() {
-          const allData = jsPsych.data.get().values();
-const task1Trial = [...allData].reverse().find(d => d.phase === "task1_question" && !d.backtrack_only);
-const task2Trial = [...allData].reverse().find(d => d.phase === "task2_question" && !d.backtrack_only);
-const task1ReadingTrial = [...allData].reverse().find(d => d.phase === "task1_reading");
-const task2InfoTrial = [...allData].reverse().find(d => d.phase === "task2_info");
+  type: jsPsychHtmlButtonResponse,
+  stimulus: function() {
+    const allData = jsPsych.data.get().values();
+    const task1Trial = [...allData].reverse().find(d => d.phase === "task1_question" && !d.backtrack_only);
+    const task2Trial = [...allData].reverse().find(d => d.phase === "task2_question" && !d.backtrack_only);
+    const task1ReadingTrial = [...allData].reverse().find(d => d.phase === "task1_reading");
+    const task2InfoTrial = [...allData].reverse().find(d => d.phase === "task2_info");
 
-const score = (task1Trial?.correct || 0) + (task2Trial?.correct || 0);
-const totalErrors = (task1Trial?.errors || 0) + (task2Trial?.errors || 0);
-const gazeTask1 = summarizeTrialGaze(task1ReadingTrial, "#task1-text-region");
-const gazeTask2 = summarizeTrialGaze(task2InfoTrial, "#task2-info-region");
-const avgSps = null;
+    const score = (task1Trial?.correct || 0) + (task2Trial?.correct || 0);
+    const totalErrors = (task1Trial?.errors || 0) + (task2Trial?.errors || 0);
+    const gazeTask1 = summarizeTrialGaze(task1ReadingTrial, "#task1-text-region");
+    const gazeTask2 = summarizeTrialGaze(task2InfoTrial, "#task2-info-region");
+    const avgSps = null;
 
-          const task1StatusClass = task1Trial?.correct === 1 ? "status-correct" : "status-wrong";
-          const task1StatusText = task1Trial?.correct === 1 ? s("correct") : s("wrong");
+    const task1StatusClass = task1Trial?.correct === 1 ? "status-correct" : "status-wrong";
+    const task1StatusText = task1Trial?.correct === 1 ? s("correct") : s("wrong");
 
-          const task2StatusClass = task2Trial?.correct === 1 ? "status-correct" : "status-wrong";
-          const task2StatusText = task2Trial?.correct === 1 ? s("correct") : s("wrong");
+    const task2StatusClass = task2Trial?.correct === 1 ? "status-correct" : "status-wrong";
+    const task2StatusText = task2Trial?.correct === 1 ? s("correct") : s("wrong");
 
-          const task1HasGaze = (gazeTask1.total_samples || 0) > 0;
-          const task2HasGaze = (gazeTask2.total_samples || 0) > 0;
+    const task1HasGaze = (gazeTask1.total_samples || 0) > 0;
+    const task2HasGaze = (gazeTask2.total_samples || 0) > 0;
 
-          return `
-            <div class="card">
-              <h2>${s("end_title")}</h2>
-              <p>${s("end_text")}</p>
+    return `
+      <div class="card">
+        <h2>${s("end_title")}</h2>
+        <p>${s("end_text")}</p>
 
-              <div class="summary-grid">
-                <div class="summary-item">
-                  <span class="summary-label">${s("summary_task1")}</span>
-                  <div class="summary-value">
-                    <span class="status-pill ${task1StatusClass}">${task1StatusText}</span>
-                    <div class="metric-list">
-                      <div class="metric-line"><strong>${s("summary_answer")}:</strong> ${task1Trial?.user_answer || "-"}</div>
-                      <div class="metric-line"><strong>${s("summary_correct_answer")}:</strong> ${task1Trial?.correct_answer || "-"}</div>
-                      <div class="metric-line"><strong>${s("metric_time_on_task")}:</strong> ${msToSec(task1Trial?.time_on_task_ms || 0)}</div>
-                      <div class="metric-line"><strong>${s("metric_question_time")}:</strong> ${msToSec(task1Trial?.question_time_ms || 0)}</div>
-                      <div class="metric-line"><strong>${s("metric_errors")}:</strong> ${task1Trial?.errors || 0}</div>
-                      <div class="metric-line"><strong>${s("metric_changes")}:</strong> ${task1Trial?.answer_changes || 0}</div>
-                      <div class="metric-line"><strong>${s("metric_hesitation")}:</strong> ${yesNo(task1Trial?.hesitation)}</div>
-                      <div class="metric-line"><strong>${s("metric_backtracking")}:</strong> ${yesNo((task1Trial?.backtracking || 0) > 0)}</div>
-                      ${
-                        task1HasGaze
-                          ? `
-                            <div class="metric-line"><strong>${s("metric_gaze_samples")}:</strong> ${gazeTask1.total_samples || 0}</div>
-                            <div class="metric-line"><strong>${s("metric_on_target_ratio")}:</strong> ${gazeTask1.on_target_ratio !== null ? gazeTask1.on_target_ratio : "-"}</div>
-                            <div class="metric-line"><strong>${s("metric_first_fixation")}:</strong> ${msToSec(gazeTask1.first_fixation_latency_ms)}</div>
-                            <div class="metric-line"><strong>${s("metric_dwell_time")}:</strong> ${msToSec(gazeTask1.dwell_time_ms)}</div>
-                          `
-                          : `<div class="metric-line">${s("metric_no_gaze_samples")}</div>`
-                      }
-                    </div>
-                  </div>
-                </div>
-
-                <div class="summary-item">
-                  <span class="summary-label">${s("summary_task2")}</span>
-                  <div class="summary-value">
-                    <span class="status-pill ${task2StatusClass}">${task2StatusText}</span>
-                    <div class="metric-list">
-                      <div class="metric-line"><strong>${s("summary_answer")}:</strong> ${task2Trial?.user_answer || "-"}</div>
-                      <div class="metric-line"><strong>${s("summary_correct_answer")}:</strong> ${task2Trial?.correct_answer || "-"}</div>
-                      <div class="metric-line"><strong>${s("metric_time_on_task")}:</strong> ${msToSec(task2Trial?.time_on_task_ms || 0)}</div>
-                      <div class="metric-line"><strong>${s("metric_question_time")}:</strong> ${msToSec(task2Trial?.question_time_ms || 0)}</div>
-                      <div class="metric-line"><strong>${s("metric_errors")}:</strong> ${task2Trial?.errors || 0}</div>
-                      <div class="metric-line"><strong>${s("metric_changes")}:</strong> ${task2Trial?.answer_changes || 0}</div>
-                      <div class="metric-line"><strong>${s("metric_hesitation")}:</strong> ${yesNo(task2Trial?.hesitation)}</div>
-                      <div class="metric-line"><strong>${s("metric_backtracking")}:</strong> ${yesNo((task2Trial?.backtracking || 0) > 0)}</div>
-                      ${
-                        task2HasGaze
-                          ? `
-                            <div class="metric-line"><strong>${s("metric_gaze_samples")}:</strong> ${gazeTask2.total_samples || 0}</div>
-                            <div class="metric-line"><strong>${s("metric_on_target_ratio")}:</strong> ${gazeTask2.on_target_ratio !== null ? gazeTask2.on_target_ratio : "-"}</div>
-                            <div class="metric-line"><strong>${s("metric_first_fixation")}:</strong> ${msToSec(gazeTask2.first_fixation_latency_ms)}</div>
-                            <div class="metric-line"><strong>${s("metric_dwell_time")}:</strong> ${msToSec(gazeTask2.dwell_time_ms)}</div>
-                          `
-                          : `<div class="metric-line">${s("metric_no_gaze_samples")}</div>`
-                      }
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="score-box">
-                <div><strong>${s("summary_score")}: ${score} / 2</strong></div>
-                <div style="margin-top:8px;"><strong>${s("metric_errors")}:</strong> ${totalErrors}</div>
-                <div style="margin-top:8px;"><strong>${s("metric_validation_sps")}:</strong> ${avgSps !== null ? avgSps : "-"}</div>
+        <div class="summary-grid">
+          <div class="summary-item">
+            <span class="summary-label">${s("summary_task1")}</span>
+            <div class="summary-value">
+              <span class="status-pill ${task1StatusClass}">${task1StatusText}</span>
+              <div class="metric-list">
+                <div class="metric-line"><strong>${s("summary_answer")}:</strong> ${task1Trial?.user_answer || "-"}</div>
+                <div class="metric-line"><strong>${s("summary_correct_answer")}:</strong> ${task1Trial?.correct_answer || "-"}</div>
+                <div class="metric-line"><strong>${s("metric_time_on_task")}:</strong> ${msToSec(task1Trial?.time_on_task_ms || 0)}</div>
+                <div class="metric-line"><strong>${s("metric_question_time")}:</strong> ${msToSec(task1Trial?.question_time_ms || 0)}</div>
+                <div class="metric-line"><strong>${s("metric_errors")}:</strong> ${task1Trial?.errors || 0}</div>
+                <div class="metric-line"><strong>${s("metric_changes")}:</strong> ${task1Trial?.answer_changes || 0}</div>
+                <div class="metric-line"><strong>${s("metric_hesitation")}:</strong> ${yesNo(task1Trial?.hesitation)}</div>
+                <div class="metric-line"><strong>${s("metric_backtracking")}:</strong> ${yesNo((task1Trial?.backtracking || 0) > 0)}</div>
+                ${
+                  task1HasGaze
+                    ? `
+                      <div class="metric-line"><strong>${s("metric_gaze_samples")}:</strong> ${gazeTask1.total_samples || 0}</div>
+                      <div class="metric-line"><strong>${s("metric_on_target_ratio")}:</strong> ${gazeTask1.on_target_ratio !== null ? gazeTask1.on_target_ratio : "-"}</div>
+                      <div class="metric-line"><strong>${s("metric_first_fixation")}:</strong> ${msToSec(gazeTask1.first_fixation_latency_ms)}</div>
+                      <div class="metric-line"><strong>${s("metric_dwell_time")}:</strong> ${msToSec(gazeTask1.dwell_time_ms)}</div>
+                    `
+                    : `<div class="metric-line">${s("metric_no_gaze_samples")}</div>`
+                }
               </div>
             </div>
-          `;
-        },
-        choices: [s("continue_btn")],
-        data: { phase: "end_screen" }
-      };
+          </div>
+
+          <div class="summary-item">
+            <span class="summary-label">${s("summary_task2")}</span>
+            <div class="summary-value">
+              <span class="status-pill ${task2StatusClass}">${task2StatusText}</span>
+              <div class="metric-list">
+                <div class="metric-line"><strong>${s("summary_answer")}:</strong> ${task2Trial?.user_answer || "-"}</div>
+                <div class="metric-line"><strong>${s("summary_correct_answer")}:</strong> ${task2Trial?.correct_answer || "-"}</div>
+                <div class="metric-line"><strong>${s("metric_time_on_task")}:</strong> ${msToSec(task2Trial?.time_on_task_ms || 0)}</div>
+                <div class="metric-line"><strong>${s("metric_question_time")}:</strong> ${msToSec(task2Trial?.question_time_ms || 0)}</div>
+                <div class="metric-line"><strong>${s("metric_errors")}:</strong> ${task2Trial?.errors || 0}</div>
+                <div class="metric-line"><strong>${s("metric_changes")}:</strong> ${task2Trial?.answer_changes || 0}</div>
+                <div class="metric-line"><strong>${s("metric_hesitation")}:</strong> ${yesNo(task2Trial?.hesitation)}</div>
+                <div class="metric-line"><strong>${s("metric_backtracking")}:</strong> ${yesNo((task2Trial?.backtracking || 0) > 0)}</div>
+                ${
+                  task2HasGaze
+                    ? `
+                      <div class="metric-line"><strong>${s("metric_gaze_samples")}:</strong> ${gazeTask2.total_samples || 0}</div>
+                      <div class="metric-line"><strong>${s("metric_on_target_ratio")}:</strong> ${gazeTask2.on_target_ratio !== null ? gazeTask2.on_target_ratio : "-"}</div>
+                      <div class="metric-line"><strong>${s("metric_first_fixation")}:</strong> ${msToSec(gazeTask2.first_fixation_latency_ms)}</div>
+                      <div class="metric-line"><strong>${s("metric_dwell_time")}:</strong> ${msToSec(gazeTask2.dwell_time_ms)}</div>
+                    `
+                    : `<div class="metric-line">${s("metric_no_gaze_samples")}</div>`
+                }
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="score-box">
+          <div><strong>${s("summary_score")}: ${score} / 2</strong></div>
+          <div style="margin-top:8px;"><strong>${s("metric_errors")}:</strong> ${totalErrors}</div>
+          <div style="margin-top:8px;"><strong>${s("metric_validation_sps")}:</strong> ${avgSps !== null ? avgSps : "-"}</div>
+        </div>
+      </div>
+    `;
+  },
+  choices: [s("continue_btn")],
+  data: { phase: "end_screen" },
+  on_load: function() {
+    persistGazeDebugSnapshot();
+  },
+  on_finish: function() {
+    window.open("gaze_debug.html", "_blank", "noopener");
+  }
+};
 
       const saveAndRecommendScreen = {
         type: jsPsychHtmlButtonResponse,
