@@ -130,7 +130,7 @@
           z-index: 100002 !important;
         }
 
-        /* calibration / validation */
+/* calibration / validation */
         body.calibration-phase,
         body.validation-phase {
           overflow: hidden;
@@ -144,6 +144,12 @@
           padding-left: 24px;
           padding-right: 24px;
         }
+        body.calibration-phase #webgazerVideoContainer,
+body.validation-phase #webgazerVideoContainer {
+  left: 50% !important;
+  top: 110px !important;
+  transform: translateX(-50%) !important;
+}
 
         .calibration-stage {
           position: relative;
@@ -204,6 +210,13 @@
             padding-right: 16px;
             padding-top: 220px;
           }
+
+          body.calibration-phase #webgazerVideoContainer,
+body.validation-phase #webgazerVideoContainer {
+  left: 50% !important;
+  top: 92px !important;
+  transform: translateX(-50%) !important;
+}
 
           .calibration-stage {
             height: 340px;
@@ -1017,45 +1030,62 @@
     }
 
     function showSideCamera(showPredictions = false) {
-  document.body.classList.add("has-side-camera");
-  configureWebGazerPath();
+      document.body.classList.add("has-side-camera");
+      configureWebGazerPath();
 
-  try {
-    jsPsych.extensions.webgazer.showVideo();
-  } catch (_) {}
+      try {
+        jsPsych.extensions.webgazer.resume();
+        jsPsych.extensions.webgazer.showVideo();
 
-  try {
-    if (showPredictions) {
-      jsPsych.extensions.webgazer.showPredictions();
-    } else {
-      jsPsych.extensions.webgazer.hidePredictions();
+        if (showPredictions) {
+          jsPsych.extensions.webgazer.showPredictions();
+        } else {
+          jsPsych.extensions.webgazer.hidePredictions();
+        }
+      } catch (e) {
+        console.error("showSideCamera error:", e);
+      }
     }
-  } catch (_) {}
-}
 
     function hideSideCamera() {
       document.body.classList.remove("has-side-camera");
       try {
+        jsPsych.extensions.webgazer.pause();
         jsPsych.extensions.webgazer.hideVideo();
-      } catch (_) {}
+        jsPsych.extensions.webgazer.hidePredictions();
+      } catch (e) {
+        console.error("hideSideCamera error:", e);
+      }
     }
 
+    function showCenteredCameraNoPredictions() {
+      document.body.classList.remove("has-side-camera");
+      configureWebGazerPath();
+
+      try {
+        jsPsych.extensions.webgazer.resume();
+        jsPsych.extensions.webgazer.showVideo();
+        jsPsych.extensions.webgazer.hidePredictions();
+      } catch (e) {
+        console.error("showCenteredCameraNoPredictions error:", e);
+      }
+    }
+
+    // =========================================================
+    // FIX 1: safeHideGazeUI now explicitly resumes WebGazer
+    // so gaze recording is active during task reading screens
+    // =========================================================
     function safeHideGazeUI() {
-  document.body.classList.add("has-side-camera");
-  configureWebGazerPath();
-
-  try {
-    window.webgazer?.resume?.();
-  } catch (_) {}
-
-  try {
-    jsPsych.extensions.webgazer.showVideo();
-  } catch (_) {}
-
-  try {
-    jsPsych.extensions.webgazer.hidePredictions();
-  } catch (_) {}
-}
+      document.body.classList.add("has-side-camera");
+      configureWebGazerPath();
+      try {
+        jsPsych.extensions.webgazer.resume();
+        jsPsych.extensions.webgazer.showVideo();
+        jsPsych.extensions.webgazer.hidePredictions();
+      } catch (e) {
+        console.error("safeHideGazeUI error:", e);
+      }
+    }
 
     function setPhaseBodyClass(phaseClass = "") {
       document.body.classList.remove("calibration-phase", "validation-phase");
@@ -1291,27 +1321,15 @@
       document.getElementById("choose-fi").onclick = () => startExperiment("fi");
     }
 
-    const CUSTOM_CALIBRATION_POINTS = [
-      { x: 10, y: 12 },
-      { x: 50, y: 12 },
-      { x: 90, y: 12 },
-      { x: 10, y: 50 },
-      { x: 50, y: 50 },
-      { x: 90, y: 50 },
-      { x: 10, y: 88 },
-      { x: 50, y: 88 },
-      { x: 90, y: 88 }
-    ];
-
     function resetWebGazerSession() {
-  try {
-    window.webgazer?.saveDataAcrossSessions?.(false);
-  } catch (_) {}
+      try {
+        window.webgazer?.saveDataAcrossSessions?.(false);
+      } catch (_) {}
 
-  try {
-    window.webgazer?.clearData?.();
-  } catch (_) {}
-}
+      try {
+        window.webgazer?.clearData?.();
+      } catch (_) {}
+    }
 
     function startExperiment(lang) {
       currentLang = lang;
@@ -1319,9 +1337,9 @@
       localStorage.removeItem("latest_gaze_debug");
       applyRecommendedUI(getStoredUIMode());
 
-  resetWebGazerSession();
-  fetch(`${API_BASE_URL}/`).catch(() => {});
-  configureWebGazerPath();
+      resetWebGazerSession();
+      fetch(`${API_BASE_URL}/`).catch(() => {});
+      configureWebGazerPath();
 
       jsPsych = initJsPsych({
         show_progress_bar: true,
@@ -1379,11 +1397,10 @@
         button_text: s("continue_btn"),
         data: { phase: "init_camera" },
         on_load: function() {
-          configureWebGazerPath();
-          showSideCamera(false);
+          setPhaseBodyClass("");
+          showCenteredCameraNoPredictions();
         },
         on_finish: function() {
-          showSideCamera(false);
           setPhaseBodyClass("");
         }
       };
@@ -1469,160 +1486,99 @@
       };
 
       const calibration = {
-        type: jsPsychHtmlButtonResponse,
-        stimulus: `
-          <div class="card">
-            <h2>${s("calibration_title")}</h2>
-            <p>${s("calibration_text")}</p>
-
-            <div id="custom-calibration-stage" class="calibration-stage">
-              ${CUSTOM_CALIBRATION_POINTS.map((p, i) => `
-                <button
-                  type="button"
-                  class="calibration-dot"
-                  data-index="${i}"
-                  data-x="${p.x}"
-                  data-y="${p.y}"
-                  style="left:${p.x}%; top:${p.y}%"
-                  aria-label="Calibration point ${i + 1}">
-                </button>
-              `).join("")}
-            </div>
-
-            <p id="calibration-status" class="small-note">Calibration progress: 0 / 45</p>
-          </div>
-        `,
-        choices: [s("continue_btn")],
+        type: jsPsychWebgazerCalibrate,
+        calibration_points: [
+          [10, 12], [50, 12], [90, 12],
+          [10, 50], [50, 50], [90, 50],
+          [10, 88], [50, 88], [90, 88]
+        ],
+        calibration_mode: "click",
+        repetitions_per_point: 5,
+        randomize_calibration_order: false,
+        point_size: 24,
         data: { phase: "calibration" },
         on_load: function() {
-          resetWebGazerSession();
           setPhaseBodyClass("calibration-phase");
-          showSideCamera(false);
-
-          try {
-            jsPsych.extensions.webgazer.resetCalibration();
-          } catch (_) {}
-
-          const continueButton = document.getElementById("jspsych-html-button-response-button-0");
-          const statusEl = document.getElementById("calibration-status");
-          const totalRequiredClicks = CUSTOM_CALIBRATION_POINTS.length * 5;
-
-          if (continueButton) {
-            continueButton.disabled = true;
-            continueButton.style.opacity = "0.6";
-            continueButton.style.cursor = "not-allowed";
-          }
-
-          let totalClicks = 0;
-
-          document.querySelectorAll(".calibration-dot").forEach((dot) => {
-            let pointClicks = 0;
-
-            dot.addEventListener("click", () => {
-              if (pointClicks >= 5) return;
-
-              pointClicks += 1;
-              totalClicks += 1;
-
-              const rect = dot.getBoundingClientRect();
-              const x = rect.left + rect.width / 2;
-              const y = rect.top + rect.height / 2;
-
-              try {
-                jsPsych.extensions.webgazer.calibratePoint(x, y);
-              } catch (_) {}
-
-              dot.style.opacity = String(Math.min(1, 0.18 + pointClicks * 0.16));
-              dot.style.transform = `translate(-50%, -50%) scale(${1 + pointClicks * 0.03})`;
-
-              if (pointClicks === 5) {
-                dot.classList.add("done");
-                dot.disabled = true;
-              }
-
-              if (statusEl) {
-                statusEl.textContent = `Calibration progress: ${totalClicks} / ${totalRequiredClicks}`;
-              }
-
-              if (totalClicks >= totalRequiredClicks && continueButton) {
-                continueButton.disabled = false;
-                continueButton.style.opacity = "1";
-                continueButton.style.cursor = "pointer";
-              }
-            });
-          });
+          showCenteredCameraNoPredictions();
         },
+        // =========================================================
+        // FIX 2: do NOT pause/hide WebGazer after calibration —
+        // keep it running so it stays ready for the task screens
+        // =========================================================
         on_finish: function() {
           setPhaseBodyClass("");
-          try {
-            jsPsych.extensions.webgazer.startMouseCalibration();
-          } catch (_) {}
+          // intentionally NOT calling hideSideCamera() here
         }
       };
 
       const validationIntro = {
-  type: jsPsychHtmlButtonResponse,
-  stimulus: `
-    <div class="card">
-      <h2>${s("validation_title")}</h2>
-      <p>${s("validation_text")}</p>
-    </div>
-  `,
-  choices: [s("continue_btn")],
-  data: { phase: "validation_intro" }
-};
-
-const validation = {
-  type: jsPsychWebgazerValidate,
-  validation_points: [
-    [10, 12], [50, 12], [90, 12],
-    [10, 50], [50, 50], [90, 50],
-    [10, 88], [50, 88], [90, 88]
-  ],
-  roi_radius: 180,
-  time_to_saccade: 1000,
-  validation_duration: 1800,
-  point_size: 24,
-  show_validation_data: false,
-  data: { phase: "validation" },
-  on_load: function() {
-    setPhaseBodyClass("validation-phase");
-    showSideCamera(false);
-  },
-  on_finish: function() {
-    setPhaseBodyClass("");
-    showSideCamera(false);
-  }
-};
-
-const validationSummary = {
-  type: jsPsychHtmlButtonResponse,
-  stimulus: function() {
-    const validationTrial = jsPsych.data.get().filter({ phase: "validation" }).last(1).values()[0] || {};
-    const avgROI = averageArray(validationTrial.percent_in_roi);
-    const sps = validationTrial.samples_per_sec ?? null;
-    const qualityGood = avgROI !== null && avgROI >= 50;
-
-    return `
-      <div class="card">
-        <h2>${s("validation_summary_title")}</h2>
-
-        <div class="validation-box">
-          <div class="metric-list">
-            <div class="metric-line"><strong>${s("validation_avg_roi")}:</strong> ${avgROI !== null ? `${avgROI}%` : "-"}</div>
-            <div class="metric-line"><strong>${s("validation_samples_per_sec")}:</strong> ${sps !== null ? sps : "-"}</div>
+        type: jsPsychHtmlButtonResponse,
+        stimulus: `
+          <div class="card">
+            <h2>${s("validation_title")}</h2>
+            <p>${s("validation_text")}</p>
           </div>
-        </div>
+        `,
+        choices: [s("continue_btn")],
+        data: { phase: "validation_intro" }
+      };
 
-        <p class="small-note ${qualityGood ? "status-ok" : "status-fallback"}">
-          ${qualityGood ? s("validation_quality_good") : s("validation_quality_warn")}
-        </p>
-      </div>
-    `;
-  },
-  choices: [s("continue_btn")],
-  data: { phase: "validation_summary" }
-};
+      const validation = {
+        type: jsPsychWebgazerValidate,
+        validation_points: [
+          [10, 12], [50, 12], [90, 12],
+          [10, 50], [50, 50], [90, 50],
+          [10, 88], [50, 88], [90, 88]
+        ],
+        validation_point_coordinates: "percent",
+        roi_radius: 180,
+        time_to_saccade: 1000,
+        validation_duration: 1800,
+        point_size: 24,
+        show_validation_data: false,
+        data: { phase: "validation" },
+        on_load: function() {
+          setPhaseBodyClass("validation-phase");
+          showCenteredCameraNoPredictions();
+        },
+        // =========================================================
+        // FIX 2 (continued): same — keep WebGazer alive after
+        // validation so task reading screens can record gaze data
+        // =========================================================
+        on_finish: function() {
+          setPhaseBodyClass("");
+          // intentionally NOT calling hideSideCamera() here
+        }
+      };
+
+      const validationSummary = {
+        type: jsPsychHtmlButtonResponse,
+        stimulus: function() {
+          const validationTrial = jsPsych.data.get().filter({ phase: "validation" }).last(1).values()[0] || {};
+          const avgROI = averageArray(validationTrial.percent_in_roi);
+          const sps = validationTrial.samples_per_sec ?? null;
+          const qualityGood = avgROI !== null && avgROI >= 50;
+
+          return `
+            <div class="card">
+              <h2>${s("validation_summary_title")}</h2>
+
+              <div class="validation-box">
+                <div class="metric-list">
+                  <div class="metric-line"><strong>${s("validation_avg_roi")}:</strong> ${avgROI !== null ? `${avgROI}%` : "-"}</div>
+                  <div class="metric-line"><strong>${s("validation_samples_per_sec")}:</strong> ${sps !== null ? sps : "-"}</div>
+                </div>
+              </div>
+
+              <p class="small-note ${qualityGood ? "status-ok" : "status-fallback"}">
+                ${qualityGood ? s("validation_quality_good") : s("validation_quality_warn")}
+              </p>
+            </div>
+          `;
+        },
+        choices: [s("continue_btn")],
+        data: { phase: "validation_summary" }
+      };
 
       const task1Intro = {
         type: jsPsychHtmlButtonResponse,
@@ -1662,6 +1618,17 @@ const validationSummary = {
             }
           }
         ],
+        // =========================================================
+        // FIX 3: explicitly resume WebGazer before the trial
+        // starts so the extension can actually record samples
+        // =========================================================
+        on_start: function() {
+          try {
+            jsPsych.extensions.webgazer.resume();
+          } catch (e) {
+            console.error("task1Reading on_start resume error:", e);
+          }
+        },
         on_load: function() {
           safeHideGazeUI();
         }
@@ -1782,6 +1749,16 @@ const validationSummary = {
             }
           }
         ],
+        // =========================================================
+        // FIX 3 (continued): same explicit resume for task 2
+        // =========================================================
+        on_start: function() {
+          try {
+            jsPsych.extensions.webgazer.resume();
+          } catch (e) {
+            console.error("task2Info on_start resume error:", e);
+          }
+        },
         on_load: function() {
           safeHideGazeUI();
         }
@@ -2044,19 +2021,23 @@ const validationSummary = {
       };
 
       const timeline = [
-  universityIntro,
-  cameraInstructions,
-  initCameraTrial,
-  baseline,
-  calibrationIntro,
-  calibration,
-  task1Intro,
-  task1Loop,
-  task2Intro,
-  task2Loop,
-  endScreen,
-  saveAndRecommendScreen
-];
+        universityIntro,
+        cameraInstructions,
+        initCameraTrial,
+        baseline,
+        calibrationIntro,
+        calibration,
+        validationIntro,
+        validation,
+        validationSummary,
+        task1Intro,
+        task1Loop,
+        task2Intro,
+        task2Loop,
+        endScreen,
+        saveAndRecommendScreen
+      ];
+
       jsPsych.run(timeline);
     }
 
