@@ -12,9 +12,11 @@
     <link href="https://unpkg.com/jspsych@7.3.4/css/jspsych.css" rel="stylesheet" />
 
     <!-- jsPsych-supported WebGazer stack -->
-    <script src="js/webgazer/webgazer.js"></script>
+    <script src="./webgazer.js"></script>
     <script src="https://unpkg.com/@jspsych/extension-webgazer@1.0.3"></script>
     <script src="https://unpkg.com/@jspsych/plugin-webgazer-init-camera@1.0.3"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-webgazer-calibrate@1.0.3"></script>
+    <script src="https://unpkg.com/@jspsych/plugin-webgazer-validate@1.0.3"></script>
 
     <!-- Other plugins -->
     <script src="https://unpkg.com/@jspsych/plugin-html-button-response@1.1.3"></script>
@@ -1173,6 +1175,27 @@ function averageArray(arr) {
   };
 
 }
+
+function readCameraDiagnostics() {
+  const video =
+    document.querySelector("#webgazerVideoFeed") ||
+    document.querySelector("video");
+
+  const stream = video?.srcObject;
+
+  const stream_live =
+    !!stream &&
+    typeof stream.getTracks === "function" &&
+    stream.getTracks().some(track => track.readyState === "live");
+
+  const camera_ready =
+    !!video &&
+    video.videoWidth > 0 &&
+    video.videoHeight > 0;
+
+  return { camera_ready, stream_live };
+}
+
 function persistGazeDebugSnapshot() {
   const allData = jsPsych.data.get().values();
 
@@ -1182,11 +1205,14 @@ function persistGazeDebugSnapshot() {
   const task1Summary = summarizeTrialGaze(task1ReadingTrial, "#task1-text-region");
   const task2Summary = summarizeTrialGaze(task2InfoTrial, "#task2-info-region");
 
+  const diagnostics = readCameraDiagnostics();
+  const predictionCount = (task1Summary.total_samples || 0) + (task2Summary.total_samples || 0);
+
   const snapshot = {
     lang: currentLang,
-    camera_ready: true,
-    stream_live: true,
-    prediction_count: (task1Summary.total_samples || 0) + (task2Summary.total_samples || 0),
+    camera_ready: diagnostics.camera_ready,
+    stream_live: diagnostics.stream_live,
+    prediction_count: predictionCount,
     validation: null,
     task1: {
       title: currentLang === "fi" ? "Tehtävän 1 tulos" : "Task 1 result",
@@ -1204,7 +1230,6 @@ function persistGazeDebugSnapshot() {
 
   localStorage.setItem("latest_gaze_debug", JSON.stringify(snapshot));
 }
-
     async function saveExperimentData(payload) {
       const response = await fetch(`${API_BASE_URL}/api/experiment`, {
         method: "POST",
