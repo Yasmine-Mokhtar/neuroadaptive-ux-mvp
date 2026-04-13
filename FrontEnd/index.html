@@ -11,10 +11,14 @@
     <script src="https://unpkg.com/jspsych@7.3.4"></script>
     <link href="https://unpkg.com/jspsych@7.3.4/css/jspsych.css" rel="stylesheet" />
 
-    <!-- jsPsych-supported WebGazer stack -->
+    <!-- WebGazer -->
     <script src="./webgazer.js"></script>
+
+    <!-- jsPsych WebGazer extension + camera plugin -->
     <script src="https://unpkg.com/@jspsych/extension-webgazer@1.0.3"></script>
     <script src="https://unpkg.com/@jspsych/plugin-webgazer-init-camera@1.0.3"></script>
+
+    <!-- Optional WebGazer plugins -->
     <script src="https://unpkg.com/@jspsych/plugin-webgazer-calibrate@1.0.3"></script>
     <script src="https://unpkg.com/@jspsych/plugin-webgazer-validate@1.0.3"></script>
 
@@ -666,6 +670,7 @@ body.validation-phase .jspsych-content {
 <body class="ui-standard"></body>
 
 <script>
+
     const API_BASE_URL = "https://neuroadaptive-ux-mvp.onrender.com";
     const RECOMMENDED_UI_URLS = {
       standard: "https://xn--standard-jyvskyl-6nbe.framer.ai/",
@@ -1252,8 +1257,12 @@ function persistGazeDebugSnapshot() {
       }
     }
 
-    function safeHideGazeUI() {
+  function safeHideGazeUI() {
   document.body.classList.add("has-side-camera");
+
+  try {
+    window.webgazer?.resume?.();
+  } catch (_) {}
 
   try {
     jsPsych.extensions.webgazer.showVideo();
@@ -1297,13 +1306,21 @@ function persistGazeDebugSnapshot() {
   { x: 90, y: 88 }
 ];
 
-    function startExperiment(lang) {
+function configureWebGazerPath() {
+  if (window.webgazer?.params) {
+    window.webgazer.params.faceMeshSolutionPath = `${window.location.origin}/mediapipe/face_mesh`;
+  }
+}
+
+  function startExperiment(lang) {
   currentLang = lang;
   document.body.innerHTML = "";
   localStorage.removeItem("latest_gaze_debug");
   applyRecommendedUI(getStoredUIMode());
 
   fetch(`${API_BASE_URL}/`).catch(() => {});
+  configureWebGazerPath();
+}
 
   jsPsych = initJsPsych({
     show_progress_bar: true,
@@ -1360,6 +1377,7 @@ function persistGazeDebugSnapshot() {
   button_text: s("continue_btn"),
   data: { phase: "init_camera" },
   on_load: function() {
+  configureWebGazerPath();
     showSideCamera(false);
   },
   on_finish: function() {
