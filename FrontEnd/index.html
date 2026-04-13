@@ -1303,14 +1303,25 @@
       { x: 90, y: 88 }
     ];
 
+    function resetWebGazerSession() {
+  try {
+    window.webgazer?.saveDataAcrossSessions?.(false);
+  } catch (_) {}
+
+  try {
+    window.webgazer?.clearData?.();
+  } catch (_) {}
+}
+
     function startExperiment(lang) {
       currentLang = lang;
       document.body.innerHTML = "";
       localStorage.removeItem("latest_gaze_debug");
       applyRecommendedUI(getStoredUIMode());
 
-      fetch(`${API_BASE_URL}/`).catch(() => {});
-      configureWebGazerPath();
+  resetWebGazerSession();
+  fetch(`${API_BASE_URL}/`).catch(() => {});
+  configureWebGazerPath();
 
       jsPsych = initJsPsych({
         show_progress_bar: true,
@@ -1484,6 +1495,7 @@
         choices: [s("continue_btn")],
         data: { phase: "calibration" },
         on_load: function() {
+          resetWebGazerSession();
           setPhaseBodyClass("calibration-phase");
           showSideCamera(false);
 
@@ -2045,7 +2057,6 @@ const validationSummary = {
   endScreen,
   saveAndRecommendScreen
 ];
-
       jsPsych.run(timeline);
     }
 
