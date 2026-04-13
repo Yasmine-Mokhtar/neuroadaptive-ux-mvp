@@ -104,63 +104,27 @@
         }
 
         #webgazerVideoContainer {
-          position: fixed !important;
-          left: 24px !important;
-          top: 50% !important;
-          transform: translateY(-50%) !important;
-          width: 240px !important;
-          height: 180px !important;
-          z-index: 99999 !important;
-          border-radius: 16px !important;
-          overflow: hidden !important;
-          background: #fff !important;
-          border: 1px solid var(--border) !important;
-          box-shadow: 0 10px 28px rgba(0, 41, 87, 0.12) !important;
-          display: flex !important;
-          align-items: center !important;
-          justify-content: center !important;
-        }
+  position: fixed !important;
+  left: 24px !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  width: 240px !important;
+  height: 180px !important;
+  z-index: 99999 !important;
+  border-radius: 16px !important;
+  overflow: hidden !important;
+  background: #fff !important;
+  border: 1px solid var(--border) !important;
+  box-shadow: 0 10px 28px rgba(0, 41, 87, 0.12) !important;
+  display: block !important;
+}
 
-        #webgazerVideoFeed,
-        #webgazerVideoCanvas,
-        #webgazerFaceOverlay {
-          position: absolute !important;
-          inset: 0 !important;
-          width: 100% !important;
-          height: 100% !important;
-          display: block !important;
-          pointer-events: none !important;
-        }
+
 
         #webgazerVideoFeed {
-          object-fit: cover !important;
-          object-position: center center !important;
-          transform: scaleX(-1) !important;
-          pointer-events: none !important;
-        }
+  display: block !important;
+}
 
-        /* المربع الأخضر في نص الإطار */
-        #webgazerFaceFeedbackBox {
-          position: absolute !important;
-          left: 50% !important;
-          top: 50% !important;
-          right: auto !important;
-          bottom: auto !important;
-          width: 58% !important;
-          height: 72% !important;
-          transform: translate(-50%, -50%) !important;
-          border: 2px solid #16a34a !important;
-          background: transparent !important;
-          display: block !important;
-          z-index: 100000 !important;
-          pointer-events: none !important;
-          box-sizing: border-box !important;
-        }
-
-        #webgazerFaceOverlay {
-          display: block !important;
-          z-index: 100001 !important;
-        }
 
         #webgazerGazeDot {
           z-index: 100002 !important;
@@ -224,12 +188,13 @@
           }
 
           #webgazerVideoContainer {
-            width: 180px !important;
-            height: 135px !important;
-            left: 16px !important;
-            top: 92px !important;
-            transform: none !important;
-          }
+  width: 180px !important;
+  height: 135px !important;
+  left: 16px !important;
+  top: 92px !important;
+  transform: none !important;
+  display: block !important;
+}
 
           body.calibration-phase .jspsych-content,
           body.validation-phase .jspsych-content {
@@ -1052,39 +1017,21 @@
     }
 
     function showSideCamera(showPredictions = false) {
-      document.body.classList.add("has-side-camera");
-      configureWebGazerPath();
+  document.body.classList.add("has-side-camera");
+  configureWebGazerPath();
 
-      try {
-        jsPsych.extensions.webgazer.showVideo();
-      } catch (_) {}
+  try {
+    jsPsych.extensions.webgazer.showVideo();
+  } catch (_) {}
 
-      try {
-        if (window.webgazer?.showFaceFeedbackBox) {
-          window.webgazer.showFaceFeedbackBox(true);
-        }
-      } catch (_) {}
-
-      try {
-        if (window.webgazer?.showFaceOverlay) {
-          window.webgazer.showFaceOverlay(true);
-        }
-      } catch (_) {}
-
-      try {
-        if (window.webgazer?.showPredictionPoints) {
-          window.webgazer.showPredictionPoints(showPredictions);
-        }
-      } catch (_) {}
-
-      try {
-        if (showPredictions) {
-          jsPsych.extensions.webgazer.showPredictions();
-        } else {
-          jsPsych.extensions.webgazer.hidePredictions();
-        }
-      } catch (_) {}
+  try {
+    if (showPredictions) {
+      jsPsych.extensions.webgazer.showPredictions();
+    } else {
+      jsPsych.extensions.webgazer.hidePredictions();
     }
+  } catch (_) {}
+}
 
     function hideSideCamera() {
       document.body.classList.remove("has-side-camera");
@@ -1094,21 +1041,17 @@
     }
 
     function safeHideGazeUI() {
-      document.body.classList.add("has-side-camera");
-      configureWebGazerPath();
+  document.body.classList.add("has-side-camera");
+  configureWebGazerPath();
 
-      try {
-        window.webgazer?.resume?.();
-      } catch (_) {}
+  try {
+    jsPsych.extensions.webgazer.showVideo();
+  } catch (_) {}
 
-      try {
-        jsPsych.extensions.webgazer.showVideo();
-      } catch (_) {}
-
-      try {
-        jsPsych.extensions.webgazer.hidePredictions();
-      } catch (_) {}
-    }
+  try {
+    jsPsych.extensions.webgazer.hidePredictions();
+  } catch (_) {}
+}
 
     function setPhaseBodyClass(phaseClass = "") {
       document.body.classList.remove("calibration-phase", "validation-phase");
@@ -1601,6 +1544,70 @@
         }
       };
 
+      const validationIntro = {
+  type: jsPsychHtmlButtonResponse,
+  stimulus: `
+    <div class="card">
+      <h2>${s("validation_title")}</h2>
+      <p>${s("validation_text")}</p>
+    </div>
+  `,
+  choices: [s("continue_btn")],
+  data: { phase: "validation_intro" }
+};
+
+const validation = {
+  type: jsPsychWebgazerValidate,
+  validation_points: [
+    [10, 12], [50, 12], [90, 12],
+    [10, 50], [50, 50], [90, 50],
+    [10, 88], [50, 88], [90, 88]
+  ],
+  roi_radius: 180,
+  time_to_saccade: 1000,
+  validation_duration: 1800,
+  point_size: 24,
+  show_validation_data: false,
+  data: { phase: "validation" },
+  on_load: function() {
+    setPhaseBodyClass("validation-phase");
+    showSideCamera(false);
+  },
+  on_finish: function() {
+    setPhaseBodyClass("");
+    showSideCamera(false);
+  }
+};
+
+const validationSummary = {
+  type: jsPsychHtmlButtonResponse,
+  stimulus: function() {
+    const validationTrial = jsPsych.data.get().filter({ phase: "validation" }).last(1).values()[0] || {};
+    const avgROI = averageArray(validationTrial.percent_in_roi);
+    const sps = validationTrial.samples_per_sec ?? null;
+    const qualityGood = avgROI !== null && avgROI >= 50;
+
+    return `
+      <div class="card">
+        <h2>${s("validation_summary_title")}</h2>
+
+        <div class="validation-box">
+          <div class="metric-list">
+            <div class="metric-line"><strong>${s("validation_avg_roi")}:</strong> ${avgROI !== null ? `${avgROI}%` : "-"}</div>
+            <div class="metric-line"><strong>${s("validation_samples_per_sec")}:</strong> ${sps !== null ? sps : "-"}</div>
+          </div>
+        </div>
+
+        <p class="small-note ${qualityGood ? "status-ok" : "status-fallback"}">
+          ${qualityGood ? s("validation_quality_good") : s("validation_quality_warn")}
+        </p>
+      </div>
+    `;
+  },
+  choices: [s("continue_btn")],
+  data: { phase: "validation_summary" }
+};
+
       const task1Intro = {
         type: jsPsychHtmlButtonResponse,
         stimulus: `
@@ -2021,19 +2028,22 @@
       };
 
       const timeline = [
-        universityIntro,
-        cameraInstructions,
-        initCameraTrial,
-        baseline,
-        calibrationIntro,
-        calibration,
-        task1Intro,
-        task1Loop,
-        task2Intro,
-        task2Loop,
-        endScreen,
-        saveAndRecommendScreen
-      ];
+  universityIntro,
+  cameraInstructions,
+  initCameraTrial,
+  baseline,
+  calibrationIntro,
+  calibration,
+  validationIntro,
+  validation,
+  validationSummary,
+  task1Intro,
+  task1Loop,
+  task2Intro,
+  task2Loop,
+  endScreen,
+  saveAndRecommendScreen
+];
 
       jsPsych.run(timeline);
     }
