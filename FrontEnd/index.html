@@ -71,7 +71,7 @@
         }
 
         /* =========================
-           CAMERA LAYOUT
+           CAMERA LAYOUT (side camera for tasks)
            ========================= */
 
         body.has-side-camera .jspsych-content {
@@ -104,33 +104,33 @@
         }
 
         #webgazerVideoContainer {
-  position: fixed !important;
-  left: 24px !important;
-  top: 50% !important;
-  transform: translateY(-50%) !important;
-  width: 240px !important;
-  height: 180px !important;
-  z-index: 99999 !important;
-  border-radius: 16px !important;
-  overflow: hidden !important;
-  background: #fff !important;
-  border: 1px solid var(--border) !important;
-  box-shadow: 0 10px 28px rgba(0, 41, 87, 0.12) !important;
-  display: block !important;
-}
-
-
+          position: fixed !important;
+          left: 24px !important;
+          top: 50% !important;
+          transform: translateY(-50%) !important;
+          width: 240px !important;
+          height: 180px !important;
+          z-index: 99999 !important;
+          border-radius: 16px !important;
+          overflow: hidden !important;
+          background: #fff !important;
+          border: 1px solid var(--border) !important;
+          box-shadow: 0 10px 28px rgba(0, 41, 87, 0.12) !important;
+          display: block !important;
+        }
 
         #webgazerVideoFeed {
-  display: block !important;
-}
-
+          display: block !important;
+        }
 
         #webgazerGazeDot {
           z-index: 100002 !important;
         }
 
-/* calibration / validation */
+        /* =========================
+           CALIBRATION / VALIDATION — camera top-center, content below
+           ========================= */
+
         body.calibration-phase,
         body.validation-phase {
           overflow: hidden;
@@ -141,15 +141,42 @@
           max-width: none;
           width: 100%;
           margin: 0 auto;
-          padding-left: 24px;
-          padding-right: 24px;
+          padding: 24px 24px 24px;
+          /* push content below camera */
+          padding-top: 230px;
         }
+
         body.calibration-phase #webgazerVideoContainer,
-body.validation-phase #webgazerVideoContainer {
-  left: 50% !important;
-  top: 110px !important;
-  transform: translateX(-50%) !important;
-}
+        body.validation-phase #webgazerVideoContainer {
+          left: 50% !important;
+          top: 20px !important;
+          transform: translateX(-50%) !important;
+          width: 200px !important;
+          height: 150px !important;
+        }
+
+        /* =========================
+           CAMERA INIT PHASE — camera centered with content below
+           ========================= */
+
+        body.camera-init-phase .jspsych-content {
+          max-width: 980px;
+          width: 100%;
+          margin: 0 auto;
+          padding-top: 240px;
+        }
+
+        body.camera-init-phase #webgazerVideoContainer {
+          left: 50% !important;
+          top: 30px !important;
+          transform: translateX(-50%) !important;
+          width: 260px !important;
+          height: 195px !important;
+        }
+
+        /* =========================
+           CALIBRATION STAGE (the dot area)
+           ========================= */
 
         .calibration-stage {
           position: relative;
@@ -162,65 +189,47 @@ body.validation-phase #webgazerVideoContainer {
           overflow: hidden;
         }
 
-        .calibration-dot {
-          position: absolute;
-          width: 26px;
-          height: 26px;
-          border: none;
-          border-radius: 999px;
-          background: var(--accent);
-          transform: translate(-50%, -50%);
-          opacity: 0.18;
-          cursor: pointer;
-          box-shadow: 0 0 0 8px rgba(241, 86, 63, 0.08);
-          transition: opacity 0.18s ease, transform 0.18s ease, background 0.18s ease;
+        /* ---- jsPsych calibration/validation dot overrides ---- */
+
+        /* The native calibration dots from jsPsych */
+        .jspsych-content .calibration-point,
+        #jspsych-webgazer-calibrate-container .calibration-point {
+          /* keep the plugin's absolute positioning */
         }
 
-        .calibration-dot.done {
-          background: var(--primary);
-          opacity: 1;
-          box-shadow: 0 0 0 10px rgba(0, 41, 87, 0.10);
+        /* Make the calibration canvas use the full viewport minus camera */
+        body.calibration-phase #jspsych-webgazer-calibrate-container,
+        body.validation-phase #jspsych-webgazer-validate-container {
+          position: fixed !important;
+          top: 190px !important;
+          left: 0 !important;
+          right: 0 !important;
+          bottom: 0 !important;
+          width: 100% !important;
+          height: calc(100vh - 190px) !important;
         }
 
-        @media (max-width: 900px) {
-          body.has-side-camera .jspsych-content {
-            width: 100%;
-            margin: 0 auto;
-            min-height: auto;
-            padding-left: 16px;
-            padding-right: 16px;
-            padding-top: 220px;
-            display: block;
-          }
+        /* Bigger, nicer calibration dots */
+        .calibration-point {
+          width: 28px !important;
+          height: 28px !important;
+          border-radius: 50% !important;
+          background: radial-gradient(circle, var(--accent) 40%, rgba(241,86,63,0.3) 100%) !important;
+          border: 3px solid rgba(241,86,63,0.25) !important;
+          box-shadow: 0 0 0 6px rgba(241,86,63,0.08), 0 2px 8px rgba(0,0,0,0.1) !important;
+          cursor: pointer !important;
+          transition: transform 0.2s ease, box-shadow 0.2s ease !important;
+          animation: dotPulse 2s ease-in-out infinite !important;
+        }
 
-          #webgazerVideoContainer {
-  width: 180px !important;
-  height: 135px !important;
-  left: 16px !important;
-  top: 92px !important;
-  transform: none !important;
-  display: block !important;
-}
+        .calibration-point:hover {
+          transform: scale(1.3) !important;
+          box-shadow: 0 0 0 10px rgba(241,86,63,0.15), 0 4px 16px rgba(0,0,0,0.15) !important;
+        }
 
-          body.calibration-phase .jspsych-content,
-          body.validation-phase .jspsych-content {
-            width: 100%;
-            margin: 0 auto;
-            padding-left: 16px;
-            padding-right: 16px;
-            padding-top: 220px;
-          }
-
-          body.calibration-phase #webgazerVideoContainer,
-body.validation-phase #webgazerVideoContainer {
-  left: 50% !important;
-  top: 92px !important;
-  transform: translateX(-50%) !important;
-}
-
-          .calibration-stage {
-            height: 340px;
-          }
+        @keyframes dotPulse {
+          0%, 100% { box-shadow: 0 0 0 6px rgba(241,86,63,0.08), 0 2px 8px rgba(0,0,0,0.1); }
+          50% { box-shadow: 0 0 0 12px rgba(241,86,63,0.15), 0 2px 12px rgba(0,0,0,0.12); }
         }
 
         /* =========================
@@ -383,12 +392,12 @@ body.validation-phase #webgazerVideoContainer {
 
         .jspsych-survey-html-form .jspsych-btn {
           display: block;
-          margin: 64px auto 0 !important;
+          margin: 48px auto 0 !important;
           min-width: 170px;
         }
 
         .form-card {
-          padding-bottom: 72px !important;
+          padding-bottom: 40px !important;
         }
 
         .jspsych-survey-multi-choice-question {
@@ -650,6 +659,67 @@ body.validation-phase #webgazerVideoContainer {
           max-width: 860px;
         }
 
+        /* =========================
+           RESPONSIVE
+           ========================= */
+
+        @media (max-width: 900px) {
+          body.has-side-camera .jspsych-content {
+            width: 100%;
+            margin: 0 auto;
+            min-height: auto;
+            padding-left: 16px;
+            padding-right: 16px;
+            padding-top: 220px;
+            display: block;
+          }
+
+          #webgazerVideoContainer {
+            width: 180px !important;
+            height: 135px !important;
+            left: 16px !important;
+            top: 92px !important;
+            transform: none !important;
+            display: block !important;
+          }
+
+          body.calibration-phase .jspsych-content,
+          body.validation-phase .jspsych-content {
+            width: 100%;
+            margin: 0 auto;
+            padding-left: 16px;
+            padding-right: 16px;
+            padding-top: 200px;
+          }
+
+          body.calibration-phase #webgazerVideoContainer,
+          body.validation-phase #webgazerVideoContainer {
+            left: 50% !important;
+            top: 16px !important;
+            transform: translateX(-50%) !important;
+            width: 160px !important;
+            height: 120px !important;
+          }
+
+          body.camera-init-phase .jspsych-content {
+            padding-top: 200px;
+          }
+
+          body.camera-init-phase #webgazerVideoContainer {
+            left: 50% !important;
+            top: 16px !important;
+            transform: translateX(-50%) !important;
+            width: 200px !important;
+            height: 150px !important;
+          }
+
+          body.calibration-phase #jspsych-webgazer-calibrate-container,
+          body.validation-phase #jspsych-webgazer-validate-container {
+            top: 160px !important;
+            height: calc(100vh - 160px) !important;
+          }
+        }
+
         @media (max-width: 768px) {
           .jspsych-content {
             padding: 26px 16px 40px;
@@ -685,6 +755,40 @@ body.validation-phase #webgazerVideoContainer {
 
         .jspsych-html-button-response-button-parent {
           text-align: center;
+        }
+
+        /* =========================
+           CAMERA STATUS INDICATOR
+           ========================= */
+        .camera-status-bar {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          margin-top: 14px;
+          padding: 10px 14px;
+          border-radius: 12px;
+          background: var(--success-bg);
+          font-size: 15px;
+          font-weight: 600;
+          color: var(--success-text);
+        }
+
+        .camera-status-bar.warn {
+          background: var(--warning-bg);
+          color: var(--warning-text);
+        }
+
+        .camera-status-dot {
+          width: 10px;
+          height: 10px;
+          border-radius: 50%;
+          background: currentColor;
+          animation: statusBlink 1.5s ease-in-out infinite;
+        }
+
+        @keyframes statusBlink {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.4; }
         }
     </style>
 </head>
@@ -726,7 +830,7 @@ body.validation-phase #webgazerVideoContainer {
         baseline_text: "These questions capture stable preferences that help initialize the adaptive logic.",
 
         calibration_title: "WebGazer Calibration",
-        calibration_text: "Look directly at each dot and click it. Repeat until calibration is complete.",
+        calibration_text: "Look directly at each dot and click it. Try to keep your face visible in the camera above while clicking the dots below.",
         validation_title: "Validation",
         validation_text: "Now look at the validation points. The system will estimate how stable the current calibration is.",
         validation_summary_title: "Validation Check",
@@ -842,7 +946,7 @@ body.validation-phase #webgazerVideoContainer {
         baseline_text: "Nämä kysymykset kartoittavat suhteellisen pysyviä mieltymyksiä, joita käytetään adaptiivisen logiikan alustamiseen.",
 
         calibration_title: "WebGazer-kalibrointi",
-        calibration_text: "Katso jokaista pistettä suoraan ja klikkaa sitä. Toista, kunnes kalibrointi on valmis.",
+        calibration_text: "Katso jokaista pistettä suoraan ja klikkaa sitä. Pidä kasvot kameran näkyvissä samalla kun klikkaat pisteitä.",
         validation_title: "Validointi",
         validation_text: "Katso nyt validointipisteitä. Järjestelmä arvioi nykyisen kalibroinnin vakautta.",
         validation_summary_title: "Validoinnin yhteenveto",
@@ -1023,15 +1127,17 @@ body.validation-phase #webgazerVideoContainer {
       return localStorage.getItem("recommended_ui") || "standard";
     }
 
+    // =========================================================
+    // FIX: Remove local mediapipe path override — it causes
+    // WASM errors on deployed sites that don't have /mediapipe/
+    // WebGazer will use its own bundled/CDN path instead.
+    // =========================================================
     function configureWebGazerPath() {
-      if (window.webgazer?.params) {
-        window.webgazer.params.faceMeshSolutionPath = `${window.location.origin}/mediapipe/face_mesh`;
-      }
+      // intentionally empty — let WebGazer use its default CDN path
     }
 
     function showSideCamera(showPredictions = false) {
       document.body.classList.add("has-side-camera");
-      configureWebGazerPath();
 
       try {
         jsPsych.extensions.webgazer.resume();
@@ -1060,7 +1166,6 @@ body.validation-phase #webgazerVideoContainer {
 
     function showCenteredCameraNoPredictions() {
       document.body.classList.remove("has-side-camera");
-      configureWebGazerPath();
 
       try {
         jsPsych.extensions.webgazer.resume();
@@ -1071,13 +1176,8 @@ body.validation-phase #webgazerVideoContainer {
       }
     }
 
-    // =========================================================
-    // FIX 1: safeHideGazeUI now explicitly resumes WebGazer
-    // so gaze recording is active during task reading screens
-    // =========================================================
     function safeHideGazeUI() {
       document.body.classList.add("has-side-camera");
-      configureWebGazerPath();
       try {
         jsPsych.extensions.webgazer.resume();
         jsPsych.extensions.webgazer.showVideo();
@@ -1088,7 +1188,7 @@ body.validation-phase #webgazerVideoContainer {
     }
 
     function setPhaseBodyClass(phaseClass = "") {
-      document.body.classList.remove("calibration-phase", "validation-phase");
+      document.body.classList.remove("calibration-phase", "validation-phase", "camera-init-phase");
       if (phaseClass) {
         document.body.classList.add(phaseClass);
       }
@@ -1339,7 +1439,6 @@ body.validation-phase #webgazerVideoContainer {
 
       resetWebGazerSession();
       fetch(`${API_BASE_URL}/`).catch(() => {});
-      configureWebGazerPath();
 
       jsPsych = initJsPsych({
         show_progress_bar: true,
@@ -1388,7 +1487,7 @@ body.validation-phase #webgazerVideoContainer {
       const initCameraTrial = {
         type: jsPsychWebgazerInitCamera,
         instructions: `
-          <div class="card">
+          <div class="card" style="margin-top: 16px;">
             <h2>${s("camera_title")}</h2>
             <p>${s("camera_text_2")}</p>
             <p class="small-note">${s("camera_text_3")}</p>
@@ -1397,7 +1496,7 @@ body.validation-phase #webgazerVideoContainer {
         button_text: s("continue_btn"),
         data: { phase: "init_camera" },
         on_load: function() {
-          setPhaseBodyClass("");
+          setPhaseBodyClass("camera-init-phase");
           showCenteredCameraNoPredictions();
         },
         on_finish: function() {
@@ -1460,7 +1559,7 @@ body.validation-phase #webgazerVideoContainer {
               </select>
             </div>
 
-            <div class="field-group">
+            <div class="field-group" style="margin-bottom: 0;">
               <label class="form-label" for="content_format">${s("content_format")}</label>
               <select id="content_format" name="content_format" required>
                 <option value="" disabled selected>${s("content_format_placeholder")}</option>
@@ -1501,13 +1600,8 @@ body.validation-phase #webgazerVideoContainer {
           setPhaseBodyClass("calibration-phase");
           showCenteredCameraNoPredictions();
         },
-        // =========================================================
-        // FIX 2: do NOT pause/hide WebGazer after calibration —
-        // keep it running so it stays ready for the task screens
-        // =========================================================
         on_finish: function() {
           setPhaseBodyClass("");
-          // intentionally NOT calling hideSideCamera() here
         }
       };
 
@@ -1541,13 +1635,8 @@ body.validation-phase #webgazerVideoContainer {
           setPhaseBodyClass("validation-phase");
           showCenteredCameraNoPredictions();
         },
-        // =========================================================
-        // FIX 2 (continued): same — keep WebGazer alive after
-        // validation so task reading screens can record gaze data
-        // =========================================================
         on_finish: function() {
           setPhaseBodyClass("");
-          // intentionally NOT calling hideSideCamera() here
         }
       };
 
@@ -1618,10 +1707,6 @@ body.validation-phase #webgazerVideoContainer {
             }
           }
         ],
-        // =========================================================
-        // FIX 3: explicitly resume WebGazer before the trial
-        // starts so the extension can actually record samples
-        // =========================================================
         on_start: function() {
           try {
             jsPsych.extensions.webgazer.resume();
@@ -1749,9 +1834,6 @@ body.validation-phase #webgazerVideoContainer {
             }
           }
         ],
-        // =========================================================
-        // FIX 3 (continued): same explicit resume for task 2
-        // =========================================================
         on_start: function() {
           try {
             jsPsych.extensions.webgazer.resume();
@@ -2044,3 +2126,4 @@ body.validation-phase #webgazerVideoContainer {
     showLanguageSelector();
 </script>
 </html>
+
