@@ -44,143 +44,6 @@
           --error-text: #b42318;
           --soft: #fbfcfe;
         }
-        /* --- Persistent side camera --- */
-body.has-side-camera .jspsych-content {
-  max-width: none;
-  width: calc(100vw - 300px);
-  margin-left: 300px;
-  min-height: calc(100vh - 70px);
-  padding: 40px 24px 56px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 18px;
-}
-
-body.has-side-camera .card,
-body.has-side-camera .form-card,
-body.has-side-camera .jspsych-survey-html-form,
-body.has-side-camera .jspsych-survey-multi-choice-question {
-  width: min(760px, 100%);
-  margin: 0;
-}
-
-#webgazerVideoContainer {
-  position: fixed !important;
-  left: 20px !important;
-  top: 110px !important;
-  width: 240px !important;
-  height: 180px !important;
-  z-index: 99999 !important;
-  border-radius: 16px !important;
-  overflow: hidden !important;
-  background: #fff !important;
-  border: 1px solid var(--border) !important;
-  box-shadow: 0 10px 28px rgba(0, 41, 87, 0.12) !important;
-  display: block !important;
-}
-
-#webgazerVideoFeed,
-#webgazerVideoCanvas,
-#webgazerFaceOverlay {
-  width: 100% !important;
-  height: 100% !important;
-  display: block !important;
-}
-
-#webgazerFaceFeedbackBox,
-#webgazerFaceOverlay {
-  display: block !important;
-}
-
-#webgazerVideoFeed {
-  object-fit: cover !important;
-  transform: scaleX(-1);
-}
-
-#webgazerFaceFeedbackBox,
-#webgazerGazeDot {
-  z-index: 100000 !important;
-}
-
-/* --- Full-viewport calibration/validation without scroll --- */
-body.calibration-phase,
-body.validation-phase {
-  overflow: hidden;
-}
-
-body.calibration-phase .jspsych-content,
-body.validation-phase .jspsych-content {
-  max-width: 100%;
-  width: 100%;
-  padding-left: 300px;
-}
-
-/* --- Custom calibration stage --- */
-.calibration-stage {
-  position: relative;
-  width: 100%;
-  height: 420px;
-  margin-top: 18px;
-  border: 1px dashed var(--border);
-  border-radius: 18px;
-  background: #fff;
-  overflow: hidden;
-}
-
-.calibration-dot {
-  position: absolute;
-  width: 26px;
-  height: 26px;
-  border: none;
-  border-radius: 999px;
-  background: var(--accent);
-  transform: translate(-50%, -50%);
-  opacity: 0.18;
-  cursor: pointer;
-  box-shadow: 0 0 0 8px rgba(241, 86, 63, 0.08);
-  transition: opacity 0.18s ease, transform 0.18s ease, background 0.18s ease;
-}
-
-.calibration-dot.done {
-  background: var(--primary);
-  opacity: 1;
-  box-shadow: 0 0 0 10px rgba(0, 41, 87, 0.10);
-}
-
-@media (max-width: 900px) {
-  body.has-side-camera .jspsych-content {
-    width: 100%;
-    margin-left: 0;
-    min-height: auto;
-    padding-left: 24px;
-    padding-right: 24px;
-    padding-top: 210px;
-    display: block;
-  }
-
-  #webgazerVideoContainer {
-    width: 180px !important;
-    height: 135px !important;
-    left: 16px !important;
-    top: 92px !important;
-  }
-
-  body.calibration-phase .jspsych-content,
-  body.validation-phase .jspsych-content {
-    width: 100%;
-    margin-left: 0;
-    padding-left: 24px;
-    padding-right: 24px;
-    padding-top: 210px;
-  }
-
-  .calibration-stage {
-    height: 340px;
-  }
-}
-
 
         * { box-sizing: border-box; }
 
@@ -206,6 +69,185 @@ body.validation-phase .jspsych-content {
           margin: 0 auto;
           padding: 40px 24px 56px;
         }
+
+        /* =========================
+           CAMERA LAYOUT
+           ========================= */
+
+        body.has-side-camera .jspsych-content {
+          max-width: none;
+          width: 100%;
+          margin: 0 auto;
+          min-height: calc(100vh - 70px);
+          padding: 40px 24px 56px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 18px;
+        }
+
+        body.has-side-camera .jspsych-html-button-response-stimulus,
+        body.has-side-camera .jspsych-survey-html-form {
+          width: 100%;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+        }
+
+        body.has-side-camera .card,
+        body.has-side-camera .form-card,
+        body.has-side-camera .jspsych-survey-html-form,
+        body.has-side-camera .jspsych-survey-multi-choice-question {
+          width: min(760px, 100%);
+          margin: 0 auto;
+        }
+
+        #webgazerVideoContainer {
+          position: fixed !important;
+          left: 24px !important;
+          top: 50% !important;
+          transform: translateY(-50%) !important;
+          width: 240px !important;
+          height: 180px !important;
+          z-index: 99999 !important;
+          border-radius: 16px !important;
+          overflow: hidden !important;
+          background: #fff !important;
+          border: 1px solid var(--border) !important;
+          box-shadow: 0 10px 28px rgba(0, 41, 87, 0.12) !important;
+          display: flex !important;
+          align-items: center !important;
+          justify-content: center !important;
+        }
+
+        #webgazerVideoFeed,
+        #webgazerVideoCanvas,
+        #webgazerFaceOverlay {
+          position: absolute !important;
+          inset: 0 !important;
+          width: 100% !important;
+          height: 100% !important;
+          display: block !important;
+          pointer-events: none !important;
+        }
+
+        #webgazerVideoFeed {
+          object-fit: cover !important;
+          object-position: center center !important;
+          transform: scaleX(-1) !important;
+          pointer-events: none !important;
+        }
+
+        /* المربع الأخضر في نص الإطار */
+        #webgazerFaceFeedbackBox {
+          position: absolute !important;
+          left: 50% !important;
+          top: 50% !important;
+          right: auto !important;
+          bottom: auto !important;
+          width: 58% !important;
+          height: 72% !important;
+          transform: translate(-50%, -50%) !important;
+          border: 2px solid #16a34a !important;
+          background: transparent !important;
+          display: block !important;
+          z-index: 100000 !important;
+          pointer-events: none !important;
+          box-sizing: border-box !important;
+        }
+
+        #webgazerFaceOverlay {
+          display: block !important;
+          z-index: 100001 !important;
+        }
+
+        #webgazerGazeDot {
+          z-index: 100002 !important;
+        }
+
+        /* calibration / validation */
+        body.calibration-phase,
+        body.validation-phase {
+          overflow: hidden;
+        }
+
+        body.calibration-phase .jspsych-content,
+        body.validation-phase .jspsych-content {
+          max-width: none;
+          width: 100%;
+          margin: 0 auto;
+          padding-left: 24px;
+          padding-right: 24px;
+        }
+
+        .calibration-stage {
+          position: relative;
+          width: 100%;
+          height: 420px;
+          margin-top: 18px;
+          border: 1px dashed var(--border);
+          border-radius: 18px;
+          background: #fff;
+          overflow: hidden;
+        }
+
+        .calibration-dot {
+          position: absolute;
+          width: 26px;
+          height: 26px;
+          border: none;
+          border-radius: 999px;
+          background: var(--accent);
+          transform: translate(-50%, -50%);
+          opacity: 0.18;
+          cursor: pointer;
+          box-shadow: 0 0 0 8px rgba(241, 86, 63, 0.08);
+          transition: opacity 0.18s ease, transform 0.18s ease, background 0.18s ease;
+        }
+
+        .calibration-dot.done {
+          background: var(--primary);
+          opacity: 1;
+          box-shadow: 0 0 0 10px rgba(0, 41, 87, 0.10);
+        }
+
+        @media (max-width: 900px) {
+          body.has-side-camera .jspsych-content {
+            width: 100%;
+            margin: 0 auto;
+            min-height: auto;
+            padding-left: 16px;
+            padding-right: 16px;
+            padding-top: 220px;
+            display: block;
+          }
+
+          #webgazerVideoContainer {
+            width: 180px !important;
+            height: 135px !important;
+            left: 16px !important;
+            top: 92px !important;
+            transform: none !important;
+          }
+
+          body.calibration-phase .jspsych-content,
+          body.validation-phase .jspsych-content {
+            width: 100%;
+            margin: 0 auto;
+            padding-left: 16px;
+            padding-right: 16px;
+            padding-top: 220px;
+          }
+
+          .calibration-stage {
+            height: 340px;
+          }
+        }
+
+        /* =========================
+           CARDS / FORMS
+           ========================= */
 
         .card,
         .form-card {
@@ -662,15 +704,15 @@ body.validation-phase .jspsych-content {
             font-size: 17px;
           }
         }
+
         .jspsych-html-button-response-button-parent {
-  text-align: center;
-}
+          text-align: center;
+        }
     </style>
 </head>
 <body class="ui-standard"></body>
 
 <script>
-
     const API_BASE_URL = "https://neuroadaptive-ux-mvp.onrender.com";
     const RECOMMENDED_UI_URLS = {
       standard: "https://xn--standard-jyvskyl-6nbe.framer.ai/",
@@ -1003,65 +1045,89 @@ body.validation-phase .jspsych-content {
       return localStorage.getItem("recommended_ui") || "standard";
     }
 
+    function configureWebGazerPath() {
+      if (window.webgazer?.params) {
+        window.webgazer.params.faceMeshSolutionPath = `${window.location.origin}/mediapipe/face_mesh`;
+      }
+    }
+
     function showSideCamera(showPredictions = false) {
-  document.body.classList.add("has-side-camera");
+      document.body.classList.add("has-side-camera");
+      configureWebGazerPath();
 
-  try {
-    jsPsych.extensions.webgazer.showVideo();
-  } catch (e) {}
+      try {
+        jsPsych.extensions.webgazer.showVideo();
+      } catch (_) {}
 
-  try {
-    if (window.webgazer && typeof window.webgazer.showFaceFeedbackBox === "function") {
-      window.webgazer.showFaceFeedbackBox(true);
+      try {
+        if (window.webgazer?.showFaceFeedbackBox) {
+          window.webgazer.showFaceFeedbackBox(true);
+        }
+      } catch (_) {}
+
+      try {
+        if (window.webgazer?.showFaceOverlay) {
+          window.webgazer.showFaceOverlay(true);
+        }
+      } catch (_) {}
+
+      try {
+        if (window.webgazer?.showPredictionPoints) {
+          window.webgazer.showPredictionPoints(showPredictions);
+        }
+      } catch (_) {}
+
+      try {
+        if (showPredictions) {
+          jsPsych.extensions.webgazer.showPredictions();
+        } else {
+          jsPsych.extensions.webgazer.hidePredictions();
+        }
+      } catch (_) {}
     }
-  } catch (e) {}
 
-  try {
-    if (window.webgazer && typeof window.webgazer.showFaceOverlay === "function") {
-      window.webgazer.showFaceOverlay(true);
+    function hideSideCamera() {
+      document.body.classList.remove("has-side-camera");
+      try {
+        jsPsych.extensions.webgazer.hideVideo();
+      } catch (_) {}
     }
-  } catch (e) {}
 
-  try {
-    if (window.webgazer && typeof window.webgazer.showPredictionPoints === "function") {
-      window.webgazer.showPredictionPoints(showPredictions);
+    function safeHideGazeUI() {
+      document.body.classList.add("has-side-camera");
+      configureWebGazerPath();
+
+      try {
+        window.webgazer?.resume?.();
+      } catch (_) {}
+
+      try {
+        jsPsych.extensions.webgazer.showVideo();
+      } catch (_) {}
+
+      try {
+        jsPsych.extensions.webgazer.hidePredictions();
+      } catch (_) {}
     }
-  } catch (e) {}
 
-  try {
-    if (showPredictions) {
-      jsPsych.extensions.webgazer.showPredictions();
-    } else {
-      jsPsych.extensions.webgazer.hidePredictions();
+    function setPhaseBodyClass(phaseClass = "") {
+      document.body.classList.remove("calibration-phase", "validation-phase");
+      if (phaseClass) {
+        document.body.classList.add(phaseClass);
+      }
     }
-  } catch (e) {}
-}
 
-function hideSideCamera() {
-  document.body.classList.remove("has-side-camera");
-  try {
-    jsPsych.extensions.webgazer.hideVideo();
-  } catch (e) {}
-}
+    function safeFloat(value, defaultValue = 0) {
+      const n = Number(value);
+      return Number.isFinite(n) ? n : defaultValue;
+    }
 
-function setPhaseBodyClass(phaseClass = "") {
-  document.body.classList.remove("calibration-phase", "validation-phase");
-  if (phaseClass) {
-    document.body.classList.add(phaseClass);
-  }
-}
-
-function safeFloat(value, defaultValue = 0) {
-  const n = Number(value);
-  return Number.isFinite(n) ? n : defaultValue;
-}
-
-function averageArray(arr) {
-  if (!Array.isArray(arr) || arr.length === 0) return null;
-  const valid = arr.filter(v => typeof v === "number" && !Number.isNaN(v));
-  if (valid.length === 0) return null;
-  return Number((valid.reduce((a, b) => a + b, 0) / valid.length).toFixed(2));
-}
+    function averageArray(arr) {
+      if (!Array.isArray(arr) || arr.length === 0) return null;
+      const valid = arr.filter(v => typeof v === "number" && !Number.isNaN(v));
+      if (valid.length === 0) return null;
+      return Number((valid.reduce((a, b) => a + b, 0) / valid.length).toFixed(2));
+    }
 
     function applyRecommendedUI(uiMode) {
       document.body.classList.remove("ui-standard", "ui-guided", "ui-reduced");
@@ -1130,111 +1196,111 @@ function averageArray(arr) {
     }
 
     function buildPayload(allData) {
-  const baselineTrial = allData.find(d => d.phase === "baseline");
-  const task1QuestionTrial = [...allData].reverse().find(d => d.phase === "task1_question" && !d.backtrack_only);
-  const task2QuestionTrial = [...allData].reverse().find(d => d.phase === "task2_question" && !d.backtrack_only);
-  const task1ReadingTrial = [...allData].reverse().find(d => d.phase === "task1_reading");
-  const task2InfoTrial = [...allData].reverse().find(d => d.phase === "task2_info");
-  const task1Gaze = summarizeTrialGaze(task1ReadingTrial, "#task1-text-region");
-  const task2Gaze = summarizeTrialGaze(task2InfoTrial, "#task2-info-region");
+      const baselineTrial = allData.find(d => d.phase === "baseline");
+      const task1QuestionTrial = [...allData].reverse().find(d => d.phase === "task1_question" && !d.backtrack_only);
+      const task2QuestionTrial = [...allData].reverse().find(d => d.phase === "task2_question" && !d.backtrack_only);
+      const task1ReadingTrial = [...allData].reverse().find(d => d.phase === "task1_reading");
+      const task2InfoTrial = [...allData].reverse().find(d => d.phase === "task2_info");
+      const task1Gaze = summarizeTrialGaze(task1ReadingTrial, "#task1-text-region");
+      const task2Gaze = summarizeTrialGaze(task2InfoTrial, "#task2-info-region");
 
-  return {
-    participant_id: PARTICIPANT_ID,
-    session_id: SESSION_ID,
-    created_at: new Date().toISOString(),
-    baseline: baselineTrial?.response || {},
-    tasks: {
-      task1: {
-        answer: task1QuestionTrial?.user_answer || null,
-        correct: task1QuestionTrial?.correct || 0,
-        time_on_task_ms: task1QuestionTrial?.time_on_task_ms || null,
-        question_time_ms: task1QuestionTrial?.question_time_ms || null,
-        answer_changes: task1QuestionTrial?.answer_changes || 0,
-        backtracking: task1QuestionTrial?.backtracking || 0,
-        hesitation: task1QuestionTrial?.hesitation || 0,
-        errors: task1QuestionTrial?.errors || 0
-      },
-      task2: {
-        answer: task2QuestionTrial?.user_answer || null,
-        correct: task2QuestionTrial?.correct || 0,
-        time_on_task_ms: task2QuestionTrial?.time_on_task_ms || null,
-        question_time_ms: task2QuestionTrial?.question_time_ms || null,
-        answer_changes: task2QuestionTrial?.answer_changes || 0,
-        backtracking: task2QuestionTrial?.backtracking || 0,
-        hesitation: task2QuestionTrial?.hesitation || 0,
-        errors: task2QuestionTrial?.errors || 0
-      }
-    },
-    gaze: {
-      validation: null,
-      task1_reading: {
-        metrics: task1Gaze,
-        raw_samples: task1ReadingTrial?.webgazer_data || []
-      },
-      task2_info: {
-        metrics: task2Gaze,
-        raw_samples: task2InfoTrial?.webgazer_data || []
-      }
-    },
-    raw_trials: allData
-  };
-
-}
-
-function readCameraDiagnostics() {
-  const video =
-    document.querySelector("#webgazerVideoFeed") ||
-    document.querySelector("video");
-
-  const stream = video?.srcObject;
-
-  const stream_live =
-    !!stream &&
-    typeof stream.getTracks === "function" &&
-    stream.getTracks().some(track => track.readyState === "live");
-
-  const camera_ready =
-    !!video &&
-    video.videoWidth > 0 &&
-    video.videoHeight > 0;
-
-  return { camera_ready, stream_live };
-}
-
-function persistGazeDebugSnapshot() {
-  const allData = jsPsych.data.get().values();
-
-  const task1ReadingTrial = [...allData].reverse().find(d => d.phase === "task1_reading");
-  const task2InfoTrial = [...allData].reverse().find(d => d.phase === "task2_info");
-
-  const task1Summary = summarizeTrialGaze(task1ReadingTrial, "#task1-text-region");
-  const task2Summary = summarizeTrialGaze(task2InfoTrial, "#task2-info-region");
-
-  const diagnostics = readCameraDiagnostics();
-  const predictionCount = (task1Summary.total_samples || 0) + (task2Summary.total_samples || 0);
-
-  const snapshot = {
-    lang: currentLang,
-    camera_ready: diagnostics.camera_ready,
-    stream_live: diagnostics.stream_live,
-    prediction_count: predictionCount,
-    validation: null,
-    task1: {
-      title: currentLang === "fi" ? "Tehtävän 1 tulos" : "Task 1 result",
-      heatmapTitle: currentLang === "fi" ? "Tehtävän 1 lukualue" : "Task 1 reading region",
-      summary: task1Summary,
-      raw_samples: task1ReadingTrial?.webgazer_data || []
-    },
-    task2: {
-      title: currentLang === "fi" ? "Tehtävän 2 tulos" : "Task 2 result",
-      heatmapTitle: currentLang === "fi" ? "Tehtävän 2 tietoalue" : "Task 2 information region",
-      summary: task2Summary,
-      raw_samples: task2InfoTrial?.webgazer_data || []
+      return {
+        participant_id: PARTICIPANT_ID,
+        session_id: SESSION_ID,
+        created_at: new Date().toISOString(),
+        baseline: baselineTrial?.response || {},
+        tasks: {
+          task1: {
+            answer: task1QuestionTrial?.user_answer || null,
+            correct: task1QuestionTrial?.correct || 0,
+            time_on_task_ms: task1QuestionTrial?.time_on_task_ms || null,
+            question_time_ms: task1QuestionTrial?.question_time_ms || null,
+            answer_changes: task1QuestionTrial?.answer_changes || 0,
+            backtracking: task1QuestionTrial?.backtracking || 0,
+            hesitation: task1QuestionTrial?.hesitation || 0,
+            errors: task1QuestionTrial?.errors || 0
+          },
+          task2: {
+            answer: task2QuestionTrial?.user_answer || null,
+            correct: task2QuestionTrial?.correct || 0,
+            time_on_task_ms: task2QuestionTrial?.time_on_task_ms || null,
+            question_time_ms: task2QuestionTrial?.question_time_ms || null,
+            answer_changes: task2QuestionTrial?.answer_changes || 0,
+            backtracking: task2QuestionTrial?.backtracking || 0,
+            hesitation: task2QuestionTrial?.hesitation || 0,
+            errors: task2QuestionTrial?.errors || 0
+          }
+        },
+        gaze: {
+          validation: null,
+          task1_reading: {
+            metrics: task1Gaze,
+            raw_samples: task1ReadingTrial?.webgazer_data || []
+          },
+          task2_info: {
+            metrics: task2Gaze,
+            raw_samples: task2InfoTrial?.webgazer_data || []
+          }
+        },
+        raw_trials: allData
+      };
     }
-  };
 
-  localStorage.setItem("latest_gaze_debug", JSON.stringify(snapshot));
-}
+    function readCameraDiagnostics() {
+      const video =
+        document.querySelector("#webgazerVideoFeed") ||
+        document.querySelector("video");
+
+      const stream = video?.srcObject;
+
+      const stream_live =
+        !!stream &&
+        typeof stream.getTracks === "function" &&
+        stream.getTracks().some(track => track.readyState === "live");
+
+      const camera_ready =
+        !!video &&
+        video.videoWidth > 0 &&
+        video.videoHeight > 0;
+
+      return { camera_ready, stream_live };
+    }
+
+    function persistGazeDebugSnapshot() {
+      const allData = jsPsych.data.get().values();
+
+      const task1ReadingTrial = [...allData].reverse().find(d => d.phase === "task1_reading");
+      const task2InfoTrial = [...allData].reverse().find(d => d.phase === "task2_info");
+
+      const task1Summary = summarizeTrialGaze(task1ReadingTrial, "#task1-text-region");
+      const task2Summary = summarizeTrialGaze(task2InfoTrial, "#task2-info-region");
+
+      const diagnostics = readCameraDiagnostics();
+      const predictionCount = (task1Summary.total_samples || 0) + (task2Summary.total_samples || 0);
+
+      const snapshot = {
+        lang: currentLang,
+        camera_ready: diagnostics.camera_ready,
+        stream_live: diagnostics.stream_live,
+        prediction_count: predictionCount,
+        validation: null,
+        task1: {
+          title: currentLang === "fi" ? "Tehtävän 1 tulos" : "Task 1 result",
+          heatmapTitle: currentLang === "fi" ? "Tehtävän 1 lukualue" : "Task 1 reading region",
+          summary: task1Summary,
+          raw_samples: task1ReadingTrial?.webgazer_data || []
+        },
+        task2: {
+          title: currentLang === "fi" ? "Tehtävän 2 tulos" : "Task 2 result",
+          heatmapTitle: currentLang === "fi" ? "Tehtävän 2 tietoalue" : "Task 2 information region",
+          summary: task2Summary,
+          raw_samples: task2InfoTrial?.webgazer_data || []
+        }
+      };
+
+      localStorage.setItem("latest_gaze_debug", JSON.stringify(snapshot));
+    }
+
     async function saveExperimentData(payload) {
       const response = await fetch(`${API_BASE_URL}/api/experiment`, {
         method: "POST",
@@ -1256,22 +1322,6 @@ function persistGazeDebugSnapshot() {
         return { raw: responseText };
       }
     }
-
-  function safeHideGazeUI() {
-  document.body.classList.add("has-side-camera");
-
-  try {
-    window.webgazer?.resume?.();
-  } catch (_) {}
-
-  try {
-    jsPsych.extensions.webgazer.showVideo();
-  } catch (_) {}
-
-  try {
-    jsPsych.extensions.webgazer.hidePredictions();
-  } catch (_) {}
-}
 
     function showLanguageSelector() {
       document.body.innerHTML = `
@@ -1295,46 +1345,40 @@ function persistGazeDebugSnapshot() {
     }
 
     const CUSTOM_CALIBRATION_POINTS = [
-  { x: 10, y: 12 },
-  { x: 50, y: 12 },
-  { x: 90, y: 12 },
-  { x: 10, y: 50 },
-  { x: 50, y: 50 },
-  { x: 90, y: 50 },
-  { x: 10, y: 88 },
-  { x: 50, y: 88 },
-  { x: 90, y: 88 }
-];
+      { x: 10, y: 12 },
+      { x: 50, y: 12 },
+      { x: 90, y: 12 },
+      { x: 10, y: 50 },
+      { x: 50, y: 50 },
+      { x: 90, y: 50 },
+      { x: 10, y: 88 },
+      { x: 50, y: 88 },
+      { x: 90, y: 88 }
+    ];
 
-function configureWebGazerPath() {
-  if (window.webgazer?.params) {
-    window.webgazer.params.faceMeshSolutionPath = `${window.location.origin}/mediapipe/face_mesh`;
-  }
-}
+    function startExperiment(lang) {
+      currentLang = lang;
+      document.body.innerHTML = "";
+      localStorage.removeItem("latest_gaze_debug");
+      applyRecommendedUI(getStoredUIMode());
 
-  function startExperiment(lang) {
-  currentLang = lang;
-  document.body.innerHTML = "";
-  localStorage.removeItem("latest_gaze_debug");
-  applyRecommendedUI(getStoredUIMode());
+      fetch(`${API_BASE_URL}/`).catch(() => {});
+      configureWebGazerPath();
 
-  fetch(`${API_BASE_URL}/`).catch(() => {});
-  configureWebGazerPath();
-}
+      jsPsych = initJsPsych({
+        show_progress_bar: true,
+        message_progress_bar: "Completion Progress",
+        extensions: [
+          {
+            type: jsPsychExtensionWebgazer,
+            params: {
+              round_predictions: true,
+              sampling_interval: GAZE_SAMPLE_MS
+            }
+          }
+        ]
+      });
 
-  jsPsych = initJsPsych({
-    show_progress_bar: true,
-    message_progress_bar: "Completion Progress",
-    extensions: [
-      {
-        type: jsPsychExtensionWebgazer,
-        params: {
-          round_predictions: true,
-          sampling_interval: GAZE_SAMPLE_MS
-        }
-      }
-    ]
-  });
       const universityIntro = {
         type: jsPsychHtmlButtonResponse,
         stimulus: `
@@ -1366,25 +1410,25 @@ function configureWebGazerPath() {
       };
 
       const initCameraTrial = {
-  type: jsPsychWebgazerInitCamera,
-  instructions: `
-    <div class="card">
-      <h2>${s("camera_title")}</h2>
-      <p>${s("camera_text_2")}</p>
-      <p class="small-note">${s("camera_text_3")}</p>
-    </div>
-  `,
-  button_text: s("continue_btn"),
-  data: { phase: "init_camera" },
-  on_load: function() {
-  configureWebGazerPath();
-    showSideCamera(false);
-  },
-  on_finish: function() {
-    showSideCamera(false);
-    setPhaseBodyClass("");
-  }
-};
+        type: jsPsychWebgazerInitCamera,
+        instructions: `
+          <div class="card">
+            <h2>${s("camera_title")}</h2>
+            <p>${s("camera_text_2")}</p>
+            <p class="small-note">${s("camera_text_3")}</p>
+          </div>
+        `,
+        button_text: s("continue_btn"),
+        data: { phase: "init_camera" },
+        on_load: function() {
+          configureWebGazerPath();
+          showSideCamera(false);
+        },
+        on_finish: function() {
+          showSideCamera(false);
+          setPhaseBodyClass("");
+        }
+      };
 
       const baseline = {
         type: jsPsychSurveyHtmlForm,
@@ -1467,165 +1511,95 @@ function configureWebGazerPath() {
       };
 
       const calibration = {
-  type: jsPsychHtmlButtonResponse,
-  stimulus: `
-    <div class="card">
-      <h2>${s("calibration_title")}</h2>
-      <p>${s("calibration_text")}</p>
+        type: jsPsychHtmlButtonResponse,
+        stimulus: `
+          <div class="card">
+            <h2>${s("calibration_title")}</h2>
+            <p>${s("calibration_text")}</p>
 
-      <div id="custom-calibration-stage" class="calibration-stage">
-        ${CUSTOM_CALIBRATION_POINTS.map((p, i) => `
-          <button
-            type="button"
-            class="calibration-dot"
-            data-index="${i}"
-            data-x="${p.x}"
-            data-y="${p.y}"
-            style="left:${p.x}%; top:${p.y}%"
-            aria-label="Calibration point ${i + 1}">
-          </button>
-        `).join("")}
-      </div>
+            <div id="custom-calibration-stage" class="calibration-stage">
+              ${CUSTOM_CALIBRATION_POINTS.map((p, i) => `
+                <button
+                  type="button"
+                  class="calibration-dot"
+                  data-index="${i}"
+                  data-x="${p.x}"
+                  data-y="${p.y}"
+                  style="left:${p.x}%; top:${p.y}%"
+                  aria-label="Calibration point ${i + 1}">
+                </button>
+              `).join("")}
+            </div>
 
-      <p id="calibration-status" class="small-note">Calibration progress: 0 / 45</p>
-    </div>
-  `,
-  choices: [s("continue_btn")],
-  data: { phase: "calibration" },
-  on_load: function() {
-    setPhaseBodyClass("calibration-phase");
-    showSideCamera(false);
-
-    try {
-      jsPsych.extensions.webgazer.resetCalibration();
-    } catch (e) {}
-
-    const continueButton = document.getElementById("jspsych-html-button-response-button-0");
-    const statusEl = document.getElementById("calibration-status");
-    const totalRequiredClicks = CUSTOM_CALIBRATION_POINTS.length * 5;
-
-    if (continueButton) {
-      continueButton.disabled = true;
-      continueButton.style.opacity = "0.6";
-      continueButton.style.cursor = "not-allowed";
-    }
-
-    let totalClicks = 0;
-
-    document.querySelectorAll(".calibration-dot").forEach((dot) => {
-      let pointClicks = 0;
-
-      dot.addEventListener("click", () => {
-        if (pointClicks >= 5) return;
-
-        pointClicks += 1;
-        totalClicks += 1;
-
-        const rect = dot.getBoundingClientRect();
-        const x = rect.left + rect.width / 2;
-        const y = rect.top + rect.height / 2;
-
-        try {
-          jsPsych.extensions.webgazer.calibratePoint(x, y);
-        } catch (e) {}
-
-        dot.style.opacity = String(Math.min(1, 0.18 + pointClicks * 0.16));
-        dot.style.transform = `translate(-50%, -50%) scale(${1 + pointClicks * 0.03})`;
-
-        if (pointClicks === 5) {
-          dot.classList.add("done");
-          dot.disabled = true;
-        }
-
-        if (statusEl) {
-          statusEl.textContent = `Calibration progress: ${totalClicks} / ${totalRequiredClicks}`;
-        }
-
-        if (totalClicks >= totalRequiredClicks && continueButton) {
-          continueButton.disabled = false;
-          continueButton.style.opacity = "1";
-          continueButton.style.cursor = "pointer";
-        }
-      });
-    });
-  },
-  on_finish: function() {
-  setPhaseBodyClass("");
-  try {
-    jsPsych.extensions.webgazer.startMouseCalibration();
-  } catch (e) {}
-}
-};
-
-      /*
-const validationIntro = {
-  type: jsPsychHtmlButtonResponse,
-  stimulus: `
-    <div class="card">
-      <h2>${s("validation_title")}</h2>
-      <p>${s("validation_text")}</p>
-    </div>
-  `,
-  choices: [s("continue_btn")],
-  data: { phase: "validation_intro" }
-};
-*/
-
-      /*
-const validation = {
-  type: jsPsychWebgazerValidate,
-  validation_points: [
-    [10, 12], [50, 12], [90, 12],
-    [10, 50], [50, 50], [90, 50],
-    [10, 88], [50, 88], [90, 88]
-  ],
-  roi_radius: 180,
-  time_to_saccade: 1000,
-  validation_duration: 1800,
-  point_size: 24,
-  show_validation_data: false,
-  data: { phase: "validation" },
-  on_load: function() {
-    setPhaseBodyClass("validation-phase");
-    showSideCamera(false);
-  },
-  on_finish: function() {
-    setPhaseBodyClass("");
-    showSideCamera(false);
-  }
-};
-*/
-
-      /*
-const validationSummary = {
-  type: jsPsychHtmlButtonResponse,
-  stimulus: function() {
-    const validationTrial = jsPsych.data.get().filter({ phase: "validation" }).last(1).values()[0] || {};
-    const avgROI = averageArray(validationTrial.percent_in_roi);
-    const sps = validationTrial.samples_per_sec ?? null;
-    const qualityGood = avgROI !== null && avgROI >= 50;
-
-    return `
-      <div class="card">
-        <h2>${s("validation_summary_title")}</h2>
-
-        <div class="validation-box">
-          <div class="metric-list">
-            <div class="metric-line"><strong>${s("validation_avg_roi")}:</strong> ${avgROI !== null ? `${avgROI}%` : "-"}</div>
-            <div class="metric-line"><strong>${s("validation_samples_per_sec")}:</strong> ${sps !== null ? sps : "-"}</div>
+            <p id="calibration-status" class="small-note">Calibration progress: 0 / 45</p>
           </div>
-        </div>
+        `,
+        choices: [s("continue_btn")],
+        data: { phase: "calibration" },
+        on_load: function() {
+          setPhaseBodyClass("calibration-phase");
+          showSideCamera(false);
 
-        <p class="small-note ${qualityGood ? "status-ok" : "status-fallback"}">
-          ${qualityGood ? s("validation_quality_good") : s("validation_quality_warn")}
-        </p>
-      </div>
-    `;
-  },
-  choices: [s("continue_btn")],
-  data: { phase: "validation_summary" }
-};
-*/
+          try {
+            jsPsych.extensions.webgazer.resetCalibration();
+          } catch (_) {}
+
+          const continueButton = document.getElementById("jspsych-html-button-response-button-0");
+          const statusEl = document.getElementById("calibration-status");
+          const totalRequiredClicks = CUSTOM_CALIBRATION_POINTS.length * 5;
+
+          if (continueButton) {
+            continueButton.disabled = true;
+            continueButton.style.opacity = "0.6";
+            continueButton.style.cursor = "not-allowed";
+          }
+
+          let totalClicks = 0;
+
+          document.querySelectorAll(".calibration-dot").forEach((dot) => {
+            let pointClicks = 0;
+
+            dot.addEventListener("click", () => {
+              if (pointClicks >= 5) return;
+
+              pointClicks += 1;
+              totalClicks += 1;
+
+              const rect = dot.getBoundingClientRect();
+              const x = rect.left + rect.width / 2;
+              const y = rect.top + rect.height / 2;
+
+              try {
+                jsPsych.extensions.webgazer.calibratePoint(x, y);
+              } catch (_) {}
+
+              dot.style.opacity = String(Math.min(1, 0.18 + pointClicks * 0.16));
+              dot.style.transform = `translate(-50%, -50%) scale(${1 + pointClicks * 0.03})`;
+
+              if (pointClicks === 5) {
+                dot.classList.add("done");
+                dot.disabled = true;
+              }
+
+              if (statusEl) {
+                statusEl.textContent = `Calibration progress: ${totalClicks} / ${totalRequiredClicks}`;
+              }
+
+              if (totalClicks >= totalRequiredClicks && continueButton) {
+                continueButton.disabled = false;
+                continueButton.style.opacity = "1";
+                continueButton.style.cursor = "pointer";
+              }
+            });
+          });
+        },
+        on_finish: function() {
+          setPhaseBodyClass("");
+          try {
+            jsPsych.extensions.webgazer.startMouseCalibration();
+          } catch (_) {}
+        }
+      };
 
       const task1Intro = {
         type: jsPsychHtmlButtonResponse,
@@ -1868,107 +1842,107 @@ const validationSummary = {
       };
 
       const endScreen = {
-  type: jsPsychHtmlButtonResponse,
-  stimulus: function() {
-    const allData = jsPsych.data.get().values();
-    const task1Trial = [...allData].reverse().find(d => d.phase === "task1_question" && !d.backtrack_only);
-    const task2Trial = [...allData].reverse().find(d => d.phase === "task2_question" && !d.backtrack_only);
-    const task1ReadingTrial = [...allData].reverse().find(d => d.phase === "task1_reading");
-    const task2InfoTrial = [...allData].reverse().find(d => d.phase === "task2_info");
+        type: jsPsychHtmlButtonResponse,
+        stimulus: function() {
+          const allData = jsPsych.data.get().values();
+          const task1Trial = [...allData].reverse().find(d => d.phase === "task1_question" && !d.backtrack_only);
+          const task2Trial = [...allData].reverse().find(d => d.phase === "task2_question" && !d.backtrack_only);
+          const task1ReadingTrial = [...allData].reverse().find(d => d.phase === "task1_reading");
+          const task2InfoTrial = [...allData].reverse().find(d => d.phase === "task2_info");
 
-    const score = (task1Trial?.correct || 0) + (task2Trial?.correct || 0);
-    const totalErrors = (task1Trial?.errors || 0) + (task2Trial?.errors || 0);
-    const gazeTask1 = summarizeTrialGaze(task1ReadingTrial, "#task1-text-region");
-    const gazeTask2 = summarizeTrialGaze(task2InfoTrial, "#task2-info-region");
-    const avgSps = null;
+          const score = (task1Trial?.correct || 0) + (task2Trial?.correct || 0);
+          const totalErrors = (task1Trial?.errors || 0) + (task2Trial?.errors || 0);
+          const gazeTask1 = summarizeTrialGaze(task1ReadingTrial, "#task1-text-region");
+          const gazeTask2 = summarizeTrialGaze(task2InfoTrial, "#task2-info-region");
+          const avgSps = null;
 
-    const task1StatusClass = task1Trial?.correct === 1 ? "status-correct" : "status-wrong";
-    const task1StatusText = task1Trial?.correct === 1 ? s("correct") : s("wrong");
+          const task1StatusClass = task1Trial?.correct === 1 ? "status-correct" : "status-wrong";
+          const task1StatusText = task1Trial?.correct === 1 ? s("correct") : s("wrong");
 
-    const task2StatusClass = task2Trial?.correct === 1 ? "status-correct" : "status-wrong";
-    const task2StatusText = task2Trial?.correct === 1 ? s("correct") : s("wrong");
+          const task2StatusClass = task2Trial?.correct === 1 ? "status-correct" : "status-wrong";
+          const task2StatusText = task2Trial?.correct === 1 ? s("correct") : s("wrong");
 
-    const task1HasGaze = (gazeTask1.total_samples || 0) > 0;
-    const task2HasGaze = (gazeTask2.total_samples || 0) > 0;
+          const task1HasGaze = (gazeTask1.total_samples || 0) > 0;
+          const task2HasGaze = (gazeTask2.total_samples || 0) > 0;
 
-    return `
-      <div class="card">
-        <h2>${s("end_title")}</h2>
-        <p>${s("end_text")}</p>
+          return `
+            <div class="card">
+              <h2>${s("end_title")}</h2>
+              <p>${s("end_text")}</p>
 
-        <div class="summary-grid">
-          <div class="summary-item">
-            <span class="summary-label">${s("summary_task1")}</span>
-            <div class="summary-value">
-              <span class="status-pill ${task1StatusClass}">${task1StatusText}</span>
-              <div class="metric-list">
-                <div class="metric-line"><strong>${s("summary_answer")}:</strong> ${task1Trial?.user_answer || "-"}</div>
-                <div class="metric-line"><strong>${s("summary_correct_answer")}:</strong> ${task1Trial?.correct_answer || "-"}</div>
-                <div class="metric-line"><strong>${s("metric_time_on_task")}:</strong> ${msToSec(task1Trial?.time_on_task_ms || 0)}</div>
-                <div class="metric-line"><strong>${s("metric_question_time")}:</strong> ${msToSec(task1Trial?.question_time_ms || 0)}</div>
-                <div class="metric-line"><strong>${s("metric_errors")}:</strong> ${task1Trial?.errors || 0}</div>
-                <div class="metric-line"><strong>${s("metric_changes")}:</strong> ${task1Trial?.answer_changes || 0}</div>
-                <div class="metric-line"><strong>${s("metric_hesitation")}:</strong> ${yesNo(task1Trial?.hesitation)}</div>
-                <div class="metric-line"><strong>${s("metric_backtracking")}:</strong> ${yesNo((task1Trial?.backtracking || 0) > 0)}</div>
-                ${
-                  task1HasGaze
-                    ? `
-                      <div class="metric-line"><strong>${s("metric_gaze_samples")}:</strong> ${gazeTask1.total_samples || 0}</div>
-                      <div class="metric-line"><strong>${s("metric_on_target_ratio")}:</strong> ${gazeTask1.on_target_ratio !== null ? gazeTask1.on_target_ratio : "-"}</div>
-                      <div class="metric-line"><strong>${s("metric_first_fixation")}:</strong> ${msToSec(gazeTask1.first_fixation_latency_ms)}</div>
-                      <div class="metric-line"><strong>${s("metric_dwell_time")}:</strong> ${msToSec(gazeTask1.dwell_time_ms)}</div>
-                    `
-                    : `<div class="metric-line">${s("metric_no_gaze_samples")}</div>`
-                }
+              <div class="summary-grid">
+                <div class="summary-item">
+                  <span class="summary-label">${s("summary_task1")}</span>
+                  <div class="summary-value">
+                    <span class="status-pill ${task1StatusClass}">${task1StatusText}</span>
+                    <div class="metric-list">
+                      <div class="metric-line"><strong>${s("summary_answer")}:</strong> ${task1Trial?.user_answer || "-"}</div>
+                      <div class="metric-line"><strong>${s("summary_correct_answer")}:</strong> ${task1Trial?.correct_answer || "-"}</div>
+                      <div class="metric-line"><strong>${s("metric_time_on_task")}:</strong> ${msToSec(task1Trial?.time_on_task_ms || 0)}</div>
+                      <div class="metric-line"><strong>${s("metric_question_time")}:</strong> ${msToSec(task1Trial?.question_time_ms || 0)}</div>
+                      <div class="metric-line"><strong>${s("metric_errors")}:</strong> ${task1Trial?.errors || 0}</div>
+                      <div class="metric-line"><strong>${s("metric_changes")}:</strong> ${task1Trial?.answer_changes || 0}</div>
+                      <div class="metric-line"><strong>${s("metric_hesitation")}:</strong> ${yesNo(task1Trial?.hesitation)}</div>
+                      <div class="metric-line"><strong>${s("metric_backtracking")}:</strong> ${yesNo((task1Trial?.backtracking || 0) > 0)}</div>
+                      ${
+                        task1HasGaze
+                          ? `
+                            <div class="metric-line"><strong>${s("metric_gaze_samples")}:</strong> ${gazeTask1.total_samples || 0}</div>
+                            <div class="metric-line"><strong>${s("metric_on_target_ratio")}:</strong> ${gazeTask1.on_target_ratio !== null ? gazeTask1.on_target_ratio : "-"}</div>
+                            <div class="metric-line"><strong>${s("metric_first_fixation")}:</strong> ${msToSec(gazeTask1.first_fixation_latency_ms)}</div>
+                            <div class="metric-line"><strong>${s("metric_dwell_time")}:</strong> ${msToSec(gazeTask1.dwell_time_ms)}</div>
+                          `
+                          : `<div class="metric-line">${s("metric_no_gaze_samples")}</div>`
+                      }
+                    </div>
+                  </div>
+                </div>
+
+                <div class="summary-item">
+                  <span class="summary-label">${s("summary_task2")}</span>
+                  <div class="summary-value">
+                    <span class="status-pill ${task2StatusClass}">${task2StatusText}</span>
+                    <div class="metric-list">
+                      <div class="metric-line"><strong>${s("summary_answer")}:</strong> ${task2Trial?.user_answer || "-"}</div>
+                      <div class="metric-line"><strong>${s("summary_correct_answer")}:</strong> ${task2Trial?.correct_answer || "-"}</div>
+                      <div class="metric-line"><strong>${s("metric_time_on_task")}:</strong> ${msToSec(task2Trial?.time_on_task_ms || 0)}</div>
+                      <div class="metric-line"><strong>${s("metric_question_time")}:</strong> ${msToSec(task2Trial?.question_time_ms || 0)}</div>
+                      <div class="metric-line"><strong>${s("metric_errors")}:</strong> ${task2Trial?.errors || 0}</div>
+                      <div class="metric-line"><strong>${s("metric_changes")}:</strong> ${task2Trial?.answer_changes || 0}</div>
+                      <div class="metric-line"><strong>${s("metric_hesitation")}:</strong> ${yesNo(task2Trial?.hesitation)}</div>
+                      <div class="metric-line"><strong>${s("metric_backtracking")}:</strong> ${yesNo((task2Trial?.backtracking || 0) > 0)}</div>
+                      ${
+                        task2HasGaze
+                          ? `
+                            <div class="metric-line"><strong>${s("metric_gaze_samples")}:</strong> ${gazeTask2.total_samples || 0}</div>
+                            <div class="metric-line"><strong>${s("metric_on_target_ratio")}:</strong> ${gazeTask2.on_target_ratio !== null ? gazeTask2.on_target_ratio : "-"}</div>
+                            <div class="metric-line"><strong>${s("metric_first_fixation")}:</strong> ${msToSec(gazeTask2.first_fixation_latency_ms)}</div>
+                            <div class="metric-line"><strong>${s("metric_dwell_time")}:</strong> ${msToSec(gazeTask2.dwell_time_ms)}</div>
+                          `
+                          : `<div class="metric-line">${s("metric_no_gaze_samples")}</div>`
+                      }
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="score-box">
+                <div><strong>${s("summary_score")}: ${score} / 2</strong></div>
+                <div style="margin-top:8px;"><strong>${s("metric_errors")}:</strong> ${totalErrors}</div>
+                <div style="margin-top:8px;"><strong>${s("metric_validation_sps")}:</strong> ${avgSps !== null ? avgSps : "-"}</div>
               </div>
             </div>
-          </div>
-
-          <div class="summary-item">
-            <span class="summary-label">${s("summary_task2")}</span>
-            <div class="summary-value">
-              <span class="status-pill ${task2StatusClass}">${task2StatusText}</span>
-              <div class="metric-list">
-                <div class="metric-line"><strong>${s("summary_answer")}:</strong> ${task2Trial?.user_answer || "-"}</div>
-                <div class="metric-line"><strong>${s("summary_correct_answer")}:</strong> ${task2Trial?.correct_answer || "-"}</div>
-                <div class="metric-line"><strong>${s("metric_time_on_task")}:</strong> ${msToSec(task2Trial?.time_on_task_ms || 0)}</div>
-                <div class="metric-line"><strong>${s("metric_question_time")}:</strong> ${msToSec(task2Trial?.question_time_ms || 0)}</div>
-                <div class="metric-line"><strong>${s("metric_errors")}:</strong> ${task2Trial?.errors || 0}</div>
-                <div class="metric-line"><strong>${s("metric_changes")}:</strong> ${task2Trial?.answer_changes || 0}</div>
-                <div class="metric-line"><strong>${s("metric_hesitation")}:</strong> ${yesNo(task2Trial?.hesitation)}</div>
-                <div class="metric-line"><strong>${s("metric_backtracking")}:</strong> ${yesNo((task2Trial?.backtracking || 0) > 0)}</div>
-                ${
-                  task2HasGaze
-                    ? `
-                      <div class="metric-line"><strong>${s("metric_gaze_samples")}:</strong> ${gazeTask2.total_samples || 0}</div>
-                      <div class="metric-line"><strong>${s("metric_on_target_ratio")}:</strong> ${gazeTask2.on_target_ratio !== null ? gazeTask2.on_target_ratio : "-"}</div>
-                      <div class="metric-line"><strong>${s("metric_first_fixation")}:</strong> ${msToSec(gazeTask2.first_fixation_latency_ms)}</div>
-                      <div class="metric-line"><strong>${s("metric_dwell_time")}:</strong> ${msToSec(gazeTask2.dwell_time_ms)}</div>
-                    `
-                    : `<div class="metric-line">${s("metric_no_gaze_samples")}</div>`
-                }
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="score-box">
-          <div><strong>${s("summary_score")}: ${score} / 2</strong></div>
-          <div style="margin-top:8px;"><strong>${s("metric_errors")}:</strong> ${totalErrors}</div>
-          <div style="margin-top:8px;"><strong>${s("metric_validation_sps")}:</strong> ${avgSps !== null ? avgSps : "-"}</div>
-        </div>
-      </div>
-    `;
-  },
-  choices: [s("continue_btn")],
-  data: { phase: "end_screen" },
-  on_load: function() {
-    persistGazeDebugSnapshot();
-  },
-  on_finish: function() {
-    window.open("gaze_debug.html", "_blank", "noopener");
-  }
-};
+          `;
+        },
+        choices: [s("continue_btn")],
+        data: { phase: "end_screen" },
+        on_load: function() {
+          persistGazeDebugSnapshot();
+        },
+        on_finish: function() {
+          window.open("gaze_debug.html", "_blank", "noopener");
+        }
+      };
 
       const saveAndRecommendScreen = {
         type: jsPsychHtmlButtonResponse,
@@ -2047,19 +2021,19 @@ const validationSummary = {
       };
 
       const timeline = [
-  universityIntro,
-  cameraInstructions,
-  initCameraTrial,
-  baseline,
-  calibrationIntro,
-  calibration,
-  task1Intro,
-  task1Loop,
-  task2Intro,
-  task2Loop,
-  endScreen,
-  saveAndRecommendScreen
-];
+        universityIntro,
+        cameraInstructions,
+        initCameraTrial,
+        baseline,
+        calibrationIntro,
+        calibration,
+        task1Intro,
+        task1Loop,
+        task2Intro,
+        task2Loop,
+        endScreen,
+        saveAndRecommendScreen
+      ];
 
       jsPsych.run(timeline);
     }
