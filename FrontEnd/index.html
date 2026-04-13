@@ -128,21 +128,32 @@
         }
 
         /* =========================
-           CALIBRATION / VALIDATION — camera in top-right corner,
-           content uses full viewport for dot placement
+           CALIBRATION / VALIDATION
+           Full viewport, camera top-right
            ========================= */
 
         body.calibration-phase,
         body.validation-phase {
           overflow: hidden;
+          background: #f4f7fb;
+        }
+
+        /* CRITICAL FIX: calibration must use full viewport */
+        body.calibration-phase .jspsych-content-wrapper,
+        body.validation-phase .jspsych-content-wrapper {
+          width: 100vw !important;
+          max-width: 100vw !important;
+          padding: 0 !important;
+          margin: 0 !important;
         }
 
         body.calibration-phase .jspsych-content,
         body.validation-phase .jspsych-content {
-          max-width: none;
-          width: 100%;
-          margin: 0;
-          padding: 0;
+          max-width: 100vw !important;
+          width: 100vw !important;
+          margin: 0 !important;
+          padding: 0 !important;
+          min-height: 100vh !important;
         }
 
         /* Camera: small, top-right, out of the way of dots */
@@ -155,6 +166,77 @@
           width: 160px !important;
           height: 120px !important;
           z-index: 100000 !important;
+        }
+
+        /* =========================
+           CUSTOM CALIBRATION DOTS
+           Active = large dark filled circle
+           Inactive = small faded circle
+           ========================= */
+
+        /* Container for calibration points */
+        #webgazer-calibrate-container,
+        #webgazer-validate-container {
+          position: fixed !important;
+          top: 0 !important;
+          left: 0 !important;
+          width: 100vw !important;
+          height: 100vh !important;
+          background: #f4f7fb !important;
+        }
+
+        /* All dots base style — faded, small */
+        .webgazer-calibration-point,
+        .calibration-point {
+          width: 16px !important;
+          height: 16px !important;
+          border-radius: 50% !important;
+          background: rgba(241, 86, 63, 0.25) !important;
+          border: none !important;
+          box-shadow: none !important;
+          cursor: pointer !important;
+          transition: all 0.25s ease !important;
+          animation: none !important;
+          /* center the dot on its coordinate */
+          margin-left: -8px !important;
+          margin-top: -8px !important;
+        }
+
+        /* Active / current dot — large, dark, solid */
+        .webgazer-calibration-point.active,
+        .calibration-point.active,
+        .webgazer-calibration-point:focus,
+        .calibration-point:focus {
+          width: 32px !important;
+          height: 32px !important;
+          background: var(--primary) !important;
+          border: 3px solid rgba(0, 41, 87, 0.25) !important;
+          box-shadow: 0 0 0 6px rgba(0, 41, 87, 0.1) !important;
+          margin-left: -16px !important;
+          margin-top: -16px !important;
+          animation: activePulse 1.2s ease-in-out infinite !important;
+        }
+
+        @keyframes activePulse {
+          0%, 100% { box-shadow: 0 0 0 6px rgba(0, 41, 87, 0.1); }
+          50%       { box-shadow: 0 0 0 14px rgba(0, 41, 87, 0.05); }
+        }
+
+        /* Progress label */
+        #calibration-progress-label,
+        .calibration-progress {
+          position: fixed !important;
+          bottom: 28px !important;
+          left: 50% !important;
+          transform: translateX(-50%) !important;
+          font-size: 16px !important;
+          color: var(--muted) !important;
+          font-family: Arial, sans-serif !important;
+          font-weight: 600 !important;
+          background: rgba(255,255,255,0.85) !important;
+          padding: 6px 16px !important;
+          border-radius: 999px !important;
+          border: 1px solid var(--border) !important;
         }
 
         /* =========================
@@ -174,41 +256,6 @@
           width: 100%;
           margin: 0 auto;
           padding-top: 260px;
-        }
-
-        /* =========================
-           CALIBRATION DOT OVERRIDES
-           ========================= */
-
-        /* ---- jsPsych calibration/validation dot overrides ---- */
-
-        /* Correct IDs: webgazer-calibrate-container, webgazer-validate-container */
-        #webgazer-calibrate-container,
-        #webgazer-validate-container {
-          /* let the plugin control positioning — don't override */
-        }
-
-        /* Bigger, nicer calibration dots */
-        .calibration-point {
-          width: 28px !important;
-          height: 28px !important;
-          border-radius: 50% !important;
-          background: radial-gradient(circle, var(--accent) 40%, rgba(241,86,63,0.3) 100%) !important;
-          border: 3px solid rgba(241,86,63,0.25) !important;
-          box-shadow: 0 0 0 6px rgba(241,86,63,0.08), 0 2px 8px rgba(0,0,0,0.1) !important;
-          cursor: pointer !important;
-          transition: transform 0.2s ease, box-shadow 0.2s ease !important;
-          animation: dotPulse 2s ease-in-out infinite !important;
-        }
-
-        .calibration-point:hover {
-          transform: scale(1.3) !important;
-          box-shadow: 0 0 0 10px rgba(241,86,63,0.15), 0 4px 16px rgba(0,0,0,0.15) !important;
-        }
-
-        @keyframes dotPulse {
-          0%, 100% { box-shadow: 0 0 0 6px rgba(241,86,63,0.08), 0 2px 8px rgba(0,0,0,0.1); }
-          50% { box-shadow: 0 0 0 12px rgba(241,86,63,0.15), 0 2px 12px rgba(0,0,0,0.12); }
         }
 
         /* =========================
@@ -664,9 +711,9 @@
 
           body.calibration-phase .jspsych-content,
           body.validation-phase .jspsych-content {
-            width: 100%;
-            margin: 0;
-            padding: 0;
+            width: 100vw !important;
+            margin: 0 !important;
+            padding: 0 !important;
           }
 
           body.calibration-phase #webgazerVideoContainer,
@@ -802,7 +849,7 @@
         baseline_text: "These questions capture stable preferences that help initialize the adaptive logic.",
 
         calibration_title: "WebGazer Calibration",
-        calibration_text: "Look directly at each dot and click it. Try to keep your face visible in the camera above while clicking the dots below.",
+        calibration_text: "Look directly at each dot and click it. Try to keep your face visible in the camera while clicking the dots.",
         validation_title: "Validation",
         validation_text: "Now look at the validation points. The system will estimate how stable the current calibration is.",
         validation_summary_title: "Validation Check",
@@ -1099,15 +1146,6 @@
       return localStorage.getItem("recommended_ui") || "standard";
     }
 
-    // =========================================================
-    // FIX: Remove local mediapipe path override — it causes
-    // WASM errors on deployed sites that don't have /mediapipe/
-    // WebGazer will use its own bundled/CDN path instead.
-    // =========================================================
-    function configureWebGazerPath() {
-      // intentionally empty — let WebGazer use its default CDN path
-    }
-
     function showSideCamera(showPredictions = false) {
       document.body.classList.add("has-side-camera");
 
@@ -1164,6 +1202,26 @@
       if (phaseClass) {
         document.body.classList.add(phaseClass);
       }
+    }
+
+    /**
+     * FIX: After calibration/validation, the plugin may leave behind
+     * a fixed-position container that blocks clicks and causes blank screens.
+     * This cleans it up before moving to the next trial.
+     */
+    function cleanupCalibrationContainers() {
+      const ids = [
+        "webgazer-calibrate-container",
+        "webgazer-validate-container"
+      ];
+      ids.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.style.display = "none";
+          el.style.pointerEvents = "none";
+          el.style.zIndex = "-1";
+        }
+      });
     }
 
     function safeFloat(value, defaultValue = 0) {
@@ -1566,14 +1624,20 @@
         calibration_mode: "click",
         repetitions_per_point: 5,
         randomize_calibration_order: false,
-        point_size: 24,
+        point_size: 16,
         data: { phase: "calibration" },
         on_load: function() {
           setPhaseBodyClass("calibration-phase");
-          showCenteredCameraNoPredictions();
+          // Hide video during calibration to reduce distraction
+          try {
+            jsPsych.extensions.webgazer.showVideo();
+            jsPsych.extensions.webgazer.hidePredictions();
+          } catch(e) {}
         },
         on_finish: function() {
           setPhaseBodyClass("");
+          // CRITICAL FIX: clean up leftover calibration containers
+          cleanupCalibrationContainers();
         }
       };
 
@@ -1600,15 +1664,20 @@
         roi_radius: 180,
         time_to_saccade: 1000,
         validation_duration: 1800,
-        point_size: 24,
+        point_size: 16,
         show_validation_data: false,
         data: { phase: "validation" },
         on_load: function() {
           setPhaseBodyClass("validation-phase");
-          showCenteredCameraNoPredictions();
+          try {
+            jsPsych.extensions.webgazer.showVideo();
+            jsPsych.extensions.webgazer.hidePredictions();
+          } catch(e) {}
         },
         on_finish: function() {
           setPhaseBodyClass("");
+          // CRITICAL FIX: clean up leftover validation containers
+          cleanupCalibrationContainers();
         }
       };
 
