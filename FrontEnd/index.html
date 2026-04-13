@@ -170,50 +170,39 @@
 
         /* =========================
            CUSTOM CALIBRATION DOTS
-           Active = large dark filled circle
-           Inactive = small faded circle
+           Inactive = small faded pink circle
+           Active (current) = large dark navy circle
            ========================= */
 
-        /* Container for calibration points */
-        #webgazer-calibrate-container,
-        #webgazer-validate-container {
-          position: fixed !important;
-          top: 0 !important;
-          left: 0 !important;
-          width: 100vw !important;
-          height: 100vh !important;
-          background: #f4f7fb !important;
-        }
-
-        /* All dots base style — faded, small */
-        .webgazer-calibration-point,
-        .calibration-point {
-          width: 16px !important;
-          height: 16px !important;
+        /* All dots — faded pink, small */
+        .jspsych-webgazer-calibrate-dot,
+        .jspsych-webgazer-validate-dot,
+        .calibration-point,
+        [id^="calibration-point-"] {
+          width: 18px !important;
+          height: 18px !important;
           border-radius: 50% !important;
-          background: rgba(241, 86, 63, 0.25) !important;
+          background: rgba(241, 86, 63, 0.28) !important;
           border: none !important;
           box-shadow: none !important;
           cursor: pointer !important;
-          transition: all 0.25s ease !important;
+          transition: all 0.2s ease !important;
           animation: none !important;
-          /* center the dot on its coordinate */
-          margin-left: -8px !important;
-          margin-top: -8px !important;
         }
 
-        /* Active / current dot — large, dark, solid */
-        .webgazer-calibration-point.active,
-        .calibration-point.active,
-        .webgazer-calibration-point:focus,
-        .calibration-point:focus {
+        /* Active dot — the one currently being clicked, highlighted by jsPsych */
+        /* jsPsych sets background color directly on the active dot via JS, we override */
+        .jspsych-webgazer-calibrate-dot[style*="rgb(255"],
+        .jspsych-webgazer-calibrate-dot[style*="#ff"],
+        .jspsych-webgazer-calibrate-dot[style*="red"],
+        .calibration-point[style*="rgb(255"],
+        .calibration-point[style*="#ff"],
+        [id^="calibration-point-"].active {
           width: 32px !important;
           height: 32px !important;
-          background: var(--primary) !important;
-          border: 3px solid rgba(0, 41, 87, 0.25) !important;
-          box-shadow: 0 0 0 6px rgba(0, 41, 87, 0.1) !important;
-          margin-left: -16px !important;
-          margin-top: -16px !important;
+          background: #002957 !important;
+          border: 3px solid rgba(0, 41, 87, 0.2) !important;
+          box-shadow: 0 0 0 8px rgba(0, 41, 87, 0.08) !important;
           animation: activePulse 1.2s ease-in-out infinite !important;
         }
 
@@ -1205,22 +1194,38 @@
     }
 
     /**
-     * FIX: After calibration/validation, the plugin may leave behind
-     * a fixed-position container that blocks clicks and causes blank screens.
-     * This cleans it up before moving to the next trial.
+     * FIX: After calibration/validation:
+     * 1. Hide the gaze prediction dot (the moving red/black dot)
+     * 2. Remove pointer-events from any leftover fixed containers
      */
-    function cleanupCalibrationContainers() {
-      const ids = [
-        "webgazer-calibrate-container",
-        "webgazer-validate-container"
+    function cleanupAfterCalibration() {
+      // Hide the gaze dot
+      const gazeDot = document.getElementById("webgazerGazeDot");
+      if (gazeDot) {
+        gazeDot.style.display = "none";
+        gazeDot.style.visibility = "hidden";
+      }
+
+      // Also hide via webgazer API
+      try {
+        jsPsych.extensions.webgazer.hidePredictions();
+      } catch(e) {}
+
+      // Remove any leftover fixed containers that block interaction
+      const selectors = [
+        "#webgazer-calibrate-container",
+        "#webgazer-validate-container",
+        "[id*='calibrat']",
+        "[id*='validat']"
       ];
-      ids.forEach(id => {
-        const el = document.getElementById(id);
-        if (el) {
-          el.style.display = "none";
-          el.style.pointerEvents = "none";
-          el.style.zIndex = "-1";
-        }
+      selectors.forEach(sel => {
+        document.querySelectorAll(sel).forEach(el => {
+          if (el.id !== "webgazerVideoContainer" && el.id !== "webgazerVideoFeed") {
+            el.style.pointerEvents = "none";
+            el.style.zIndex = "-1";
+            el.style.visibility = "hidden";
+          }
+        });
       });
     }
 
@@ -1628,16 +1633,48 @@
         data: { phase: "calibration" },
         on_load: function() {
           setPhaseBodyClass("calibration-phase");
-          // Hide video during calibration to reduce distraction
           try {
             jsPsych.extensions.webgazer.showVideo();
             jsPsych.extensions.webgazer.hidePredictions();
           } catch(e) {}
+
+          // Watch for the active dot (jsPsych makes it visible one at a time)
+          // and apply our custom active style
+          const observer = new MutationObserver(() => {
+            const allDots = document.querySelectorAll(
+              '.jspsych-webgazer-calibrate-dot, .calibration-point, [id^="calibration-point-"]'
+            );
+            allDots.forEach(dot => {
+              const style = dot.getAttribute("style") || "";
+              const isActive = style.includes("opacity: 1") || style.includes("opacity:1") ||
+                               dot.style.opacity === "1";
+              if (isActive) {
+                dot.style.width = "32px";
+                dot.style.height = "32px";
+                dot.style.background = "#002957";
+                dot.style.border = "3px solid rgba(0,41,87,0.2)";
+                dot.style.boxShadow = "0 0 0 8px rgba(0,41,87,0.08)";
+                dot.style.borderRadius = "50%";
+                dot.style.cursor = "pointer";
+              } else {
+                dot.style.width = "18px";
+                dot.style.height = "18px";
+                dot.style.background = "rgba(241,86,63,0.28)";
+                dot.style.border = "none";
+                dot.style.boxShadow = "none";
+                dot.style.borderRadius = "50%";
+                dot.style.cursor = "pointer";
+              }
+            });
+          });
+
+          observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["style"] });
+          window._calibObserver = observer;
         },
         on_finish: function() {
           setPhaseBodyClass("");
-          // CRITICAL FIX: clean up leftover calibration containers
-          cleanupCalibrationContainers();
+          if (window._calibObserver) { window._calibObserver.disconnect(); window._calibObserver = null; }
+          cleanupAfterCalibration();
         }
       };
 
@@ -1676,8 +1713,7 @@
         },
         on_finish: function() {
           setPhaseBodyClass("");
-          // CRITICAL FIX: clean up leftover validation containers
-          cleanupCalibrationContainers();
+          cleanupAfterCalibration();
         }
       };
 
