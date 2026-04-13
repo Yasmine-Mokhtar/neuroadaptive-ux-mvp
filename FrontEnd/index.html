@@ -1045,6 +1045,10 @@
   configureWebGazerPath();
 
   try {
+    window.webgazer?.resume?.();
+  } catch (_) {}
+
+  try {
     jsPsych.extensions.webgazer.showVideo();
   } catch (_) {}
 
@@ -2034,9 +2038,6 @@ const validationSummary = {
   baseline,
   calibrationIntro,
   calibration,
-  validationIntro,
-  validation,
-  validationSummary,
   task1Intro,
   task1Loop,
   task2Intro,
