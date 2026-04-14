@@ -121,6 +121,16 @@
 
         #webgazerVideoFeed {
           display: block !important;
+          transform: scaleX(-1) !important; /* mirror so it feels natural */
+          width: 100% !important;
+          height: 100% !important;
+          object-fit: cover !important;
+        }
+
+        /* Face tracking overlay also needs to be mirrored */
+        #webgazerFaceOverlay,
+        #webgazerFaceFeedbackBox {
+          transform: scaleX(-1) !important;
         }
 
         #webgazerGazeDot {
@@ -161,16 +171,17 @@
           position: relative !important;
         }
 
-        /* Camera: small, top-right corner */
+        /* Camera: top-center during calibration so it doesn't block corner dots */
         body.calibration-phase #webgazerVideoContainer,
         body.validation-phase #webgazerVideoContainer {
-          left: auto !important;
-          right: 16px !important;
-          top: 16px !important;
-          transform: none !important;
-          width: 160px !important;
-          height: 120px !important;
+          left: 50% !important;
+          right: auto !important;
+          top: 12px !important;
+          transform: translateX(-50%) !important;
+          width: 180px !important;
+          height: 135px !important;
           z-index: 100000 !important;
+          opacity: 0.85 !important;
         }
 
         /* =========================
@@ -1578,97 +1589,184 @@
       };
 
       const calibration = {
-        type: jsPsychWebgazerCalibrate,
-        calibration_points: [
-          [10, 12], [50, 12], [90, 12],
-          [10, 50], [50, 50], [90, 50],
-          [10, 88], [50, 88], [90, 88]
-        ],
-        calibration_mode: "click",
-        repetitions_per_point: 5,
-        randomize_calibration_order: false,
-        point_size: 16,
+        type: jsPsychHtmlButtonResponse,
+        stimulus: `<div id="custom-calib-root" style="position:fixed;inset:0;background:#f4f7fb;z-index:9000;"></div>`,
+        choices: [],
         data: { phase: "calibration" },
         on_load: function() {
           setPhaseBodyClass("calibration-phase");
           try {
+            jsPsych.extensions.webgazer.resume();
             jsPsych.extensions.webgazer.showVideo();
             jsPsych.extensions.webgazer.hidePredictions();
           } catch(e) {}
 
-          // jsPsych WebGazer calibrate plugin renders dots as absolutely-positioned divs.
-          // The ACTIVE dot is the one currently shown (opacity 1, or display not none).
-          // All other dots are hidden (opacity 0 or display none) until their turn.
-          // We use a MutationObserver to apply our custom styles whenever a dot changes.
-          function styleAllDots() {
-            // Try multiple possible selectors — jsPsych source uses different class names
-            const dots = document.querySelectorAll(
-              '#jspsych-webgazer-calibrate-container div[style*="border-radius"],' +
-              '#webgazer-calibrate-container div[style*="border-radius"],' +
-              '.jspsych-webgazer-calibrate-dot,' +
-              '[id^="calibration-point"]'
-            );
+          // ── Configuration ──────────────────────────────────────────
+          const POINTS_PERCENT = [
+            [10,10],[50,10],[90,10],
+            [10,50],[50,50],[90,50],
+            [10,90],[50,90],[90,90]
+          ];
+          const CLICKS_NEEDED = 5;
+          // Brand colors: navy (0 clicks) → orange (5 clicks = done)
+          const NAVY   = "#002957";
+          const ORANGE = "#F1563F";
 
-            dots.forEach(dot => {
-              const opacity = parseFloat(dot.style.opacity);
-              const display = dot.style.display;
-              const isVisible = display !== "none" && (isNaN(opacity) || opacity > 0.5);
+          // ── State ───────────────────────────────────────────────────
+          let currentPointIdx = 0;
+          const clickCounts = new Array(POINTS_PERCENT.length).fill(0);
+          let isFinishing = false;
 
-              if (isVisible) {
-                // ACTIVE dot
-                dot.style.width = "32px";
-                dot.style.height = "32px";
-                dot.style.background = "#002957";
-                dot.style.border = "3px solid rgba(0,41,87,0.18)";
-                dot.style.boxShadow = "0 0 0 10px rgba(0,41,87,0.07), 0 0 0 20px rgba(0,41,87,0.03)";
-                dot.style.borderRadius = "50%";
-                dot.style.cursor = "pointer";
-                dot.style.transform = "translate(-50%, -50%)";
-                dot.style.transition = "width 0.15s ease, height 0.15s ease";
+          // ── Build UI ────────────────────────────────────────────────
+          const root = document.getElementById("custom-calib-root");
+
+          // Hint label
+          const hint = document.createElement("div");
+          hint.style.cssText = `
+            position:fixed; bottom:28px; left:50%; transform:translateX(-50%);
+            background:rgba(255,255,255,0.93); border:1px solid #d7deea;
+            border-radius:999px; padding:9px 22px; font-size:15px;
+            font-weight:600; color:#667085; font-family:Arial,sans-serif;
+            z-index:9999; pointer-events:none; white-space:nowrap;
+          `;
+          hint.textContent = s("calib_hint") || "Look at the dot and click it 5 times";
+          root.appendChild(hint);
+
+          // Progress counter top-center
+          const counter = document.createElement("div");
+          counter.style.cssText = `
+            position:fixed; top:18px; left:50%; transform:translateX(-50%);
+            background:rgba(255,255,255,0.93); border:1px solid #d7deea;
+            border-radius:999px; padding:7px 18px; font-size:14px;
+            font-weight:700; color:#002957; font-family:Arial,sans-serif;
+            z-index:9999; pointer-events:none;
+          `;
+          root.appendChild(counter);
+
+          // ── Dot elements ────────────────────────────────────────────
+          const dotEls = POINTS_PERCENT.map((pt, i) => {
+            const d = document.createElement("div");
+            d.style.cssText = `
+              position:fixed;
+              left:${pt[0]}vw; top:${pt[1]}vh;
+              transform:translate(-50%,-50%);
+              width:26px; height:26px;
+              border-radius:50%;
+              background:${NAVY};
+              opacity:0.22;
+              cursor:pointer;
+              transition: background 0.18s ease, opacity 0.18s ease,
+                          width 0.15s ease, height 0.15s ease,
+                          box-shadow 0.18s ease;
+              z-index:9998;
+              box-sizing:border-box;
+            `;
+            d.addEventListener("click", () => onDotClick(i));
+            root.appendChild(d);
+            return d;
+          });
+
+          function updateCounter() {
+            const done = clickCounts.filter(c => c >= CLICKS_NEEDED).length;
+            counter.textContent = `Calibration: ${done} / ${POINTS_PERCENT.length} points done`;
+          }
+
+          function renderDots() {
+            dotEls.forEach((d, i) => {
+              const clicks = clickCounts[i];
+              const isCurrent = (i === currentPointIdx);
+              const isDone = clicks >= CLICKS_NEEDED;
+
+              if (isDone) {
+                // Fully calibrated — orange, medium size, semi-transparent
+                d.style.width = "22px";
+                d.style.height = "22px";
+                d.style.background = ORANGE;
+                d.style.opacity = "0.55";
+                d.style.boxShadow = "none";
+                d.style.border = "none";
+                d.style.cursor = "default";
+                d.style.pointerEvents = "none";
+              } else if (isCurrent) {
+                // Active dot — large navy, full opacity, with ring
+                const frac = clicks / CLICKS_NEEDED; // 0→1 progress
+                // Interpolate: navy (dark) → orange as clicks increase
+                const r1=0,g1=41,b1=87;
+                const r2=241,g2=86,b2=63;
+                const r=Math.round(r1+(r2-r1)*frac);
+                const g=Math.round(g1+(g2-g1)*frac);
+                const b=Math.round(b1+(b2-b1)*frac);
+                const ringAlpha = 0.08 + frac * 0.12;
+                d.style.width = "40px";
+                d.style.height = "40px";
+                d.style.background = `rgb(${r},${g},${b})`;
+                d.style.opacity = "1";
+                d.style.border = `3px solid rgba(${r},${g},${b},0.25)`;
+                d.style.boxShadow = `0 0 0 10px rgba(${r},${g},${b},${ringAlpha}), 0 0 0 22px rgba(${r},${g},${b},${ringAlpha*0.4})`;
+                d.style.cursor = "pointer";
+                d.style.pointerEvents = "auto";
               } else {
-                // INACTIVE dot — only style if we can actually reach it
-                dot.style.width = "18px";
-                dot.style.height = "18px";
-                dot.style.background = "rgba(241,86,63,0.28)";
-                dot.style.border = "none";
-                dot.style.boxShadow = "none";
-                dot.style.borderRadius = "50%";
-                dot.style.cursor = "pointer";
-                dot.style.transform = "translate(-50%, -50%)";
+                // Inactive — small, faded navy
+                d.style.width = "26px";
+                d.style.height = "26px";
+                d.style.background = NAVY;
+                d.style.opacity = "0.22";
+                d.style.border = "none";
+                d.style.boxShadow = "none";
+                d.style.cursor = "pointer";
+                d.style.pointerEvents = "auto";
               }
             });
           }
 
-          const observer = new MutationObserver(styleAllDots);
-          observer.observe(document.body, {
-            childList: true,
-            subtree: true,
-            attributes: true,
-            attributeFilter: ["style"]
-          });
-          window._calibObserver = observer;
+          function onDotClick(idx) {
+            if (isFinishing) return;
+            if (idx !== currentPointIdx) {
+              // Allow clicking other dots directly (UX flexibility)
+              currentPointIdx = idx;
+              renderDots();
+              return;
+            }
 
-          // Add a progress label at the bottom
-          const label = document.createElement("div");
-          label.id = "calib-hint";
-          label.style.cssText = `
-            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-            background: rgba(255,255,255,0.92); border: 1px solid #d7deea;
-            border-radius: 999px; padding: 8px 20px; font-size: 15px;
-            font-weight: 600; color: #667085; font-family: Arial, sans-serif;
-            z-index: 99998; pointer-events: none;
-          `;
-          label.textContent = "Look at the dark dot and click it";
-          document.body.appendChild(label);
+            clickCounts[idx]++;
 
-          // Run once immediately after DOM settles
-          setTimeout(styleAllDots, 100);
+            // Feed click to WebGazer for calibration
+            try {
+              const pt = POINTS_PERCENT[idx];
+              const x = Math.round(pt[0] / 100 * window.innerWidth);
+              const y = Math.round(pt[1] / 100 * window.innerHeight);
+              window.webgazer?.recordScreenPosition?.(x, y, "click");
+            } catch(e) {}
+
+            renderDots();
+            updateCounter();
+
+            if (clickCounts[idx] >= CLICKS_NEEDED) {
+              // Find next uncompleted point
+              const next = clickCounts.findIndex((c, i) => i > idx && c < CLICKS_NEEDED);
+              const nextAny = clickCounts.findIndex(c => c < CLICKS_NEEDED);
+
+              if (nextAny === -1) {
+                // ALL DONE
+                isFinishing = true;
+                hint.textContent = "Calibration complete!";
+                setTimeout(() => {
+                  jsPsych.finishTrial({ phase: "calibration" });
+                }, 600);
+              } else {
+                currentPointIdx = next !== -1 ? next : nextAny;
+                renderDots();
+              }
+            }
+          }
+
+          // Initialize
+          updateCounter();
+          renderDots();
         },
         on_finish: function() {
           setPhaseBodyClass("");
           if (window._calibObserver) { window._calibObserver.disconnect(); window._calibObserver = null; }
-          const hint = document.getElementById("calib-hint");
-          if (hint) hint.remove();
           cleanupAfterCalibration();
         }
       };
