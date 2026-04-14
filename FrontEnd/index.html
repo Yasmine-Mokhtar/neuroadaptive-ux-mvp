@@ -47,10 +47,9 @@
         body.calibration-phase .jspsych-display-element,body.validation-phase .jspsych-display-element,
         body.calibration-phase .jspsych-content-wrapper,body.validation-phase .jspsych-content-wrapper{width:100vw!important;max-width:100vw!important;height:100vh!important;padding:0!important;margin:0!important;overflow:hidden!important;}
         body.calibration-phase .jspsych-content,body.validation-phase .jspsych-content{max-width:100vw!important;width:100vw!important;height:100vh!important;margin:0!important;padding:0!important;}
-        body.calibration-phase #webgazerVideoContainer,body.validation-phase #webgazerVideoContainer{z-index:100!important;}
+        /* Camera stays at z-index:500 (set by JS). Calibration dots are at z:99999 — always above camera. */
 
-        /* Camera init — padding set dynamically by JS */
-        /* body.camera-init-phase padding is intentionally NOT set here */
+        /* Camera init — card centers normally since camera is bottom-left */
 
         /* Cards */
         .card,.form-card{max-width:760px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:24px;padding:36px;box-shadow:0 10px 28px rgba(0,41,87,0.06);text-align:left;}
@@ -241,44 +240,27 @@
     function yesNo(v){return v?s("yes"):s("no");}
     function getStoredUIMode(){return localStorage.getItem("recommended_ui")||"standard";}
 
-    /* ── positionVideoContainer: overrides WebGazer inline styles via JS ── */
-    function positionVideoContainer(loc) {
+    /* ── positionVideoContainer: one fixed position for entire experiment ── */
+    /* Camera is ALWAYS bottom-left 220x165px — never moves */
+    function positionVideoContainer() {
       const apply = () => {
         const vc = document.getElementById("webgazerVideoContainer");
         if (!vc) return;
         const set=(k,v)=>vc.style.setProperty(k,v,"important");
-        set("position","fixed"); set("display","block");
-        set("border-radius","16px"); set("overflow","hidden");
+        set("position","fixed");
+        set("display","block");
+        set("width","220px");
+        set("height","165px");
+        set("left","20px");
+        set("bottom","20px");
+        set("top","auto");
+        set("right","auto");
+        set("transform","none");
+        set("z-index","500");
+        set("border-radius","16px");
+        set("overflow","hidden");
         set("border","1px solid #d7deea");
         set("box-shadow","0 10px 28px rgba(0,41,87,0.12)");
-        if (loc==="bottom-left") {
-          set("width","220px"); set("height","165px");
-          set("left","20px"); set("bottom","20px");
-          set("top","auto"); set("right","auto");
-          set("transform","none"); set("z-index","500");
-        } else if (loc==="top-right-small") {
-          // During calibration: small camera top-right, z-index 100 (below dots at 99999)
-          // CSS rule body.calibration-phase already sets z-index:100 — consistent
-          set("width","150px"); set("height","112px");
-          set("right","14px"); set("top","14px");
-          set("left","auto"); set("bottom","auto");
-          set("transform","none"); set("z-index","100");
-          set("display","block");
-        } else if (loc==="bottom-left-small") {
-          // During validation intro/check: small camera bottom-left, out of the way
-          set("width","160px"); set("height","120px");
-          set("left","16px"); set("bottom","16px");
-          set("top","auto"); set("right","auto");
-          set("transform","none"); set("z-index","500");
-          set("display","block");
-        } else if (loc==="center-top") {
-          set("left","50%"); set("top","16px");
-          set("right","auto"); set("bottom","auto");
-          set("transform","translateX(-50%)");
-          set("z-index","500");
-          // Don't force width/height — let WebGazer use its natural video size
-          // so the green face box renders in the correct position
-        }
       };
       apply(); setTimeout(apply,200); setTimeout(apply,600);
     }
@@ -287,7 +269,7 @@
     function showSideCamera(pred=false){
       document.body.classList.add("has-side-camera");
       try{jsPsych.extensions.webgazer.resume();jsPsych.extensions.webgazer.showVideo();pred?jsPsych.extensions.webgazer.showPredictions():jsPsych.extensions.webgazer.hidePredictions();}catch(e){}
-      positionVideoContainer("bottom-left");
+      positionVideoContainer();
     }
     function hideSideCamera(){
       document.body.classList.remove("has-side-camera");
@@ -296,7 +278,7 @@
     function safeHideGazeUI(){
       document.body.classList.add("has-side-camera");
       try{jsPsych.extensions.webgazer.resume();jsPsych.extensions.webgazer.showVideo();jsPsych.extensions.webgazer.hidePredictions();}catch(e){}
-      positionVideoContainer("bottom-left");
+      positionVideoContainer();
     }
     function setPhaseBodyClass(cls=""){
       document.body.classList.remove("calibration-phase","validation-phase","camera-init-phase");
@@ -387,7 +369,7 @@
 
       const cameraInstructions={type:jsPsychHtmlButtonResponse,stimulus:`<div class="card"><h2>${s("camera_title")}</h2><p>${s("camera_text_1")}</p><p class="muted">${s("camera_text_2")}</p><p class="small-note">${s("camera_text_3")}</p></div>`,choices:[s("continue_btn")],data:{phase:"camera_instructions"}};
 
-      /* ── Init Camera: position camera top-center via JS polling ── */
+      /* ── Init Camera ── */
       const initCameraTrial={
         type:jsPsychWebgazerInitCamera,
         instructions:`<div class="card" style="max-width:600px;margin:0 auto;"><h2>${s("camera_title")}</h2><p>${s("camera_text_2")}</p><p class="small-note">${s("camera_text_3")}</p></div>`,
@@ -395,35 +377,9 @@
         on_load:function(){
           setPhaseBodyClass("camera-init-phase");
           try{jsPsych.extensions.webgazer.resume();jsPsych.extensions.webgazer.showVideo();jsPsych.extensions.webgazer.hidePredictions();}catch(e){}
-          // Poll until WebGazer renders the video container, then position it top-center
-          // Do NOT force width/height so the green face-tracking box stays aligned
-          const poll=setInterval(()=>{
-            const vc=document.getElementById("webgazerVideoContainer");
-            if(!vc)return;
-            clearInterval(poll);
-            const set=(k,v)=>vc.style.setProperty(k,v,"important");
-            set("position","fixed"); set("left","50%"); set("top","16px");
-            set("right","auto"); set("bottom","auto");
-            set("transform","translateX(-50%)"); set("z-index","500");
-            set("border-radius","16px"); set("overflow","hidden");
-            set("border","1px solid #d7deea");
-            set("box-shadow","0 10px 28px rgba(0,41,87,0.12)");
-            // Adjust content padding to sit below camera
-            const tryPad=()=>{
-              const content=document.querySelector(".jspsych-content");
-              const vcH=vc.getBoundingClientRect().height;
-              if(content&&vcH>0){content.style.paddingTop=(vcH+24)+"px";}
-              else if(content){setTimeout(tryPad,100);}
-            };
-            setTimeout(tryPad,300);
-          },80);
+          positionVideoContainer();
         },
-        on_finish:function(){
-          setPhaseBodyClass("");
-          // Reset any padding we set — next screens must not inherit it
-          const content=document.querySelector(".jspsych-content");
-          if(content) content.style.paddingTop="";
-        }
+        on_finish:function(){setPhaseBodyClass("");}
       };
 
       const baseline={type:jsPsychSurveyHtmlForm,html:`<div class="form-card"><h2>${s("baseline_title")}</h2><p>${s("baseline_text")}</p><div class="field-group"><label class="form-label" for="age_group">${s("age_group")}</label><select id="age_group" name="age_group" required><option value="" disabled selected>${s("age_placeholder")}</option>${renderOptionTags("age_group")}</select></div><div class="field-group"><label class="form-label" for="digital_confidence">${s("digital_conf")}</label><select id="digital_confidence" name="digital_confidence" required><option value="" disabled selected>${s("digital_conf_placeholder")}</option>${renderOptionTags("digital_confidence")}</select></div><div class="field-group"><label class="form-label" for="page_style">${s("page_style")}</label><select id="page_style" name="page_style" required><option value="" disabled selected>${s("page_style_placeholder")}</option>${renderOptionTags("page_style")}</select></div><div class="field-group"><label class="form-label" for="guidance_need">${s("guidance_need")}</label><select id="guidance_need" name="guidance_need" required><option value="" disabled selected>${s("guidance_need_placeholder")}</option>${renderOptionTags("guidance_need")}</select></div><div class="field-group"><label class="form-label" for="screen_distraction">${s("distraction")}</label><select id="screen_distraction" name="screen_distraction" required><option value="" disabled selected>${s("distraction_placeholder")}</option>${renderOptionTags("screen_distraction")}</select></div><div class="field-group"><label class="form-label" for="dense_content_tolerance">${s("dense_content")}</label><select id="dense_content_tolerance" name="dense_content_tolerance" required><option value="" disabled selected>${s("dense_content_placeholder")}</option>${renderOptionTags("dense_content_tolerance")}</select></div><div class="field-group" style="margin-bottom:0"><label class="form-label" for="content_format">${s("content_format")}</label><select id="content_format" name="content_format" required><option value="" disabled selected>${s("content_format_placeholder")}</option>${renderOptionTags("content_format")}</select></div></div>`,button_label:s("continue_btn"),data:{phase:"baseline"}};
@@ -438,15 +394,7 @@
         on_load:function(){
           setPhaseBodyClass("calibration-phase");
           try{jsPsych.extensions.webgazer.resume();jsPsych.extensions.webgazer.showVideo();jsPsych.extensions.webgazer.hidePredictions();}catch(e){}
-          // Poll to ensure camera is visible and positioned — WebGazer may hide it
-          const ensureCam=setInterval(()=>{
-            const vc=document.getElementById("webgazerVideoContainer");
-            if(vc&&vc.style.display==="none"){
-              try{jsPsych.extensions.webgazer.showVideo();}catch(e){}
-            }
-          },300);
-          window._calibCamInterval=ensureCam;
-          positionVideoContainer("top-right-small");
+          positionVideoContainer();
 
           const POINTS=[[10,10],[50,10],[85,10],[10,50],[50,50],[90,50],[10,90],[50,90],[90,90]];
           const CLICKS=5, NAVY="#002957", ORANGE="#F1563F";
@@ -495,7 +443,6 @@
         },
         on_finish:function(){
           setPhaseBodyClass("");
-          if(window._calibCamInterval){clearInterval(window._calibCamInterval);window._calibCamInterval=null;}
           cleanupAfterCalibration();
         }
       };
@@ -510,7 +457,7 @@
         on_load:function(){
           setPhaseBodyClass("validation-phase");
           try{jsPsych.extensions.webgazer.resume();jsPsych.extensions.webgazer.showVideo();jsPsych.extensions.webgazer.hidePredictions();}catch(e){}
-          positionVideoContainer("bottom-left-small");
+          positionVideoContainer();
         },
         on_finish:function(){setPhaseBodyClass("");cleanupAfterCalibration();}
       };
