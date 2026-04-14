@@ -104,19 +104,12 @@
         }
 
         #webgazerVideoContainer {
-          position: fixed !important;
-          left: 24px !important;
-          top: 50% !important;
-          transform: translateY(-50%) !important;
-          width: 240px !important;
-          height: 180px !important;
-          z-index: 99999 !important;
+          /* Position and size are set by positionVideoContainer() JS function */
           border-radius: 16px !important;
           overflow: hidden !important;
-          background: #fff !important;
-          border: 1px solid var(--border) !important;
-          box-shadow: 0 10px 28px rgba(0, 41, 87, 0.12) !important;
-          display: block !important;
+          border: 1px solid #d7deea !important;
+          box-shadow: 0 6px 20px rgba(0,41,87,0.12) !important;
+          background: #000 !important;
         }
 
         #webgazerVideoFeed {
@@ -128,6 +121,12 @@
 
         #webgazerGazeDot {
           z-index: 100002 !important;
+        }
+
+        /* During calibration: camera must be BELOW dots z-index */
+        body.calibration-phase #webgazerVideoContainer,
+        body.validation-phase #webgazerVideoContainer {
+          z-index: 100 !important;
         }
 
         /* =========================
@@ -164,26 +163,12 @@
           position: relative !important;
         }
 
-        /* Camera: top-right during calibration, LOW z-index so dots are always clickable above it */
-        body.calibration-phase #webgazerVideoContainer,
-        body.validation-phase #webgazerVideoContainer {
-          left: auto !important;
-          right: 12px !important;
-          top: 12px !important;
-          transform: none !important;
-          width: 150px !important;
-          height: 112px !important;
-          z-index: 100 !important;
-          opacity: 1 !important;
-        }
-
         /* =========================
            CALIBRATION DOTS DESIGN
            Inactive = small faded pink
            Active = large dark navy + pulse
            ========================= */
 
-        /* Base style for ALL dots — jsPsych uses div with position:absolute */
         body.calibration-phase div[style*="border-radius: 50%"],
         body.validation-phase div[style*="border-radius: 50%"] {
           transition: width 0.15s ease, height 0.15s ease, background 0.15s ease !important;
@@ -191,22 +176,17 @@
         }
 
         /* =========================
-           CAMERA INIT PHASE — camera centered above content
+           CAMERA INIT PHASE
            ========================= */
-
-        body.camera-init-phase #webgazerVideoContainer {
-          left: 50% !important;
-          top: 24px !important;
-          transform: translateX(-50%) !important;
-          width: 280px !important;
-          height: 210px !important;
-        }
 
         body.camera-init-phase .jspsych-content {
           max-width: 760px;
           width: 100%;
           margin: 0 auto;
-          padding-top: 260px;
+          padding-top: 240px;
+          display: flex !important;
+          flex-direction: column;
+          align-items: center;
         }
 
         /* =========================
@@ -1097,6 +1077,51 @@
       return localStorage.getItem("recommended_ui") || "standard";
     }
 
+    function positionVideoContainer(location = "bottom-left") {
+      // WebGazer sets position:fixed;top:0;left:0 as inline style — must override via JS
+      const raf = () => {
+        const vc = document.getElementById("webgazerVideoContainer");
+        if (!vc) { requestAnimationFrame(raf); return; }
+
+        // Reset first
+        vc.style.setProperty("position", "fixed", "important");
+        vc.style.setProperty("display",  "block",  "important");
+        vc.style.setProperty("z-index",  "500",    "important");
+        vc.style.setProperty("border-radius", "16px", "important");
+        vc.style.setProperty("overflow",  "hidden", "important");
+        vc.style.setProperty("border",    "1px solid #d7deea", "important");
+        vc.style.setProperty("box-shadow","0 6px 20px rgba(0,41,87,0.12)", "important");
+        vc.style.setProperty("background","#000", "important");
+
+        if (location === "bottom-left") {
+          vc.style.setProperty("width",  "220px", "important");
+          vc.style.setProperty("height", "165px", "important");
+          vc.style.setProperty("left",   "20px", "important");
+          vc.style.setProperty("top",    "auto", "important");
+          vc.style.setProperty("bottom", "20px", "important");
+          vc.style.setProperty("right",  "auto", "important");
+          vc.style.setProperty("transform", "none", "important");
+        } else if (location === "top-right-small") {
+          vc.style.setProperty("width",  "148px", "important");
+          vc.style.setProperty("height", "111px", "important");
+          vc.style.setProperty("right",  "14px", "important");
+          vc.style.setProperty("top",    "14px", "important");
+          vc.style.setProperty("left",   "auto", "important");
+          vc.style.setProperty("bottom", "auto", "important");
+          vc.style.setProperty("transform", "none", "important");
+        } else if (location === "center-top") {
+          vc.style.setProperty("width",  "260px", "important");
+          vc.style.setProperty("height", "195px", "important");
+          vc.style.setProperty("left",   "50%", "important");
+          vc.style.setProperty("top",    "20px", "important");
+          vc.style.setProperty("bottom", "auto", "important");
+          vc.style.setProperty("right",  "auto", "important");
+          vc.style.setProperty("transform", "translateX(-50%)", "important");
+        }
+      };
+      requestAnimationFrame(raf);
+    }
+
     function showSideCamera(showPredictions = false) {
       document.body.classList.add("has-side-camera");
 
@@ -1112,6 +1137,7 @@
       } catch (e) {
         console.error("showSideCamera error:", e);
       }
+      positionVideoContainer("bottom-left");
     }
 
     function hideSideCamera() {
@@ -1127,7 +1153,6 @@
 
     function showCenteredCameraNoPredictions() {
       document.body.classList.remove("has-side-camera");
-
       try {
         jsPsych.extensions.webgazer.resume();
         jsPsych.extensions.webgazer.showVideo();
@@ -1135,6 +1160,7 @@
       } catch (e) {
         console.error("showCenteredCameraNoPredictions error:", e);
       }
+      positionVideoContainer("center-top");
     }
 
     function safeHideGazeUI() {
@@ -1146,6 +1172,7 @@
       } catch (e) {
         console.error("safeHideGazeUI error:", e);
       }
+      positionVideoContainer("bottom-left");
     }
 
     function setPhaseBodyClass(phaseClass = "") {
@@ -1593,6 +1620,7 @@
             jsPsych.extensions.webgazer.showVideo();
             jsPsych.extensions.webgazer.hidePredictions();
           } catch(e) {}
+          positionVideoContainer("top-right-small");
 
           // ── Configuration ──────────────────────────────────────────
           const POINTS_PERCENT = [
