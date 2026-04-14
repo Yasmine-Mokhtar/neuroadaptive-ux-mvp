@@ -128,8 +128,8 @@
         }
 
         /* =========================
-           CALIBRATION / VALIDATION
-           Full viewport, camera top-right
+           CALIBRATION / VALIDATION — TRUE FULL SCREEN
+           No card wrapper, dots cover entire viewport
            ========================= */
 
         body.calibration-phase,
@@ -138,25 +138,30 @@
           background: #f4f7fb;
         }
 
-        /* CRITICAL FIX: calibration must use full viewport */
+        /* Force everything full viewport during calibration */
+        body.calibration-phase .jspsych-display-element,
+        body.validation-phase .jspsych-display-element,
         body.calibration-phase .jspsych-content-wrapper,
         body.validation-phase .jspsych-content-wrapper {
           width: 100vw !important;
           max-width: 100vw !important;
+          height: 100vh !important;
           padding: 0 !important;
           margin: 0 !important;
+          overflow: hidden !important;
         }
 
         body.calibration-phase .jspsych-content,
         body.validation-phase .jspsych-content {
           max-width: 100vw !important;
           width: 100vw !important;
+          height: 100vh !important;
           margin: 0 !important;
           padding: 0 !important;
-          min-height: 100vh !important;
+          position: relative !important;
         }
 
-        /* Camera: small, top-right, out of the way of dots */
+        /* Camera: small, top-right corner */
         body.calibration-phase #webgazerVideoContainer,
         body.validation-phase #webgazerVideoContainer {
           left: auto !important;
@@ -169,63 +174,16 @@
         }
 
         /* =========================
-           CUSTOM CALIBRATION DOTS
-           Inactive = small faded pink circle
-           Active (current) = large dark navy circle
+           CALIBRATION DOTS DESIGN
+           Inactive = small faded pink
+           Active = large dark navy + pulse
            ========================= */
 
-        /* All dots — faded pink, small */
-        .jspsych-webgazer-calibrate-dot,
-        .jspsych-webgazer-validate-dot,
-        .calibration-point,
-        [id^="calibration-point-"] {
-          width: 18px !important;
-          height: 18px !important;
-          border-radius: 50% !important;
-          background: rgba(241, 86, 63, 0.28) !important;
-          border: none !important;
-          box-shadow: none !important;
+        /* Base style for ALL dots — jsPsych uses div with position:absolute */
+        body.calibration-phase div[style*="border-radius: 50%"],
+        body.validation-phase div[style*="border-radius: 50%"] {
+          transition: width 0.15s ease, height 0.15s ease, background 0.15s ease !important;
           cursor: pointer !important;
-          transition: all 0.2s ease !important;
-          animation: none !important;
-        }
-
-        /* Active dot — the one currently being clicked, highlighted by jsPsych */
-        /* jsPsych sets background color directly on the active dot via JS, we override */
-        .jspsych-webgazer-calibrate-dot[style*="rgb(255"],
-        .jspsych-webgazer-calibrate-dot[style*="#ff"],
-        .jspsych-webgazer-calibrate-dot[style*="red"],
-        .calibration-point[style*="rgb(255"],
-        .calibration-point[style*="#ff"],
-        [id^="calibration-point-"].active {
-          width: 32px !important;
-          height: 32px !important;
-          background: #002957 !important;
-          border: 3px solid rgba(0, 41, 87, 0.2) !important;
-          box-shadow: 0 0 0 8px rgba(0, 41, 87, 0.08) !important;
-          animation: activePulse 1.2s ease-in-out infinite !important;
-        }
-
-        @keyframes activePulse {
-          0%, 100% { box-shadow: 0 0 0 6px rgba(0, 41, 87, 0.1); }
-          50%       { box-shadow: 0 0 0 14px rgba(0, 41, 87, 0.05); }
-        }
-
-        /* Progress label */
-        #calibration-progress-label,
-        .calibration-progress {
-          position: fixed !important;
-          bottom: 28px !important;
-          left: 50% !important;
-          transform: translateX(-50%) !important;
-          font-size: 16px !important;
-          color: var(--muted) !important;
-          font-family: Arial, sans-serif !important;
-          font-weight: 600 !important;
-          background: rgba(255,255,255,0.85) !important;
-          padding: 6px 16px !important;
-          border-radius: 999px !important;
-          border: 1px solid var(--border) !important;
         }
 
         /* =========================
@@ -1638,25 +1596,37 @@
             jsPsych.extensions.webgazer.hidePredictions();
           } catch(e) {}
 
-          // Watch for the active dot (jsPsych makes it visible one at a time)
-          // and apply our custom active style
-          const observer = new MutationObserver(() => {
-            const allDots = document.querySelectorAll(
-              '.jspsych-webgazer-calibrate-dot, .calibration-point, [id^="calibration-point-"]'
+          // jsPsych WebGazer calibrate plugin renders dots as absolutely-positioned divs.
+          // The ACTIVE dot is the one currently shown (opacity 1, or display not none).
+          // All other dots are hidden (opacity 0 or display none) until their turn.
+          // We use a MutationObserver to apply our custom styles whenever a dot changes.
+          function styleAllDots() {
+            // Try multiple possible selectors — jsPsych source uses different class names
+            const dots = document.querySelectorAll(
+              '#jspsych-webgazer-calibrate-container div[style*="border-radius"],' +
+              '#webgazer-calibrate-container div[style*="border-radius"],' +
+              '.jspsych-webgazer-calibrate-dot,' +
+              '[id^="calibration-point"]'
             );
-            allDots.forEach(dot => {
-              const style = dot.getAttribute("style") || "";
-              const isActive = style.includes("opacity: 1") || style.includes("opacity:1") ||
-                               dot.style.opacity === "1";
-              if (isActive) {
+
+            dots.forEach(dot => {
+              const opacity = parseFloat(dot.style.opacity);
+              const display = dot.style.display;
+              const isVisible = display !== "none" && (isNaN(opacity) || opacity > 0.5);
+
+              if (isVisible) {
+                // ACTIVE dot
                 dot.style.width = "32px";
                 dot.style.height = "32px";
                 dot.style.background = "#002957";
-                dot.style.border = "3px solid rgba(0,41,87,0.2)";
-                dot.style.boxShadow = "0 0 0 8px rgba(0,41,87,0.08)";
+                dot.style.border = "3px solid rgba(0,41,87,0.18)";
+                dot.style.boxShadow = "0 0 0 10px rgba(0,41,87,0.07), 0 0 0 20px rgba(0,41,87,0.03)";
                 dot.style.borderRadius = "50%";
                 dot.style.cursor = "pointer";
+                dot.style.transform = "translate(-50%, -50%)";
+                dot.style.transition = "width 0.15s ease, height 0.15s ease";
               } else {
+                // INACTIVE dot — only style if we can actually reach it
                 dot.style.width = "18px";
                 dot.style.height = "18px";
                 dot.style.background = "rgba(241,86,63,0.28)";
@@ -1664,16 +1634,41 @@
                 dot.style.boxShadow = "none";
                 dot.style.borderRadius = "50%";
                 dot.style.cursor = "pointer";
+                dot.style.transform = "translate(-50%, -50%)";
               }
             });
-          });
+          }
 
-          observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["style"] });
+          const observer = new MutationObserver(styleAllDots);
+          observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ["style"]
+          });
           window._calibObserver = observer;
+
+          // Add a progress label at the bottom
+          const label = document.createElement("div");
+          label.id = "calib-hint";
+          label.style.cssText = `
+            position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
+            background: rgba(255,255,255,0.92); border: 1px solid #d7deea;
+            border-radius: 999px; padding: 8px 20px; font-size: 15px;
+            font-weight: 600; color: #667085; font-family: Arial, sans-serif;
+            z-index: 99998; pointer-events: none;
+          `;
+          label.textContent = "Look at the dark dot and click it";
+          document.body.appendChild(label);
+
+          // Run once immediately after DOM settles
+          setTimeout(styleAllDots, 100);
         },
         on_finish: function() {
           setPhaseBodyClass("");
           if (window._calibObserver) { window._calibObserver.disconnect(); window._calibObserver = null; }
+          const hint = document.getElementById("calib-hint");
+          if (hint) hint.remove();
           cleanupAfterCalibration();
         }
       };
@@ -1710,9 +1705,45 @@
             jsPsych.extensions.webgazer.showVideo();
             jsPsych.extensions.webgazer.hidePredictions();
           } catch(e) {}
+
+          function styleValidationDots() {
+            const dots = document.querySelectorAll(
+              '#jspsych-webgazer-validate-container div[style*="border-radius"],' +
+              '#webgazer-validate-container div[style*="border-radius"],' +
+              '.jspsych-webgazer-validate-dot'
+            );
+            dots.forEach(dot => {
+              const opacity = parseFloat(dot.style.opacity);
+              const display = dot.style.display;
+              const isVisible = display !== "none" && (isNaN(opacity) || opacity > 0.5);
+              if (isVisible) {
+                dot.style.width = "32px";
+                dot.style.height = "32px";
+                dot.style.background = "#002957";
+                dot.style.border = "3px solid rgba(0,41,87,0.18)";
+                dot.style.boxShadow = "0 0 0 10px rgba(0,41,87,0.07)";
+                dot.style.borderRadius = "50%";
+                dot.style.transform = "translate(-50%, -50%)";
+              } else {
+                dot.style.width = "18px";
+                dot.style.height = "18px";
+                dot.style.background = "rgba(241,86,63,0.28)";
+                dot.style.border = "none";
+                dot.style.boxShadow = "none";
+                dot.style.borderRadius = "50%";
+                dot.style.transform = "translate(-50%, -50%)";
+              }
+            });
+          }
+
+          const vObs = new MutationObserver(styleValidationDots);
+          vObs.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ["style"] });
+          window._validObserver = vObs;
+          setTimeout(styleValidationDots, 100);
         },
         on_finish: function() {
           setPhaseBodyClass("");
+          if (window._validObserver) { window._validObserver.disconnect(); window._validObserver = null; }
           cleanupAfterCalibration();
         }
       };
