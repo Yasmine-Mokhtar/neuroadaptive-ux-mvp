@@ -1440,42 +1440,42 @@ body.camera-init-phase .jspsych-content .card {
       };
 
       const validationIntro = {
-        type:jsPsychHtmlButtonResponse,
-        stimulus:`
-          <div class="card">
-            <h2>${s("validation_title")}</h2>
-            <p>${s("validation_text")}</p>
-          </div>
-        `,
-        choices:[s("continue_btn")],
-        data:{phase:"validation_intro"}
-      };
+  type: jsPsychHtmlButtonResponse,
+  stimulus: `
+    <div class="card">
+      <h2>${s("validation_title")}</h2>
+      <p>Look at the center dot and keep your head still for a few seconds.</p>
+    </div>
+  `,
+  choices: [s("continue_btn")],
+  data: { phase: "validation_intro" }
+};
 
       const validation = {
-        type:jsPsychWebgazerValidate,
-        validation_points:CALIBRATION_POINTS,
-        validation_point_coordinates:"percent",
-        roi_radius:180,
-        randomize_validation_order:false,
-        time_to_saccade:1000,
-        validation_duration:1800,
-        point_size:26,
-        show_validation_data:false,
-        data:{phase:"validation"},
-        on_load:function(){
-          setPhaseBodyClass("validation-phase");
-          try{
-            jsPsych.extensions.webgazer.resume();
-            jsPsych.extensions.webgazer.showVideo();
-            jsPsych.extensions.webgazer.hidePredictions();
-          }catch(e){}
-          positionVideoContainer();
-        },
-        on_finish:function(){
-          setPhaseBodyClass("");
-          cleanupAfterCalibration();
-        }
-      };
+  type: jsPsychWebgazerValidate,
+  validation_points: [[50, 50]],
+  validation_point_coordinates: "percent",
+  roi_radius: 180,
+  randomize_validation_order: false,
+  time_to_saccade: 800,
+  validation_duration: 5000,
+  point_size: 24,
+  show_validation_data: false,
+  data: { phase: "validation" },
+  on_load: function () {
+    setPhaseBodyClass("validation-phase");
+    try {
+      jsPsych.extensions.webgazer.resume();
+      jsPsych.extensions.webgazer.showVideo();
+      jsPsych.extensions.webgazer.hidePredictions();
+    } catch (e) {}
+    positionVideoContainer();
+  },
+  on_finish: function () {
+    setPhaseBodyClass("");
+    cleanupAfterCalibration();
+  }
+};
 
       const validationSummary = {
         type:jsPsychHtmlButtonResponse,
