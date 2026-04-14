@@ -1476,13 +1476,14 @@ body.camera-init-phase .jspsych-content .card {
   data: { phase: "validation_intro" }
 };
 
-      const validation = {
+const validation = {
   type: jsPsychHtmlButtonResponse,
   stimulus: `
     <div id="center-validation-root" style="position:fixed;inset:0;background:var(--bg);z-index:200;"></div>
   `,
   choices: [],
   data: { phase: "validation_custom" },
+
   on_load: function () {
     setPhaseBodyClass("validation-phase");
 
@@ -1490,6 +1491,7 @@ body.camera-init-phase .jspsych-content .card {
       jsPsych.extensions.webgazer.resume();
       jsPsych.extensions.webgazer.showVideo();
       jsPsych.extensions.webgazer.hidePredictions();
+      jsPsych.extensions.webgazer.startSampleInterval(GAZE_SAMPLE_MS);
     } catch (e) {}
 
     positionVideoContainer();
@@ -1498,7 +1500,7 @@ body.camera-init-phase .jspsych-content .card {
     const durationMs = 5000;
     const roiRadius = 140;
     const cx = Math.round(window.innerWidth * 0.5);
-    const cy = Math.round(window.innerHeight * 0.62);
+    const cy = Math.round(window.innerHeight * 0.5);
 
     const samples = [];
     const bluePoints = [];
@@ -1543,7 +1545,7 @@ body.camera-init-phase .jspsych-content .card {
       : "Look at the center dot and keep still";
     root.appendChild(hint);
 
-    const cancelGazeHandler = jsPsych.extensions.webgazer.onGazeUpdate(function (prediction) {
+    this._cancelGazeHandler = jsPsych.extensions.webgazer.onGazeUpdate((prediction) => {
       if (!prediction || !Number.isFinite(prediction.x) || !Number.isFinite(prediction.y)) return;
 
       samples.push({
@@ -1569,15 +1571,13 @@ body.camera-init-phase .jspsych-content .card {
       root.appendChild(p);
       bluePoints.push(p);
 
-      if (bluePoints.length > 160) {
+      if (bluePoints.length > 250) {
         const old = bluePoints.shift();
         old?.remove();
       }
     });
 
     this._validationTimer = setTimeout(() => {
-      try { cancelGazeHandler(); } catch (e) {}
-
       const metrics = computeCenterValidationMetrics(samples, cx, cy, roiRadius, durationMs);
 
       jsPsych.finishTrial({
@@ -1587,10 +1587,17 @@ body.camera-init-phase .jspsych-content .card {
       });
     }, durationMs);
   },
+
   on_finish: function () {
     if (this._validationTimer) {
       clearTimeout(this._validationTimer);
     }
+
+    try {
+      if (this._cancelGazeHandler) this._cancelGazeHandler();
+      jsPsych.extensions.webgazer.stopSampleInterval();
+    } catch (e) {}
+
     setPhaseBodyClass("");
     cleanupAfterCalibration();
   }
