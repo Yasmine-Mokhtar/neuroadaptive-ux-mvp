@@ -121,16 +121,9 @@
 
         #webgazerVideoFeed {
           display: block !important;
-          transform: scaleX(-1) !important; /* mirror so it feels natural */
           width: 100% !important;
           height: 100% !important;
           object-fit: cover !important;
-        }
-
-        /* Face tracking overlay also needs to be mirrored */
-        #webgazerFaceOverlay,
-        #webgazerFaceFeedbackBox {
-          transform: scaleX(-1) !important;
         }
 
         #webgazerGazeDot {
@@ -171,17 +164,17 @@
           position: relative !important;
         }
 
-        /* Camera: top-center during calibration so it doesn't block corner dots */
+        /* Camera: top-right during calibration, LOW z-index so dots are always clickable above it */
         body.calibration-phase #webgazerVideoContainer,
         body.validation-phase #webgazerVideoContainer {
-          left: 50% !important;
-          right: auto !important;
+          left: auto !important;
+          right: 12px !important;
           top: 12px !important;
-          transform: translateX(-50%) !important;
-          width: 180px !important;
-          height: 135px !important;
-          z-index: 100000 !important;
-          opacity: 0.85 !important;
+          transform: none !important;
+          width: 150px !important;
+          height: 112px !important;
+          z-index: 100 !important;
+          opacity: 1 !important;
         }
 
         /* =========================
@@ -1590,7 +1583,7 @@
 
       const calibration = {
         type: jsPsychHtmlButtonResponse,
-        stimulus: `<div id="custom-calib-root" style="position:fixed;inset:0;background:#f4f7fb;z-index:9000;"></div>`,
+        stimulus: `<div id="custom-calib-root" style="position:fixed;inset:0;background:#f4f7fb;z-index:200;"></div>`,
         choices: [],
         data: { phase: "calibration" },
         on_load: function() {
@@ -1603,7 +1596,7 @@
 
           // ── Configuration ──────────────────────────────────────────
           const POINTS_PERCENT = [
-            [10,10],[50,10],[90,10],
+            [10,10],[50,10],[85,10],   // top row: shift right-top inward from camera
             [10,50],[50,50],[90,50],
             [10,90],[50,90],[90,90]
           ];
@@ -1627,7 +1620,7 @@
             background:rgba(255,255,255,0.93); border:1px solid #d7deea;
             border-radius:999px; padding:9px 22px; font-size:15px;
             font-weight:600; color:#667085; font-family:Arial,sans-serif;
-            z-index:9999; pointer-events:none; white-space:nowrap;
+            z-index:999999; pointer-events:none; white-space:nowrap;
           `;
           hint.textContent = s("calib_hint") || "Look at the dot and click it 5 times";
           root.appendChild(hint);
@@ -1639,7 +1632,7 @@
             background:rgba(255,255,255,0.93); border:1px solid #d7deea;
             border-radius:999px; padding:7px 18px; font-size:14px;
             font-weight:700; color:#002957; font-family:Arial,sans-serif;
-            z-index:9999; pointer-events:none;
+            z-index:999999; pointer-events:none;
           `;
           root.appendChild(counter);
 
@@ -1658,7 +1651,7 @@
               transition: background 0.18s ease, opacity 0.18s ease,
                           width 0.15s ease, height 0.15s ease,
                           box-shadow 0.18s ease;
-              z-index:9998;
+              z-index:99999;
               box-sizing:border-box;
             `;
             d.addEventListener("click", () => onDotClick(i));
@@ -1730,13 +1723,25 @@
 
             clickCounts[idx]++;
 
-            // Feed click to WebGazer for calibration
+            // Feed click to WebGazer for calibration using jsPsych extension API
             try {
               const pt = POINTS_PERCENT[idx];
               const x = Math.round(pt[0] / 100 * window.innerWidth);
               const y = Math.round(pt[1] / 100 * window.innerHeight);
-              window.webgazer?.recordScreenPosition?.(x, y, "click");
-            } catch(e) {}
+              // Try jsPsych extension first, then fall back to window.webgazer directly
+              if (jsPsych.extensions.webgazer) {
+                jsPsych.extensions.webgazer.calibrateWithPoint(x, y);
+              } else {
+                window.webgazer?.recordScreenPosition?.(x, y, "click");
+              }
+            } catch(e) {
+              try {
+                const pt = POINTS_PERCENT[idx];
+                const x = Math.round(pt[0] / 100 * window.innerWidth);
+                const y = Math.round(pt[1] / 100 * window.innerHeight);
+                window.webgazer?.recordScreenPosition?.(x, y, "click");
+              } catch(e2) {}
+            }
 
             renderDots();
             updateCounter();
