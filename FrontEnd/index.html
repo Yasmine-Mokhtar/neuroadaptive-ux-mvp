@@ -1152,6 +1152,31 @@ body.camera-init-phase .jspsych-content .card {
       try{ window.webgazer?.clearData?.(); }catch(_){}
     }
 
+    function computeCenterValidationMetrics(samples, cx, cy, roiRadius = 140, durationMs = 5000) {
+  const valid = (samples || []).filter(
+    s => Number.isFinite(s.x) && Number.isFinite(s.y)
+  );
+
+  const distances = valid.map(s => Math.hypot(s.x - cx, s.y - cy));
+  const inROI = distances.filter(d => d <= roiRadius).length;
+
+  return {
+    raw_samples: valid,
+    total_samples: valid.length,
+    percent_in_roi: valid.length ? Number(((inROI / valid.length) * 100).toFixed(2)) : 0,
+    samples_per_sec: valid.length ? Number((valid.length / (durationMs / 1000)).toFixed(2)) : 0,
+    avg_offset_px: valid.length
+      ? Number((
+          valid.reduce((sum, s) => sum + Math.hypot(s.x - cx, s.y - cy), 0) / valid.length
+        ).toFixed(2))
+      : null,
+    center_x: cx,
+    center_y: cy,
+    roi_radius: roiRadius,
+    duration_ms: durationMs
+  };
+}
+
     function startExperiment(lang){
       currentLang = lang;
       document.body.innerHTML = "";
@@ -1452,57 +1477,155 @@ body.camera-init-phase .jspsych-content .card {
 };
 
       const validation = {
-  type: jsPsychWebgazerValidate,
-  validation_points: [[50, 50]],
-  validation_point_coordinates: "percent",
-  roi_radius: 180,
-  randomize_validation_order: false,
-  time_to_saccade: 800,
-  validation_duration: 5000,
-  point_size: 24,
-  show_validation_data: false,
-  data: { phase: "validation" },
+  type: jsPsychHtmlButtonResponse,
+  stimulus: `
+    <div id="center-validation-root" style="position:fixed;inset:0;background:var(--bg);z-index:200;"></div>
+  `,
+  choices: [],
+  data: { phase: "validation_custom" },
   on_load: function () {
     setPhaseBodyClass("validation-phase");
+
     try {
       jsPsych.extensions.webgazer.resume();
       jsPsych.extensions.webgazer.showVideo();
       jsPsych.extensions.webgazer.hidePredictions();
     } catch (e) {}
+
     positionVideoContainer();
+
+    const root = document.getElementById("center-validation-root");
+    const durationMs = 5000;
+    const roiRadius = 140;
+    const cx = Math.round(window.innerWidth * 0.5);
+    const cy = Math.round(window.innerHeight * 0.62);
+
+    const samples = [];
+    const bluePoints = [];
+
+    const centerDot = document.createElement("div");
+    centerDot.style.cssText = `
+      position:fixed;
+      left:${cx}px;
+      top:${cy}px;
+      width:22px;
+      height:22px;
+      transform:translate(-50%,-50%);
+      border-radius:50%;
+      background:#F1563F;
+      border:2px solid rgba(0,41,87,0.85);
+      box-shadow:0 0 0 8px rgba(241,86,63,0.15);
+      z-index:99999;
+      pointer-events:none;
+    `;
+    root.appendChild(centerDot);
+
+    const hint = document.createElement("div");
+    hint.style.cssText = `
+      position:fixed;
+      top:14px;
+      left:50%;
+      transform:translateX(-50%);
+      background:rgba(255,255,255,0.94);
+      border:1px solid #d7deea;
+      border-radius:999px;
+      padding:8px 22px;
+      font-size:15px;
+      font-weight:600;
+      color:#667085;
+      font-family:Arial,sans-serif;
+      z-index:99999;
+      pointer-events:none;
+      white-space:nowrap;
+    `;
+    hint.textContent = currentLang === "fi"
+      ? "Katso keskimmäistä pistettä paikallasi"
+      : "Look at the center dot and keep still";
+    root.appendChild(hint);
+
+    const cancelGazeHandler = jsPsych.extensions.webgazer.onGazeUpdate(function (prediction) {
+      if (!prediction || !Number.isFinite(prediction.x) || !Number.isFinite(prediction.y)) return;
+
+      samples.push({
+        x: prediction.x,
+        y: prediction.y,
+        t: prediction.t ?? performance.now()
+      });
+
+      const p = document.createElement("div");
+      p.style.cssText = `
+        position:fixed;
+        left:${prediction.x}px;
+        top:${prediction.y}px;
+        width:8px;
+        height:8px;
+        transform:translate(-50%,-50%);
+        border-radius:50%;
+        background:#002957;
+        opacity:0.78;
+        z-index:99998;
+        pointer-events:none;
+      `;
+      root.appendChild(p);
+      bluePoints.push(p);
+
+      if (bluePoints.length > 160) {
+        const old = bluePoints.shift();
+        old?.remove();
+      }
+    });
+
+    this._validationTimer = setTimeout(() => {
+      try { cancelGazeHandler(); } catch (e) {}
+
+      const metrics = computeCenterValidationMetrics(samples, cx, cy, roiRadius, durationMs);
+
+      jsPsych.finishTrial({
+        phase: "validation_custom",
+        validation_type: "center-dot",
+        ...metrics
+      });
+    }, durationMs);
   },
   on_finish: function () {
+    if (this._validationTimer) {
+      clearTimeout(this._validationTimer);
+    }
     setPhaseBodyClass("");
     cleanupAfterCalibration();
   }
 };
 
       const validationSummary = {
-        type:jsPsychHtmlButtonResponse,
-        stimulus:function(){
-          const vt = jsPsych.data.get().filter({phase:"validation"}).last(1).values()[0] || {};
-          const avgROI = averageArray(vt.percent_in_roi);
-          const sps = Number.isFinite(vt.samples_per_sec) ? Number(vt.samples_per_sec.toFixed(2)) : null;
-          const good = avgROI !== null && avgROI >= 50;
+  type: jsPsychHtmlButtonResponse,
+  stimulus: function () {
+    const vt = jsPsych.data.get().filter({ phase: "validation_custom" }).last(1).values()[0] || {};
+    const avgROI = Number.isFinite(vt.percent_in_roi) ? vt.percent_in_roi : 0;
+    const sps = Number.isFinite(vt.samples_per_sec) ? vt.samples_per_sec : 0;
+    const avgOffset = Number.isFinite(vt.avg_offset_px) ? vt.avg_offset_px : null;
 
-          return `
-            <div class="card">
-              <h2>${s("validation_summary_title")}</h2>
-              <div class="validation-box">
-                <div class="metric-list">
-                  <div class="metric-line"><strong>${s("validation_avg_roi")}:</strong> ${avgROI !== null ? `${avgROI}%` : "-"}</div>
-                  <div class="metric-line"><strong>${s("validation_samples_per_sec")}:</strong> ${sps !== null ? sps : "-"}</div>
-                </div>
-              </div>
-              <p class="small-note ${good ? "status-ok" : "status-fallback"}">
-                ${good ? s("validation_quality_good") : s("validation_quality_warn")}
-              </p>
-            </div>
-          `;
-        },
-        choices:[s("continue_btn")],
-        data:{phase:"validation_summary"}
-      };
+    const good = avgROI >= 50;
+
+    return `
+      <div class="card">
+        <h2>${s("validation_summary_title")}</h2>
+        <div class="validation-box">
+          <div class="metric-list">
+            <div class="metric-line"><strong>${s("validation_avg_roi")}:</strong> ${avgROI}%</div>
+            <div class="metric-line"><strong>${s("validation_samples_per_sec")}:</strong> ${sps}</div>
+            <div class="metric-line"><strong>Average offset from center:</strong> ${avgOffset !== null ? `${avgOffset}px` : "-"}</div>
+          </div>
+        </div>
+        <p class="small-note ${good ? "status-ok" : "status-fallback"}">
+          ${good ? s("validation_quality_good") : s("validation_quality_warn")}
+        </p>
+      </div>
+    `;
+  },
+  choices: [s("continue_btn")],
+  data: { phase: "validation_summary" }
+};
+
 
       const task1Intro = {
         type:jsPsychHtmlButtonResponse,
