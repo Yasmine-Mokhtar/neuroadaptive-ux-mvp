@@ -49,8 +49,8 @@
         body.calibration-phase .jspsych-content,body.validation-phase .jspsych-content{max-width:100vw!important;width:100vw!important;height:100vh!important;margin:0!important;padding:0!important;}
         body.calibration-phase #webgazerVideoContainer,body.validation-phase #webgazerVideoContainer{z-index:100!important;}
 
-        /* Camera init */
-        body.camera-init-phase .jspsych-content{padding-top:290px;}
+        /* Camera init — padding set dynamically by JS */
+        /* body.camera-init-phase padding is intentionally NOT set here */
 
         /* Cards */
         .card,.form-card{max-width:760px;margin:0 auto;background:var(--card);border:1px solid var(--border);border-radius:24px;padding:36px;box-shadow:0 10px 28px rgba(0,41,87,0.06);text-align:left;}
@@ -257,10 +257,20 @@
           set("top","auto"); set("right","auto");
           set("transform","none"); set("z-index","500");
         } else if (loc==="top-right-small") {
+          // During calibration: small camera top-right, z-index 100 (below dots at 99999)
+          // CSS rule body.calibration-phase already sets z-index:100 — consistent
           set("width","150px"); set("height","112px");
           set("right","14px"); set("top","14px");
           set("left","auto"); set("bottom","auto");
           set("transform","none"); set("z-index","100");
+          set("display","block");
+        } else if (loc==="bottom-left-small") {
+          // During validation intro/check: small camera bottom-left, out of the way
+          set("width","160px"); set("height","120px");
+          set("left","16px"); set("bottom","16px");
+          set("top","auto"); set("right","auto");
+          set("transform","none"); set("z-index","500");
+          set("display","block");
         } else if (loc==="center-top") {
           set("left","50%"); set("top","16px");
           set("right","auto"); set("bottom","auto");
@@ -408,7 +418,12 @@
             setTimeout(tryPad,300);
           },80);
         },
-        on_finish:function(){setPhaseBodyClass("");}
+        on_finish:function(){
+          setPhaseBodyClass("");
+          // Reset any padding we set — next screens must not inherit it
+          const content=document.querySelector(".jspsych-content");
+          if(content) content.style.paddingTop="";
+        }
       };
 
       const baseline={type:jsPsychSurveyHtmlForm,html:`<div class="form-card"><h2>${s("baseline_title")}</h2><p>${s("baseline_text")}</p><div class="field-group"><label class="form-label" for="age_group">${s("age_group")}</label><select id="age_group" name="age_group" required><option value="" disabled selected>${s("age_placeholder")}</option>${renderOptionTags("age_group")}</select></div><div class="field-group"><label class="form-label" for="digital_confidence">${s("digital_conf")}</label><select id="digital_confidence" name="digital_confidence" required><option value="" disabled selected>${s("digital_conf_placeholder")}</option>${renderOptionTags("digital_confidence")}</select></div><div class="field-group"><label class="form-label" for="page_style">${s("page_style")}</label><select id="page_style" name="page_style" required><option value="" disabled selected>${s("page_style_placeholder")}</option>${renderOptionTags("page_style")}</select></div><div class="field-group"><label class="form-label" for="guidance_need">${s("guidance_need")}</label><select id="guidance_need" name="guidance_need" required><option value="" disabled selected>${s("guidance_need_placeholder")}</option>${renderOptionTags("guidance_need")}</select></div><div class="field-group"><label class="form-label" for="screen_distraction">${s("distraction")}</label><select id="screen_distraction" name="screen_distraction" required><option value="" disabled selected>${s("distraction_placeholder")}</option>${renderOptionTags("screen_distraction")}</select></div><div class="field-group"><label class="form-label" for="dense_content_tolerance">${s("dense_content")}</label><select id="dense_content_tolerance" name="dense_content_tolerance" required><option value="" disabled selected>${s("dense_content_placeholder")}</option>${renderOptionTags("dense_content_tolerance")}</select></div><div class="field-group" style="margin-bottom:0"><label class="form-label" for="content_format">${s("content_format")}</label><select id="content_format" name="content_format" required><option value="" disabled selected>${s("content_format_placeholder")}</option>${renderOptionTags("content_format")}</select></div></div>`,button_label:s("continue_btn"),data:{phase:"baseline"}};
@@ -423,6 +438,14 @@
         on_load:function(){
           setPhaseBodyClass("calibration-phase");
           try{jsPsych.extensions.webgazer.resume();jsPsych.extensions.webgazer.showVideo();jsPsych.extensions.webgazer.hidePredictions();}catch(e){}
+          // Poll to ensure camera is visible and positioned — WebGazer may hide it
+          const ensureCam=setInterval(()=>{
+            const vc=document.getElementById("webgazerVideoContainer");
+            if(vc&&vc.style.display==="none"){
+              try{jsPsych.extensions.webgazer.showVideo();}catch(e){}
+            }
+          },300);
+          window._calibCamInterval=ensureCam;
           positionVideoContainer("top-right-small");
 
           const POINTS=[[10,10],[50,10],[85,10],[10,50],[50,50],[90,50],[10,90],[50,90],[90,90]];
@@ -470,7 +493,11 @@
           }
           updateCounter();renderDots();
         },
-        on_finish:function(){setPhaseBodyClass("");cleanupAfterCalibration();}
+        on_finish:function(){
+          setPhaseBodyClass("");
+          if(window._calibCamInterval){clearInterval(window._calibCamInterval);window._calibCamInterval=null;}
+          cleanupAfterCalibration();
+        }
       };
 
       const validationIntro={type:jsPsychHtmlButtonResponse,stimulus:`<div class="card"><h2>${s("validation_title")}</h2><p>${s("validation_text")}</p></div>`,choices:[s("continue_btn")],data:{phase:"validation_intro"}};
@@ -483,7 +510,7 @@
         on_load:function(){
           setPhaseBodyClass("validation-phase");
           try{jsPsych.extensions.webgazer.resume();jsPsych.extensions.webgazer.showVideo();jsPsych.extensions.webgazer.hidePredictions();}catch(e){}
-          positionVideoContainer("top-right-small");
+          positionVideoContainer("bottom-left-small");
         },
         on_finish:function(){setPhaseBodyClass("");cleanupAfterCalibration();}
       };
