@@ -51,7 +51,7 @@
 
         /* Camera init — push content below the fixed top-center camera (150px + margin) */
         body.camera-init-phase .jspsych-content {
-          padding-top: 220px !important;
+          padding-top: 40px !important;
           display: flex !important;
           flex-direction: column;
           align-items: center;
@@ -249,7 +249,9 @@
     function yesNo(v){return v?s("yes"):s("no");}
     function getStoredUIMode(){return localStorage.getItem("recommended_ui")||"standard";}
 
-    /* ── positionVideoContainer: fixed top-center throughout entire experiment ── */
+    /* ── positionVideoContainer: fixed top-RIGHT, small, throughout experiment ──
+       Top-right keeps left/center clear for calibration dots and content.
+       160x120px — small enough not to block dots, large enough for tracking. */
     function positionVideoContainer() {
       const apply = () => {
         const vc = document.getElementById("webgazerVideoContainer");
@@ -257,15 +259,15 @@
         const set=(k,v)=>vc.style.setProperty(k,v,"important");
         set("position","fixed");
         set("display","block");
-        set("width","200px");
-        set("height","150px");
-        set("left","50%");
-        set("top","44px");  /* below jsPsych progress bar (~40px tall) */
+        set("width","160px");
+        set("height","120px");
+        set("right","12px");
+        set("top","44px");
+        set("left","auto");
         set("bottom","auto");
-        set("right","auto");
-        set("transform","translateX(-50%)");
-        set("z-index","400");   /* below calibration dots (z:99999) but above page */
-        set("border-radius","14px");
+        set("transform","none");
+        set("z-index","400");
+        set("border-radius","12px");
         set("overflow","hidden");
         set("border","1px solid #d7deea");
         set("box-shadow","0 4px 16px rgba(0,41,87,0.12)");
@@ -405,7 +407,9 @@
           positionVideoContainer();
 
           /* Points: top row at y=30% (below camera: 44px top + 150px height), rest spread */
-          const POINTS=[[10,30],[50,30],[90,30],[10,55],[50,55],[90,55],[10,82],[50,88],[90,82]];
+          /* Dots avoid top-right corner (camera at right:12px, top:44px, 160x120px)
+             top row: left=8%, center=50% only; right column stays clear of camera */
+          const POINTS=[[8,28],[50,28],[8,52],[50,52],[85,52],[8,78],[50,78],[85,78],[50,92]];
           const CLICKS=5, NAVY="#002957", ORANGE="#F1563F";
           let curIdx=0; const cnts=new Array(POINTS.length).fill(0); let finishing=false;
           const root=document.getElementById("calib-root");
