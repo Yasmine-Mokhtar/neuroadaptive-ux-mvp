@@ -175,19 +175,7 @@
           cursor: pointer !important;
         }
 
-        /* =========================
-           CAMERA INIT PHASE
-           ========================= */
-
-        body.camera-init-phase .jspsych-content {
-          max-width: 760px;
-          width: 100%;
-          margin: 0 auto;
-          padding-top: 240px;
-          display: flex !important;
-          flex-direction: column;
-          align-items: center;
-        }
+        /* camera-init-phase layout handled by initCameraTrial.on_load JS */
 
         /* =========================
            CARDS / FORMS
@@ -1079,47 +1067,47 @@
 
     function positionVideoContainer(location = "bottom-left") {
       // WebGazer sets position:fixed;top:0;left:0 as inline style — must override via JS
-      const raf = () => {
+      // We use setProperty with "important" flag to beat the inline style specificity.
+      const apply = () => {
         const vc = document.getElementById("webgazerVideoContainer");
-        if (!vc) { requestAnimationFrame(raf); return; }
+        if (!vc) return;
 
-        // Reset first
-        vc.style.setProperty("position", "fixed", "important");
-        vc.style.setProperty("display",  "block",  "important");
-        vc.style.setProperty("z-index",  "500",    "important");
-        vc.style.setProperty("border-radius", "16px", "important");
-        vc.style.setProperty("overflow",  "hidden", "important");
-        vc.style.setProperty("border",    "1px solid #d7deea", "important");
-        vc.style.setProperty("box-shadow","0 6px 20px rgba(0,41,87,0.12)", "important");
-        vc.style.setProperty("background","#000", "important");
+        // Common styles
+        vc.style.setProperty("position",      "fixed",               "important");
+        vc.style.setProperty("display",       "block",               "important");
+        vc.style.setProperty("border-radius", "16px",               "important");
+        vc.style.setProperty("overflow",      "hidden",              "important");
+        vc.style.setProperty("border",        "1px solid #d7deea",  "important");
+        vc.style.setProperty("box-shadow",    "0 6px 20px rgba(0,41,87,0.12)", "important");
+        vc.style.setProperty("background",    "#000",               "important");
 
         if (location === "bottom-left") {
-          vc.style.setProperty("width",  "220px", "important");
-          vc.style.setProperty("height", "165px", "important");
-          vc.style.setProperty("left",   "20px", "important");
-          vc.style.setProperty("top",    "auto", "important");
-          vc.style.setProperty("bottom", "20px", "important");
-          vc.style.setProperty("right",  "auto", "important");
-          vc.style.setProperty("transform", "none", "important");
+          vc.style.setProperty("width",     "200px",  "important");
+          vc.style.setProperty("height",    "150px",  "important");
+          vc.style.setProperty("left",      "16px",   "important");
+          vc.style.setProperty("bottom",    "16px",   "important");
+          vc.style.setProperty("top",       "auto",   "important");
+          vc.style.setProperty("right",     "auto",   "important");
+          vc.style.setProperty("transform", "none",   "important");
+          vc.style.setProperty("z-index",   "500",    "important");
+
         } else if (location === "top-right-small") {
-          vc.style.setProperty("width",  "148px", "important");
-          vc.style.setProperty("height", "111px", "important");
-          vc.style.setProperty("right",  "14px", "important");
-          vc.style.setProperty("top",    "14px", "important");
-          vc.style.setProperty("left",   "auto", "important");
-          vc.style.setProperty("bottom", "auto", "important");
-          vc.style.setProperty("transform", "none", "important");
-        } else if (location === "center-top") {
-          vc.style.setProperty("width",  "260px", "important");
-          vc.style.setProperty("height", "195px", "important");
-          vc.style.setProperty("left",   "50%", "important");
-          vc.style.setProperty("top",    "20px", "important");
-          vc.style.setProperty("bottom", "auto", "important");
-          vc.style.setProperty("right",  "auto", "important");
-          vc.style.setProperty("transform", "translateX(-50%)", "important");
+          // During calibration: small, top-right, LOW z-index so dots stay clickable above it
+          vc.style.setProperty("width",     "148px",  "important");
+          vc.style.setProperty("height",    "111px",  "important");
+          vc.style.setProperty("right",     "14px",   "important");
+          vc.style.setProperty("top",       "14px",   "important");
+          vc.style.setProperty("left",      "auto",   "important");
+          vc.style.setProperty("bottom",    "auto",   "important");
+          vc.style.setProperty("transform", "none",   "important");
+          vc.style.setProperty("z-index",   "100",    "important"); // below dots (z:99999)
         }
       };
-      requestAnimationFrame(raf);
+
+      // Run immediately and after a short delay (WebGazer may reset styles)
+      apply();
+      setTimeout(apply, 150);
+      setTimeout(apply, 400);
     }
 
     function showSideCamera(showPredictions = false) {
@@ -1157,10 +1145,8 @@
         jsPsych.extensions.webgazer.resume();
         jsPsych.extensions.webgazer.showVideo();
         jsPsych.extensions.webgazer.hidePredictions();
-      } catch (e) {
-        console.error("showCenteredCameraNoPredictions error:", e);
-      }
-      positionVideoContainer("center-top");
+      } catch (e) { console.error("showCenteredCameraNoPredictions error:", e); }
+      // Note: initCameraTrial.on_load handles its own video container positioning
     }
 
     function safeHideGazeUI() {
@@ -1511,7 +1497,9 @@
       const initCameraTrial = {
         type: jsPsychWebgazerInitCamera,
         instructions: `
-          <div class="card" style="margin-top: 16px;">
+          <div class="card" style="
+            max-width:620px; margin:0 auto; text-align:left;
+          ">
             <h2>${s("camera_title")}</h2>
             <p>${s("camera_text_2")}</p>
             <p class="small-note">${s("camera_text_3")}</p>
@@ -1521,7 +1509,52 @@
         data: { phase: "init_camera" },
         on_load: function() {
           setPhaseBodyClass("camera-init-phase");
-          showCenteredCameraNoPredictions();
+
+          // WebGazer init-camera plugin builds its own layout.
+          // We reposition the video container via JS after it's rendered.
+          // Use a polling approach since WebGazer sets inline styles asynchronously.
+          let attempts = 0;
+          const fixLayout = setInterval(() => {
+            const vc = document.getElementById("webgazerVideoContainer");
+            if (!vc || attempts++ > 40) { clearInterval(fixLayout); return; }
+
+            // Let WebGazer keep its natural video size (important for green box alignment)
+            // but reposition the container to top-center
+            const natW = vc.videoWidth || 320;
+            const W = Math.min(400, window.innerWidth - 40);
+            const H = Math.round(W * 0.75);
+
+            vc.style.setProperty("position", "fixed", "important");
+            vc.style.setProperty("left",   "50%",    "important");
+            vc.style.setProperty("top",    "16px",   "important");
+            vc.style.setProperty("right",  "auto",   "important");
+            vc.style.setProperty("bottom", "auto",   "important");
+            vc.style.setProperty("transform", "translateX(-50%)", "important");
+            vc.style.setProperty("width",  W + "px", "important");
+            vc.style.setProperty("height", H + "px", "important");
+            vc.style.setProperty("z-index","500",    "important");
+            vc.style.setProperty("border-radius", "16px", "important");
+            vc.style.setProperty("overflow","hidden","important");
+            vc.style.setProperty("border","1px solid #d7deea","important");
+            vc.style.setProperty("box-shadow","0 6px 20px rgba(0,41,87,0.12)","important");
+
+            // Also position the instructions card below the camera
+            const content = document.querySelector(".jspsych-content");
+            if (content) {
+              content.style.paddingTop = (H + 32) + "px";
+              content.style.display = "flex";
+              content.style.flexDirection = "column";
+              content.style.alignItems = "center";
+            }
+
+            clearInterval(fixLayout);
+          }, 80);
+
+          try {
+            jsPsych.extensions.webgazer.resume();
+            jsPsych.extensions.webgazer.showVideo();
+            jsPsych.extensions.webgazer.hidePredictions();
+          } catch(e) {}
         },
         on_finish: function() {
           setPhaseBodyClass("");
