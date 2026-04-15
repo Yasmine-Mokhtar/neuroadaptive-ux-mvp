@@ -159,7 +159,7 @@ body.camera-init-phase .jspsych-content {
 
 body.camera-init-phase .jspsych-content .card {
   margin: 0 auto !important;
-  transform: translateY(-55px) !important;
+  transform: translateY(-75px) !important;
 }
 
 body.camera-init-phase .jspsych-btn {
@@ -1245,12 +1245,13 @@ body.camera-init-phase .jspsych-btn {
       const initCameraTrial = {
         type:jsPsychWebgazerInitCamera,
         instructions:`
-          <div class="card" style="max-width:600px;margin:0 auto;">
-            <h2>${s("camera_title")}</h2>
-            <p>${s("camera_text_2")}</p>
-            <p class="small-note">${s("camera_text_3")}</p>
-          </div>
-        `,
+  <div class="card" style="max-width:600px;margin:0 auto;transform:translateY(-55px);">
+    <h2>${s("camera_title")}</h2>
+    <p>${s("camera_text_2")}</p>
+    <p class="small-note">${s("camera_text_3")}</p>
+  </div>
+`,
+
         button_text:s("continue_btn"),
         data:{phase:"init_camera"},
         on_load:function(){
@@ -1323,13 +1324,15 @@ body.camera-init-phase .jspsych-btn {
             </div>
 
             <div class="field-group" style="margin-bottom:0">
-              <label class="form-label" for="content_format">${s("content_format")}</label>
-              <select id="content_format" name="content_format" required>
-                <option value="" disabled selected>${s("content_format_placeholder")}</option>
-                ${renderOptionTags("content_format")}
-              </select>
-            </div>
-          </div>
+  <label class="form-label" for="content_format">${s("content_format")}</label>
+  <select id="content_format" name="content_format" required>
+    <option value="" disabled selected>${s("content_format_placeholder")}</option>
+    ${renderOptionTags("content_format")}
+  </select>
+</div>
+
+<div style="height:24px;"></div>
+</div>
         `,
         button_label:s("continue_btn"),
         data:{phase:"baseline"}
