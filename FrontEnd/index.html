@@ -147,10 +147,9 @@
         }
 
         /* Camera init */
+/* Camera init */
 body.camera-init-phase .jspsych-content {
   padding-top: 0 !important;
-  position: relative !important;
-  top: -120px !important;
   display: flex !important;
   flex-direction: column;
   align-items: center;
@@ -160,6 +159,11 @@ body.camera-init-phase .jspsych-content {
 
 body.camera-init-phase .jspsych-content .card {
   margin: 0 auto !important;
+  transform: translateY(-55px) !important;
+}
+
+body.camera-init-phase .jspsych-btn {
+  margin-top: -20px !important;
 }
 
         /* Cards */
@@ -308,18 +312,18 @@ body.camera-init-phase .jspsych-content .card {
         }
 
         .jspsych-survey-html-form .jspsych-btn {
-        display: block;
-        margin: 64px auto 0 !important;
-        min-width: 170px;
-        }
+  display: block;
+  margin: 28px auto 0 !important;
+  min-width: 170px;
+}
 
-        #jspsych-survey-html-form-next {
-        margin-top: 64px !important;
-        }
+#jspsych-survey-html-form-next {
+  margin-top: 0 !important;
+}
 
-        .form-card {
-        padding-bottom: 48px !important;
-        }
+.form-card {
+  padding-bottom: 36px !important;
+}
 
         .jspsych-survey-multi-choice-question {
           max-width:760px;
