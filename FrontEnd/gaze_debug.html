@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
     <title>Gaze Debug View</title>
 
-    <link rel="icon" href="data:," />
+    <link href="data:," rel="icon"/>
 
     <script src="https://cdn.jsdelivr.net/npm/heatmap.js@2.0.5/build/heatmap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -214,23 +214,43 @@
         }
 
         .btn {
-          display: inline-block;
-          background: var(--primary);
-          color: #fff;
-          border: none;
-          border-radius: 12px;
-          padding: 12px 20px;
-          font-size: 16px;
-          font-weight: 700;
-          cursor: pointer;
-          text-decoration: none;
-        }
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 56px;
+  min-width: 170px;
+  background: var(--primary);
+  color: #fff;
+  border: none;
+  border-radius: 14px;
+  padding: 14px 28px;
+  font-size: 17px;
+  font-weight: 800;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: 0 10px 24px rgba(0, 41, 87, 0.22);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
 
-        .btn.secondary {
-          background: transparent;
-          color: var(--primary);
-          border: 1px solid var(--border);
-        }
+.btn:hover {
+  background: var(--accent);
+  transform: translateY(-1px);
+  box-shadow: 0 14px 28px rgba(0, 41, 87, 0.26);
+}
+
+.btn.secondary {
+  background: #fff;
+  color: var(--primary);
+  border: 1px solid var(--border);
+  box-shadow: none;
+  font-weight: 700;
+}
+
+.btn.secondary:hover {
+  background: #f8fafc;
+  transform: none;
+  box-shadow: none;
+}
 
         @media (max-width: 900px) {
           .chart-grid {
@@ -268,14 +288,14 @@
     <div class="header">
         <h1>Gaze Debug View</h1>
         <p>This page shows the stored heatmaps and gaze-derived statistics captured during the reading screens.</p>
-        <div id="status-line" class="status-line"></div>
+        <div class="status-line" id="status-line"></div>
         <div class="toolbar">
-            <button class="btn" onclick="window.close()">Continue</button>
+            <button class="btn" onclick="window.close()">Continue to Experiment</button>
             <button class="btn secondary" id="download-json">Download debug JSON</button>
         </div>
     </div>
 
-    <div id="content" class="grid"></div>
+    <div class="grid" id="content"></div>
 </div>
 
 <script>
