@@ -1535,13 +1535,15 @@ const validation = {
     positionVideoContainer();
 
     const root = document.getElementById("center-validation-root");
-    const durationMs = 5000;
-    const roiRadius = 140;
+    const settleMs = 1200;
+    const measureMs = 4000;
+    const roiRadius = 200;
     const cx = Math.round(window.innerWidth * 0.5);
     const cy = Math.round(window.innerHeight * 0.5);
 
     const samples = [];
     const bluePoints = [];
+    let measurementActive = false;
 
     const centerDot = document.createElement("div");
     centerDot.style.cssText = `
@@ -1584,13 +1586,15 @@ const validation = {
     root.appendChild(hint);
 
     this._cancelGazeHandler = jsPsych.extensions.webgazer.onGazeUpdate((prediction) => {
-      if (!prediction || !Number.isFinite(prediction.x) || !Number.isFinite(prediction.y)) return;
+  if (!prediction || !Number.isFinite(prediction.x) || !Number.isFinite(prediction.y)) return;
 
-      samples.push({
-        x: prediction.x,
-        y: prediction.y,
-        t: prediction.t ?? performance.now()
-      });
+  if (!measurementActive) return;
+
+  samples.push({
+    x: prediction.x,
+    y: prediction.y,
+    t: prediction.t ?? performance.now()
+  });
 
       const p = document.createElement("div");
       p.style.cssText = `
@@ -1615,20 +1619,28 @@ const validation = {
       }
     });
 
-    this._validationTimer = setTimeout(() => {
-      const metrics = computeCenterValidationMetrics(samples, cx, cy, roiRadius, durationMs);
+    this._settleTimer = setTimeout(() => {
+  measurementActive = true;
+  hint.textContent = currentLang === "fi"
+    ? "Mittaus käynnissä — katso keskimmäistä pistettä"
+    : "Measurement in progress — keep looking at the center dot";
 
-      jsPsych.finishTrial({
-        phase: "validation_custom",
-        validation_type: "center-dot",
-        ...metrics
-      });
-    }, durationMs);
+  this._validationTimer = setTimeout(() => {
+    const metrics = computeCenterValidationMetrics(samples, cx, cy, roiRadius, measureMs);
+
+    jsPsych.finishTrial({
+      phase: "validation_custom",
+      validation_type: "center-dot",
+      ...metrics
+    });
+  }, measureMs);
+
+}, settleMs);
   },
 
   on_finish: function () {
-    if (this._validationTimer) {
-      clearTimeout(this._validationTimer);
+    if (this._settleTimer) clearTimeout(this._settleTimer);
+    if (this._validationTimer) clearTimeout(this._validationTimer);
     }
 
     try {
