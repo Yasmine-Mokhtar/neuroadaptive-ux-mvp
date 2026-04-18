@@ -1586,15 +1586,14 @@ const validation = {
     root.appendChild(hint);
 
     this._cancelGazeHandler = jsPsych.extensions.webgazer.onGazeUpdate((prediction) => {
-  if (!prediction || !Number.isFinite(prediction.x) || !Number.isFinite(prediction.y)) return;
+      if (!prediction || !Number.isFinite(prediction.x) || !Number.isFinite(prediction.y)) return;
+      if (!measurementActive) return;
 
-  if (!measurementActive) return;
-
-  samples.push({
-    x: prediction.x,
-    y: prediction.y,
-    t: prediction.t ?? performance.now()
-  });
+      samples.push({
+        x: prediction.x,
+        y: prediction.y,
+        t: prediction.t ?? performance.now()
+      });
 
       const p = document.createElement("div");
       p.style.cssText = `
@@ -1615,33 +1614,32 @@ const validation = {
 
       if (bluePoints.length > 250) {
         const old = bluePoints.shift();
-        old?.remove();
+        if (old) old.remove();
       }
     });
 
     this._settleTimer = setTimeout(() => {
-  measurementActive = true;
-  hint.textContent = currentLang === "fi"
-    ? "Mittaus käynnissä — katso keskimmäistä pistettä"
-    : "Measurement in progress — keep looking at the center dot";
+      measurementActive = true;
 
-  this._validationTimer = setTimeout(() => {
-    const metrics = computeCenterValidationMetrics(samples, cx, cy, roiRadius, measureMs);
+      hint.textContent = currentLang === "fi"
+        ? "Mittaus käynnissä — katso keskimmäistä pistettä"
+        : "Measurement in progress — keep looking at the center dot";
 
-    jsPsych.finishTrial({
-      phase: "validation_custom",
-      validation_type: "center-dot",
-      ...metrics
-    });
-  }, measureMs);
+      this._validationTimer = setTimeout(() => {
+        const metrics = computeCenterValidationMetrics(samples, cx, cy, roiRadius, measureMs);
 
-}, settleMs);
+        jsPsych.finishTrial({
+          phase: "validation_custom",
+          validation_type: "center-dot",
+          ...metrics
+        });
+      }, measureMs);
+    }, settleMs);
   },
 
   on_finish: function () {
     if (this._settleTimer) clearTimeout(this._settleTimer);
     if (this._validationTimer) clearTimeout(this._validationTimer);
-    }
 
     try {
       if (this._cancelGazeHandler) this._cancelGazeHandler();
