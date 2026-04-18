@@ -1219,6 +1219,10 @@ body {
       applyRecommendedUI(getStoredUIMode());
       resetWebGazerSession();
 
+      try {
+  window.webgazer?.applyKalmanFilter?.(true);
+} catch (e) {}
+
       fetch(`${API_BASE_URL}/`).catch(()=>{});
 
       jsPsych = initJsPsych({
@@ -1535,14 +1539,33 @@ const validation = {
     positionVideoContainer();
 
     const root = document.getElementById("center-validation-root");
-    const settleMs = 1200;
-    const measureMs = 4000;
-    const roiRadius = 200;
+    const settleMs = 1800;
+    const measureMs = 5000;
+    const roiRadius = 260;
     const cx = Math.round(window.innerWidth * 0.5);
     const cy = Math.round(window.innerHeight * 0.5);
 
     const samples = [];
     const bluePoints = [];
+    let smoothX = null;
+let smoothY = null;
+
+const liveDot = document.createElement("div");
+liveDot.style.cssText = `
+  position:fixed;
+  left:${cx}px;
+  top:${cy}px;
+  width:14px;
+  height:14px;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:#F1563F;
+  box-shadow:0 0 0 6px rgba(241,86,63,0.18);
+  z-index:99997;
+  pointer-events:none;
+`;
+root.appendChild(liveDot);
+
     let measurementActive = false;
 
     const centerDot = document.createElement("div");
@@ -1587,35 +1610,41 @@ const validation = {
 
     this._cancelGazeHandler = jsPsych.extensions.webgazer.onGazeUpdate((prediction) => {
       if (!prediction || !Number.isFinite(prediction.x) || !Number.isFinite(prediction.y)) return;
-      if (!measurementActive) return;
+if (!measurementActive) return;
 
-      samples.push({
-        x: prediction.x,
-        y: prediction.y,
-        t: prediction.t ?? performance.now()
-      });
+smoothX = smoothX === null ? prediction.x : (smoothX * 0.82 + prediction.x * 0.18);
+smoothY = smoothY === null ? prediction.y : (smoothY * 0.82 + prediction.y * 0.18);
 
-      const p = document.createElement("div");
-      p.style.cssText = `
-        position:fixed;
-        left:${prediction.x}px;
-        top:${prediction.y}px;
-        width:8px;
-        height:8px;
-        transform:translate(-50%,-50%);
-        border-radius:50%;
-        background:#002957;
-        opacity:0.78;
-        z-index:99998;
-        pointer-events:none;
-      `;
-      root.appendChild(p);
-      bluePoints.push(p);
+liveDot.style.left = `${smoothX}px`;
+liveDot.style.top = `${smoothY}px`;
 
-      if (bluePoints.length > 250) {
-        const old = bluePoints.shift();
-        if (old) old.remove();
-      }
+samples.push({
+  x: smoothX,
+  y: smoothY,
+  t: prediction.t ?? performance.now()
+});
+
+const p = document.createElement("div");
+p.style.cssText = `
+  position:fixed;
+  left:${smoothX}px;
+  top:${smoothY}px;
+  width:6px;
+  height:6px;
+  transform:translate(-50%,-50%);
+  border-radius:50%;
+  background:#002957;
+  opacity:0.55;
+  z-index:99996;
+  pointer-events:none;
+`;
+root.appendChild(p);
+bluePoints.push(p);
+
+if (bluePoints.length > 180) {
+  const old = bluePoints.shift();
+  if (old) old.remove();
+}
     });
 
     this._settleTimer = setTimeout(() => {
